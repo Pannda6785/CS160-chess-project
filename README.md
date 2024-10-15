@@ -18,7 +18,7 @@ mingw32-make
 - [x] Checking for collisions
 - [x] Checking for turns
 - [x] Checking for mating
-- [x] Game win conditions
+- [ ] Game win conditions
 - [ ] Create user interface
 - [x] Add timer
 - [x] Show available moves
