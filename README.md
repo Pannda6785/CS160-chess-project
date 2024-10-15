@@ -12,7 +12,7 @@ mingw32-make
 **To-do lists 🎉**
 
 - [ ] Setup Gameloop
-- [ ] Creating the Grids
+- [ ] Creating the Board
 - [ ] Creating the Pieces
 - [ ] Creating Moves
 - [ ] Checking for collisions
