@@ -26,3 +26,4 @@ mingw32-make
 - [ ] Add bot
 - [ ] Add levels
 - [ ] Add saves
+- [ ] Record turns?
