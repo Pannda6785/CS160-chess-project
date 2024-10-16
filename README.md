@@ -12,6 +12,7 @@ mingw32-make
 **To-do lists 🎉**
 
 - [x] Setup Gameloop
+- [ ] Setup Cmake
 - [x] Creating the Board
 - [x] Creating the Pieces
 - [x] Creating Moves
