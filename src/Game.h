@@ -8,6 +8,7 @@
 #include "Board.h"
 #include "raylib.h"
 #include "Move.h"
+#include "Properties.h"
 
 enum GAME_STATE {
     S_RUNNING,
@@ -15,19 +16,10 @@ enum GAME_STATE {
     S_WHITE_WINS,
     S_BLACK_WINS,
     S_STALEMATE
-};
+}; 
 
 class Game {
 public:
-    const static int INFO_BAR_HEIGHT = 32;
-    const static int WINDOW_WIDTH = 640;
-    const static int WINDOW_HEIGHT = WINDOW_WIDTH + INFO_BAR_HEIGHT;
-    const static int CELL_SIZE = WINDOW_WIDTH / 8;
-
-    const static std::string ASSETS_PATH;
-    const static std::string TEXTURES_PATH;
-    const static std::string SOUNDS_PATH;
-
     const static Color LIGHT_SHADE;
     const static Color DARK_SHADE;
 
@@ -38,9 +30,6 @@ public:
     void SwapTurns();
 
 private:
-    void LoadTextures();
-    void LoadSounds();
-
     void HandleInput();
     void HandleInputPromotion();
     Move* GetMoveAtPosition(const Position& position);
@@ -51,10 +40,6 @@ private:
     void FilterMovesThatAttackOppositeKing();
     void FilterMovesThatLeadToCheck();
     bool IsAnyMovePossible();
-
-    // Assets.
-    std::map<std::string, Texture> textures;
-    std::map<std::string, Sound> sounds;
 
     // Game state.
     Board board;

@@ -6,84 +6,30 @@
 #include "pieces/Knight.h"
 #include "pieces/Bishop.h"
 #include "pieces/Rook.h"
+#include "Properties.h"
 
 #include <filesystem>
 #include <iostream>
-
-const std::string Game::ASSETS_PATH = "../assets";
-const std::string Game::TEXTURES_PATH = Game::ASSETS_PATH + "/textures";
-const std::string Game::SOUNDS_PATH = Game::ASSETS_PATH + "/sounds";
 
 const Color Game::LIGHT_SHADE = Color{240, 217, 181, 255};
 const Color Game::DARK_SHADE = Color{181, 136, 99, 255};
 
 Game::Game() {
-    InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "RayChess");
-    InitAudioDevice();
-
-    SetTargetFPS(60);
-
-    LoadTextures();
-    LoadSounds();
-
     // Init the board and calculate the initial movements for the white player.
     board.Init();
+
     CalculateAllPossibleMovements();
 }
 
-void Game::LoadTextures() {
-    for (const auto & entry : std::filesystem::directory_iterator(TEXTURES_PATH)) {
-        // Load and resize image.
-        Image image = LoadImage(entry.path().string().c_str());
-        ImageResize(&image, CELL_SIZE, CELL_SIZE);
-
-        Texture texture = LoadTextureFromImage(image);
-
-        // Add texture to map of textures.
-        std::string fileName = entry.path().filename().string();
-        size_t dotIndex = fileName.find('.');
-
-        std::string fileNameWithoutExtension = entry.path().filename().string().substr(0, dotIndex);
-        textures[fileNameWithoutExtension] = texture;
-
-        // Free image data.
-        UnloadImage(image);
-    }
-}
-
-void Game::LoadSounds() {
-    for (const auto & entry : std::filesystem::directory_iterator(SOUNDS_PATH)) {
-        // Load sound.
-        Sound sound = LoadSound(entry.path().string().c_str());
-
-        // Add sound to map of sounds.
-        std::string fileName = entry.path().filename().string();
-        size_t dotIndex = fileName.find('.');
-
-        std::string fileNameWithoutExtension = entry.path().filename().string().substr(0, dotIndex);
-        sounds[fileNameWithoutExtension] = sound;
-    }
-}
-
 Game::~Game() {
-    // Free textures.
-    for (auto const& kv : textures) {
-        UnloadTexture(kv.second);
-    }
-
-    // Free sounds.
-    for (auto const& kv : sounds) {
-        UnloadSound(kv.second);
-    }
-
     board.Clear();
 
-    CloseAudioDevice();
-    CloseWindow();
+    Properties::currentScreen = WINLOSE;
 }
 
 void Game::Run() {
-    while (!WindowShouldClose()){
+    //temp condition
+    while (!WindowShouldClose() && Properties::currentScreen == TWOPLAYER){
         // Input.
         if (state == GAME_STATE::S_RUNNING) {
             HandleInput();
@@ -107,24 +53,24 @@ void Game::Run() {
 
             Renderer::ChangeMouseCursor(board, movesOfSelectedPiece, turn, state == GAME_STATE::S_PROMOTION);
             Renderer::Clear();
-            Renderer::RenderBackground();
-            Renderer::RenderPieces(board, textures);
+            Renderer().RenderBackground();
+            Renderer::RenderPieces(board, Properties::textures);
 
             if (state != GAME_STATE::S_PROMOTION) {
-                Renderer::RenderMovesSelectedPiece(textures, movesOfSelectedPiece);
+                Renderer::RenderMovesSelectedPiece(Properties::textures, movesOfSelectedPiece);
             }
 
             Renderer::RenderGuideText();
-            Renderer::RenderInfoBar(round, time);
 
             // Render promotion screen.
             if (state == GAME_STATE::S_PROMOTION) {
-                Renderer::RenderPromotionScreen(textures, selectedPiece->color);
+                Renderer::RenderPromotionScreen(Properties::textures, selectedPiece->color);
             }
 
             // Render end-game screen.
             if (state == GAME_STATE::S_WHITE_WINS || state == GAME_STATE::S_BLACK_WINS) {
                 Renderer::RenderEndScreen(state);
+                Properties::currentScreen = WINLOSE;
             }
         }
         EndDrawing();
@@ -134,14 +80,13 @@ void Game::Run() {
 void Game::HandleInput() {
     if (IsMouseButtonPressed(0)) {
         Vector2 mousePosition = GetMousePosition();
-        mousePosition.y -= Game::INFO_BAR_HEIGHT;
 
-        Position clickedPosition = {int(mousePosition.y) / CELL_SIZE, int(mousePosition.x) / CELL_SIZE};
+        Position clickedPosition = {int(mousePosition.y) / Properties::cell_size, int(mousePosition.x) / Properties::cell_size};
         Piece* clickedPiece = board.At(clickedPosition);
 
         // Select piece.
         if (clickedPiece != nullptr && clickedPiece->color == turn) {
-            PlaySound(sounds["click"]);
+            PlaySound(Properties::sounds["click"]);
             selectedPiece = clickedPiece;
         } else {
             // Do movement.
@@ -150,7 +95,7 @@ void Game::HandleInput() {
             if (desiredMove && selectedPiece != nullptr) {
                 DoMoveOnBoard(*desiredMove);
             } else {
-                PlaySound(sounds["clickCancel"]);
+                PlaySound(Properties::sounds["clickCancel"]);
             }
 
             // Piece must still be selected to render promotion screen.
@@ -167,9 +112,8 @@ void Game::HandleInput() {
 void Game::HandleInputPromotion() {
     if (IsMouseButtonPressed(0)) {
         Vector2 mousePosition = GetMousePosition();
-        mousePosition.y -= Game::INFO_BAR_HEIGHT;
 
-        Position clickedPosition = {int(mousePosition.y) / CELL_SIZE, int(mousePosition.x) / CELL_SIZE};
+        Position clickedPosition = {int(mousePosition.y) / Properties::cell_size, int(mousePosition.x) / Properties::cell_size};
 
         if (clickedPosition.i == 3 && clickedPosition.j >= 2 && clickedPosition.j <= 5) {
             Piece* newPiece;
