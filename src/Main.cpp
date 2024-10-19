@@ -14,17 +14,16 @@ int main() {
 
     // Setup
 
+    // Insert all asserts
+    Properties().LoadSounds();
+    Properties().LoadTextures();
+
     Properties::currentScreen = LOGO;
 
     while(!WindowShouldClose()) {
         BeginDrawing(); {
-
             switch(Properties::currentScreen) {
                 case LOGO: {
-                    // Insert all asserts
-                    Properties().LoadSounds();
-                    Properties().LoadTextures();
-
                     if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
                     {
                         Properties::currentScreen = TWOPLAYER;
@@ -46,12 +45,6 @@ int main() {
                     // Enter two player mode
                     // Game::TwoPlayer();
                     Game().Run();
-
-                    // temp change state
-                    if (IsKeyPressed(KEY_ENTER))
-                    {
-                        Properties::currentScreen = WINLOSE;
-                    }
                 } break;
                 case WINLOSE: {
                     ClearBackground(RAYWHITE);

@@ -56,3 +56,6 @@ void Properties::LoadMenu() {
         UnloadImage(image);
     }
 }
+
+std::string Properties::toChessNode() {
+}

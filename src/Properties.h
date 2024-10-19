@@ -34,6 +34,10 @@ public:
     void LoadTextures();
     void LoadMenu();
 
+    // Moves
+    static std::string position;
+    static std::string toChessNode();
+    
 private:
     // Assets pathsx
     const std::string ASSETS_PATH = "../assets";

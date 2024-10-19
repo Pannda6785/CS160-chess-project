@@ -23,7 +23,6 @@ Game::Game() {
 
 Game::~Game() {
     board.Clear();
-
     Properties::currentScreen = WINLOSE;
 }
 
