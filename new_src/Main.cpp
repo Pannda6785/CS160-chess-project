@@ -12,7 +12,7 @@ int main() {
     Properties::LoadSounds();
     Properties::LoadTextures();
 
-    SCENE scene = TITLESCENE;
+    scene = TITLESCENE;
     Title title;
     Game game;
 
@@ -21,11 +21,9 @@ int main() {
             switch(scene) {
                 case TITLESCENE: {
                     title.Run();
-                    scene = title.getScene();
                 }; break;
                 case GAMESCENE: {
                     game.Run();
-                    scene = game.getScene();
                 }; break;
                 default: break;
             }
