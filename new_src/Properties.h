@@ -6,16 +6,15 @@
 #include <map>
 #include <string>
 #include "raylib.h"
-
-constexpr int BOARD_SIZE = 8;
-typedef std::array<std::array<int, BOARD_SIZE>, BOARD_SIZE> Board;
-typedef std::array<int, 2> Square;
+#include "Game.h"
 
 enum SCENE {
-    TITLESCENE,
-    GAMESCENE
+    EXIT,
+    TITLE_SCENE,
+    GAME_SCENE
 };
 SCENE scene;
+Game game;
 
 namespace Properties { // game properties
     // Windows Info
@@ -45,6 +44,9 @@ namespace Properties { // game properties
 
             std::string fileNameWithoutExtension = entry.path().filename().string().substr(0, dotIndex);
             sounds[fileNameWithoutExtension] = sound;
+
+            // Free sound data.
+            UnloadSound(sound);
         }
     }
     void LoadTextures() {
