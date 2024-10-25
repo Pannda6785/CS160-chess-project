@@ -10,13 +10,8 @@ public:
     ~TitleScene() {}
     
     void Init() {
-        if(titles.empty()) {
-            title = MAIN;
-        }
-        else {
-            title = titles.back();
-            titles.pop_back();
-        }        
+        titles.clear();
+        title = MAIN;    
     }
 
     // Is called per frame. Controls the flow of the title scene.
@@ -32,15 +27,9 @@ public:
             case DIFFICULTY: {
                 DifficultyTitle();
             }; break;
-            case SAVE: {
-                SaveTitle();
-            }; break;
             case LOAD: {
                 LoadTitle();
             }; break;
-            case PAUSE: {
-                PauseTitle();
-            } break;
             case OPTIONS: {
                 OptionsTitle();
             }; break;
@@ -55,7 +44,6 @@ private:
         DIFFICULTY,
         SAVE,
         LOAD,
-        PAUSE,
         OPTIONS
     };
 
@@ -79,10 +67,6 @@ private:
         // Move to other scenes
         if (newGameButton.Check()) {
             title = MODE;
-        }
-        if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-            titles.push_back(title);
-            title = PAUSE;
         }
         if(loadButton.Check()) {
             titles.push_back(title);
@@ -126,51 +110,11 @@ private:
         }
     }
 
-
-    void SaveTitle() {
-        // Render assets
-        DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is save title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
-
-        // Move to other scenes
-        if(backButton.Check()) {
-            title = titles.back();
-            titles.pop_back();
-        }
-    }
-
     void LoadTitle() {
         // Render assets
 
         // Move to other scenes
         DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is load title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
-        if(backButton.Check()) {
-            title = titles.back();
-            titles.pop_back();
-        }
-    }
-
-    Button continueButton = Button(Rectangle{(float)GetScreenWidth() / 2 - 130, (float)GetScreenHeight() * 3 / 8 - 30, 260, 70}, LIGHTGRAY, Properties::textures[""], Properties::sounds[""], Properties::fonts["Rubik-Regular_45"], "Continue", 45, LIME);
-    Button saveButton = Button(Rectangle{(float)GetScreenWidth() / 2 - 130, (float)GetScreenHeight() / 2 - 30, 260, 70}, LIGHTGRAY, Properties::textures[""], Properties::sounds[""], Properties::fonts["Rubik-Regular_45"], "Save", 45, LIME);
-    void PauseTitle() {
-        // Render assets
-        DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is pause title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
-        
-        // Move to other scenes
-        if(continueButton.Check()) {
-            title = titles.back();
-            titles.pop_back();
-        }
-        if(saveButton.Check()) {
-            titles.push_back(title);
-            title = SAVE;
-        }
-        if(loadButton.Check()) {
-            titles.push_back(title);
-            title = LOAD;
-        }
-        if(optionsButton.Check()) {
-            title = OPTIONS;
-        }
         if(backButton.Check()) {
             title = titles.back();
             titles.pop_back();
