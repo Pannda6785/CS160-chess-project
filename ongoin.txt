@@ -1,0 +1,59 @@
+15:30
+An
+Lê Nguyễn Hữu An
+GAME DESIGN
+
+
+
+Main loop:
+Make a game object
+while (game shouldn't close)
+try to switch between the scenes
+
+
+
+Scene Menu:
+New game
+2P
+1P
+Easy
+Medium
+Hard
+Load game
+3 slots
+Options
+Volumns
+Resolution
+Chess pieces' costumes
+Board pallete
+Exit
+
+
+
+Scene Game:
+Render
+If input: do input
+Big game so big play out
+
+
+
+Certain classes
+
+Board is just a [8][8] array of int
+
+class Game:
+Board board
+stack<Board> undo_history
+stack<Board> redo_history
+Game() { set default board }
+Game(__board) { set board with __board }
+public:
+void Run()
+Render
+If no input, return
+Handle input and make corresponding moves
+
+class Piece: // to be inherited
+public
+virtual vector<Moves> getLegalMoves(Board board, int x, int y) const
+virtual Board makeMove(Board board, Move move) const

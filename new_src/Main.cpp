@@ -5,6 +5,7 @@
 
 int main() {
     // Init game window
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(Properties::screenWidth, Properties::screenHeight, "CS160-chess-project");
     InitAudioDevice();
     SetTargetFPS(60);
@@ -12,29 +13,32 @@ int main() {
     // Load assets
     Properties::LoadSounds();
     Properties::LoadTextures();
+    Properties::LoadElements();
+    Properties::LoadFonts();
 
     // Variables initialization
     scene = TITLE_SCENE;
-    SCENE lastScene = EXIT;
+    isSceneChanged = false;
     TitleScene titleScene;
     GameScene gameScene;
 
     // Main game loop
     while(!WindowShouldClose() && scene != EXIT) {
-        BeginDrawing(); {
+        Properties::screenHeight = GetScreenHeight();
+        Properties::screenWidth = GetScreenWidth();
             switch(scene) {
                 case TITLE_SCENE: {
-                    if (scene != lastScene) titleScene.Init(); // init the scene if entering the scene
+                    if (isSceneChanged) titleScene.Init(), isSceneChanged = false; // init the scene if entering the scene
                     titleScene.Run();
                 }; break;
                 case GAME_SCENE: {
-                    if (scene != lastScene) gameScene.Init(); // init the scene if entering the scene
+                    if (isSceneChanged) gameScene.Init(), isSceneChanged = false; // init the scene if entering the scene
                     gameScene.Run();
                 }; break;
                 default: break;
             }
+        BeginDrawing(); {
         } EndDrawing();
-        lastScene = scene;
     }
 
     // Deinit game window

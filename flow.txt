@@ -1,0 +1,50 @@
+global variable/objects:
+  scene
+  game
+
+Main contains the game loop, and it handles the scenes
+  inits gameWindow
+  game.init()
+  scene.init()
+  switches scene to run between scenes
+
+Title scene
+  renders and switches between the buttons
+  on choosing new game
+    on choosing 1P
+      difficulty = Input()
+      isPlayerWhite = Input()      
+      game.agentWhite = isPlayerWhite ? new ManualAgent() : new AIAgent(difficulty)
+      game.agentBlack = isPlayerWhite ? new AIAgent(difficulty) : new ManualAgent() 
+      start game
+    on choosing 2P
+      game.agentWhite = new ManualAgent();
+      game.agentBlack = new ManualAgent();
+      start game
+  on choosing loadGame
+    slot_id = Input()
+    if slot(slot_id) is empty:
+      raise message "empty"
+    else
+      game.load(slot)
+      start game
+  on choosing options
+    volumn = Input()
+    pieceCostume = Input()
+    boardCostume = Input()    
+    gameWindow.SetVolumn(volumn)
+    game.renderer.SetPieceCostume(pieceCostume) // but do it with encapsulation
+    game.renderer.SetBoardCostume(boardCostume) // but do it with encapsulation
+    
+Game scene
+  renders the chessboard, the pieces, the game information (time passed, num turns, whose turn, history) and buttons (pause button, undo button, redo button)
+  switch:
+    RUNNING
+      most of the currently implemented stuff and highly technical stuff
+    PAUSED
+      tint the screen
+      renders and functions buttons Resume, Reset, Menu. Reset and Menu
+    ENDED
+      without tinting, renders the game verdict and the buttons Reset and Menu
+    (Reset should ask for double check [Save] [Don't save] [Cancel], and Menu should ask for confirm [Yes] [Cancel]
+    

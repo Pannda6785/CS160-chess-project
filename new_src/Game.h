@@ -1,6 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "Properties.h"
+#include "Properties.h"
 #include "agents/Agent.h"
 #include "RenderUtilities.h"
 
@@ -23,6 +25,7 @@ public:
 
     // Is called per frame, Render the game, handle input, game flow control and everything about the gameplay
     void Run() {
+        DrawRectangle(shiftedPixel, shiftedPixel, boardSize, boardSize, WHITE);
         DrawTextCen("This isn't chess, but it is fun!", GetScreenHeight() / 2, 100, 25, PINK);
         DrawTextCen("Try clicking around!", GetScreenHeight() / 2, 140, 20, PINK);
         DrawTextCen(TextFormat("SCORE: %i", score), GetScreenHeight() / 2, 200, 40, PINK);
@@ -55,6 +58,9 @@ public:
     }
 
 private:
+    // Board Properties
+    int shiftedPixel = 20;
+    int boardSize = Properties::screenHeight - 2*shiftedPixel;
 
     Agent* white_agent;
     Agent* black_agent;
