@@ -2,7 +2,6 @@
 #define GAME_H
 
 #include "Properties.h"
-#include "Properties.h"
 #include "agents/Agent.h"
 #include "RenderUtilities.h"
 
@@ -89,5 +88,7 @@ private:
     // int round = 1;
     // double time = 0;
 };
+
+Game game;
 
 #endif //GAME_H

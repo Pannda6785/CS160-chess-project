@@ -41,7 +41,7 @@ namespace Properties { // game properties
     const std::string SOUNDS_PATH = ASSETS_PATH + "/sounds"; // Sounds
     const std::string TEXTURES_PATH = ASSETS_PATH + "/textures"; // On-board elements (need to modified one)
     const std::string ELEMENTS_PATH = ASSETS_PATH + "/elements"; // titles element
-    const std::string FONTS_PATH = ASSETS_PATH + "/fonts/rubik"; // fonts element
+    const std::string FONTS_PATH = ASSETS_PATH + "/fonts"; // fonts element
 
     // Load all assets
     void LoadSounds() {

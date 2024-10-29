@@ -79,10 +79,12 @@ private:
         }
 
         // Render text in the box
-        if(font.texture.id == 0) {
-            DrawTextRec(text.c_str(), rec, fontSize, textColor);
+        if(text != "") {
+            if(font.texture.id == 0) {
+                DrawTextRec(text.c_str(), rec, fontSize, textColor);
+            }
+            else DrawTextRecEx(font, text.c_str(), rec, fontSize, 2, LIME);
         }
-        else DrawTextRecEx(font, text.c_str(), rec, fontSize, 2, LIME);
     }
 
     void ClickedSound() {

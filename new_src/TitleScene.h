@@ -3,6 +3,7 @@
 #include "Button.h"
 #include "RenderUtilities.h"
 #include "vector"
+#include "Game.h"
 
 class TitleScene {
 public:
@@ -10,7 +11,6 @@ public:
     ~TitleScene() {}
     
     void Init() {
-        titles.clear();
         title = MAIN;    
     }
 
@@ -48,7 +48,6 @@ private:
     };
 
     // lists of pre-title for backButton
-    std::vector<TITLE> titles;
     TITLE title;
 
 
@@ -56,9 +55,9 @@ private:
     Button backButton = Button(Rectangle{10, (float)GetScreenHeight() - 70, 180, 60}, WHITE, Properties::elements["button"], Properties::sounds["buttonClick"], Properties::fonts["Rubik-Regular_45"], "Back", 45, LIME);
 
     Button newGameButton = Button(Rectangle{(float)GetScreenWidth() / 2 - 130, (float)GetScreenHeight() / 2 - 30, 260, 70}, LIGHTGRAY, Properties::textures[""], Properties::sounds["buttonClick"], Properties::fonts["Rubik-Regular_45"], "New Game", 45, LIME);
-    Button loadButton = Button(Rectangle{(float)GetScreenWidth() / 2 - 130, (float)GetScreenHeight() * 5 / 8- 30, 260, 70}, LIGHTGRAY, Properties::textures[""], Properties::sounds[""], Properties::fonts["Rubik-Regular_45"], "Load", 45, LIME);
-    Button optionsButton = Button(Rectangle{(float)GetScreenWidth() / 2 - 130, (float)GetScreenHeight() * 3 / 4 - 30, 260, 70}, LIGHTGRAY, Properties::textures[""], Properties::sounds[""], Properties::fonts["Rubik-Regular_45"], "Options", 45, LIME);
-    Button exitButton = Button(Rectangle{(float)GetScreenWidth() / 2 - 130, (float)GetScreenHeight() * 7 / 8 - 30, 260, 70}, LIGHTGRAY, Properties::textures[""], Properties::sounds[""], Properties::fonts["Rubik-Regular_45"], "Exit", 45, LIME);
+    Button loadButton = Button(Rectangle{(float)GetScreenWidth() / 2 - 130, (float)GetScreenHeight() * 5 / 8- 30, 260, 70}, LIGHTGRAY, Properties::textures[""], Properties::sounds["buttonClick"], Properties::fonts["Rubik-Regular_45"], "Load", 45, LIME);
+    Button optionsButton = Button(Rectangle{(float)GetScreenWidth() / 2 - 130, (float)GetScreenHeight() * 3 / 4 - 30, 260, 70}, LIGHTGRAY, Properties::textures[""], Properties::sounds["buttonClick"], Properties::fonts["Rubik-Regular_45"], "Options", 45, LIME);
+    Button exitButton = Button(Rectangle{(float)GetScreenWidth() / 2 - 130, (float)GetScreenHeight() * 7 / 8 - 30, 260, 70}, LIGHTGRAY, Properties::textures[""], Properties::sounds["buttonClick"], Properties::fonts["Rubik-Regular_45"], "Exit", 45, LIME);
     void MainTitle() {
         // Render assets
         DrawTexturePro(Properties::elements["mainTitle"], (Rectangle) {0.0, 0.0, (float) Properties::elements["mainTitle"].width, (float) Properties::elements["mainTitle"].height}, (Rectangle) {0.0, 0.0, (float) Properties::screenWidth, (float) Properties::screenHeight}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
@@ -69,11 +68,9 @@ private:
             title = MODE;
         }
         if(loadButton.Check()) {
-            titles.push_back(title);
             title = LOAD;
         }
         if(optionsButton.Check()) {
-            titles.push_back(title);
             title = OPTIONS;
         }
         if (exitButton.Check()) {
@@ -81,22 +78,24 @@ private:
         }
     }
 
-    Button onePlayerButton = Button(Rectangle{(float)GetScreenWidth() / 2 - 130, (float)GetScreenHeight() / 2 - 30, 260, 70}, LIGHTGRAY, Properties::textures[""], Properties::sounds[""], Properties::fonts["Rubik-Regular_45"], "1 Player", 45, LIME);
-    Button twoPlayerButton = Button(Rectangle{(float)GetScreenWidth() / 2 - 130, (float)GetScreenHeight() * 5 / 8- 30, 260, 70}, LIGHTGRAY, Properties::textures[""], Properties::sounds[""], Properties::fonts["Rubik-Regular_45"], "2 Player", 45, LIME);
+    Button onePlayerButton = Button(Rectangle{(float)GetScreenWidth() / 2 - 130, (float)GetScreenHeight() / 2 - 30, 260, 70}, LIGHTGRAY, Properties::textures[""], Properties::sounds["buttonClick"], Properties::fonts["Rubik-Regular_45"], "1 Player", 45, LIME);
+    Button twoPlayerButton = Button(Rectangle{(float)GetScreenWidth() / 2 - 130, (float)GetScreenHeight() * 5 / 8- 30, 260, 70}, LIGHTGRAY, Properties::textures[""], Properties::sounds["buttonClick"], Properties::fonts["Rubik-Regular_45"], "2 Player", 45, LIME);
     void ModeTitle() {
         // Render assets
         DrawTexturePro(Properties::elements["mainTitle"], (Rectangle) {0.0, 0.0, (float) Properties::elements["mainTitle"].width, (float) Properties::elements["mainTitle"].height}, (Rectangle) {0.0, 0.0, (float) Properties::screenWidth, (float) Properties::screenHeight}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
-        DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is one mode only. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
+        DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is one mode only. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 4), 80, 2, PINK);
 
         // Move to other scenes
-        if (backButton.Check()) {
-            title = MAIN;
-        }
-        if (onePlayerButton.Check()) {
+        if (onePlayerButton.Check()) {  
+            game.Init();
             ChangeScene(GAME_SCENE);
         }
         if (twoPlayerButton.Check()) {
+            game.Init();
             ChangeScene(GAME_SCENE);
+        }
+        if (backButton.Check()) {
+            title = MAIN;
         }
     }
 
@@ -104,7 +103,7 @@ private:
         // Render assets
         
         // Move to other scenes
-        DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is difficulty title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
+        DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is difficulty title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 4), 80, 2, PINK);
         if(backButton.Check()) {
             title = MODE;
         }
@@ -112,12 +111,13 @@ private:
 
     void LoadTitle() {
         // Render assets
+        DrawTexturePro(Properties::elements["loadBackGround"], (Rectangle) {0.0, 0.0, (float) Properties::elements["loadBackGround"].width, (float) Properties::elements["loadBackGround"].height}, (Rectangle) {0.0, 0.0, (float) Properties::screenWidth, (float) Properties::screenHeight}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
+        DrawTexturePro(Properties::elements["box"], (Rectangle) {0.0, 0.0, (float) Properties::elements["box"].width, (float) Properties::elements["box"].height}, (Rectangle) {(float) Properties::screenWidth / 12, (float) Properties::screenHeight / 2, (float) Properties::screenWidth / 4, (float) Properties::screenHeight / 3}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
 
         // Move to other scenes
-        DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is load title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
+        DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is load title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 4), 80, 2, PINK);
         if(backButton.Check()) {
-            title = titles.back();
-            titles.pop_back();
+            title = MAIN;
         }
     }
 
@@ -125,10 +125,9 @@ private:
         // Render assets
         
         // Move to other scenes
-        DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is option title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
+        DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is option title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 4), 80, 2, PINK);
         if(backButton.Check()) {
-            title = titles.back();
-            titles.pop_back();
+            title = MAIN;
         }
     }
 };
