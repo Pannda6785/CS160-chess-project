@@ -5,13 +5,11 @@
 
 #include "raylib.h"
 #include "Board.h"
-
-class Renderer;
-Renderer renderer;
+#include "Properties.h"
 
 class Renderer {
 public:
-    // TO DO
+    // TO DO: all about renderer
 
     std::map<std::string, Texture> pieceTextures;
     Texture backgroundTexture;
@@ -24,40 +22,39 @@ public:
         pieceTextures = textures;
     }
 
-    void Clear() {
-
-    }
-
     void RenderBackground() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                int x = Properties::borderSize + j * Properties::cellSize;
+                int y = Properties::borderSize + i * Properties::cellSize;
 
+                int startingColorInRow = i % 2 == 0 ? 0 : 1;
+                int colorIndex = (startingColorInRow + j) % 2;
+                Color cellColor = colorIndex == 0 ? WHITE : BROWN;
+
+                DrawRectangle(x, y, Properties::cellSize, Properties::cellSize, cellColor);
+            }
+        }   
     }
 
     void RenderPieces(const Board& board) {
-
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                const Piece* piece = board.GetPieceByPosition({i, j});
+                if (piece != nullptr) {
+                    int x = Properties::borderSize + j * Properties::cellSize + Properties::cellSize / 2;
+                    int y = Properties::borderSize + i * Properties::cellSize + Properties::cellSize / 2;
+                    Color color = piece->GetColor() == CHESS_WHITE ? PINK : GREEN;
+                    DrawCircle(x, y, 30, color);                 
+                }
+            }
+        }
     }
-
-    void RenderMovesSelectedPiece(const std::vector<Move>& possibleMoves) {
-
-    }
-
-    void RenderPromotionScreen(CHESS_COLOR colorOfPeonBeingPromoted) {
-
-    }
- 
-    // static void Clear();
-    // static void RenderBackground();
-    // static void RenderPieces(const Board& board, const std::map<std::string, Texture>& textures);
-    // static void RenderMovesSelectedPiece(const std::map<std::string, Texture>& textures, const std::vector<Move>& possibleMoves);
-    // static void RenderGuideText();
-    // static void RenderPromotionScreen(const std::map<std::string, Texture>& textures, PIECE_COLOR colorOfPeonBeingPromoted);
-    // static void RenderEndScreen(GAME_STATE state);
-    // static void ChangeMouseCursor(const Board& board, const std::vector<Move>& possibleMoves, PIECE_COLOR turn, bool inPromotion);
 
 private:
-    // static std::string GetTextureNameFromMoveType(MOVE_TYPE moveType);
-    // static Color GetShadeColor(PIECE_COLOR color);
-    // static PIECE_COLOR GetColorOfCell(const Position& cellPosition);
+
 };
 
+Renderer renderer;
 
 #endif //RENDERER_H

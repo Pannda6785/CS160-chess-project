@@ -1,46 +1,77 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-class Board;
-
 #include <vector>
 #include <memory>
 #include <optional>
+#include <iostream>
 
 #include "ChessUnits.h"
 #include "pieces/Piece.h"
-#include "pieces/Pawn.h"
-// #include "pieces/Rook.h"
-// #include "pieces/Knight.h"
-// #include "pieces/Bishop.h"
-// #include "pieces/Queen.h"
-// #include "pieces/King.h"
 
 class Board {
 public:
+    Board() {}
+    // Deep clone
+    Board(const Board& other) {
+        for (const auto& piece : other.pieces) {
+            pieces.push_back(piece->clone());
+        }
+        lastMove = other.lastMove;
+    }
+    Board& operator=(const Board& other) {
+        if (this != &other) {
+            pieces.clear();
+            for (const auto& piece : other.pieces) {
+                pieces.push_back(piece->clone());
+            }
+            lastMove = other.lastMove;
+        }
+        return *this;
+    }
 
-    // Makes the board the default board
-    void Init() {
-        // TO DO: add properly
-        Add(std::make_unique<Pawn>(CHESS_WHITE, Position{6, 4}));
+    void Clear() {
+        pieces.clear();
+        lastMove = std::nullopt;
     }
 
     bool Add(std::unique_ptr<Piece> piece) {
         for (size_t i = 0; i < pieces.size(); i++) {
-            if (pieces[i]->GetPosition() == piece->GetPosition()) return false;
+            if (pieces[i]->GetPosition() == piece->GetPosition()) {
+                std::cerr << "Warning: Add failed. Attempted to add on an occupied cell.\n";
+                return false;
+            }
         }
         pieces.push_back(std::move(piece));
         return true;
     }
 
-    bool Destroy(Position position) {
+    bool Destroy(const Position position) {
         for (size_t i = 0; i < pieces.size(); i++) {
             if (pieces[i]->GetPosition() == position) {
                 pieces.erase(pieces.begin() + i);
                 return true;
             }
         }
+        std::cerr << "Warning: Destroy failed. Attempted to destroy on an empty cell.\n";
         return false;
+    }
+
+    bool ExecuteMove(const Move move) {
+        if (!IsMoveValid(move)) {
+            std::cerr << "Warning: Move is invalid.\n";
+            return false;
+        }
+        if (move.type == ATTACK || move.type == ATTACK_AND_PROMOTION) {
+            Destroy(move.toPosition);
+        }
+        for (size_t i = 0; i < pieces.size(); i++) {
+            if (pieces[i]->GetPosition() == move.fromPosition) {
+                pieces[i]->MoveToPosition(move.toPosition);
+            }
+        }
+        // TO DO: handle castling, enpassant and promotion
+        return true;    
     }
 
     std::optional<Move> GetLastMove() const {
@@ -54,6 +85,16 @@ public:
             }
         }
         return nullptr;
+    }
+
+    std::vector<const Piece*> GetPiecesByColor(const CHESS_COLOR color) const {
+        std::vector<const Piece*> ret;
+        for (size_t i = 0; i < pieces.size(); i++) {
+            if (pieces[i]->GetColor() == color) {
+                ret.push_back(pieces[i].get());
+            }
+        }
+        return ret;
     }
 
     std::vector<Move> GetPossibleMoves(const Piece* piece) const {
@@ -74,6 +115,16 @@ public:
     // Is color's king attacked?
     bool IsInCheck(const CHESS_COLOR color) const {
         // TO DO: is in check
+    }
+
+    bool IsMoveValid(const Move move) {
+        if (!IsPositionInsideBoard(move.fromPosition) || !IsPositionInsideBoard(move.toPosition)) return false;
+        const Piece* piece = GetPieceByPosition(move.fromPosition);
+        if (piece == nullptr) return false;
+        for (const Move validMove : GetPossibleMoves(piece)) {
+            if (move == validMove) return true;
+        }
+        return false;
     }
 
 private:

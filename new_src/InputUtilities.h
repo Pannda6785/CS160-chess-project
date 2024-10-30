@@ -15,14 +15,14 @@ namespace InputUtilities {
 
     Position GetMouseChessPosition() {
         Vector2 mousePosition = GetMousePosition();
-        int i = (int(mousePosition.y) - Properties::borderSize) / Properties::cell_size;
-        int j = (int(mousePosition.x) - Properties::borderSize) / Properties::cell_size;
+        int i = (int(mousePosition.y) - Properties::borderSize) / Properties::cellSize;
+        int j = (int(mousePosition.x) - Properties::borderSize) / Properties::cellSize;
         return Position{i, j};
     }
 
     bool IsMouseInsidePromotionSelectingZone() {
         Vector2 mousePosition = GetMousePosition();
-        // TO DO: is mouse promotion
+        // TO DO: is mouse promotion zone
     }
 
     Piece* GetMousePromotionPiece() {

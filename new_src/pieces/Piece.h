@@ -1,16 +1,17 @@
 #ifndef PIECE_H
 #define PIECE_H
 
-class Piece; // Forward declaration (circular dependency).
+class Board;
 
 #include <vector>
 
 #include "../ChessUnits.h"
 #include "../Board.h"
 
+// The abstract class for chess pieces 
 class Piece {
 public:
-    Piece(PIECE_TYPE type, CHESS_COLOR color, Position position) : type(type), color(color), position(position), hasMoved(false) {}
+    Piece(PIECE_TYPE type, CHESS_COLOR color, Position position, bool hasMoved = false) : type(type), color(color), position(position), hasMoved(hasMoved) {}
     CHESS_COLOR GetColor() const {
         return color;
     }
@@ -23,9 +24,13 @@ public:
     bool HasMoved() const {
         return hasMoved;
     }
+    void MoveToPosition(const Position pos) {
+        position = pos;
+        hasMoved = true;
+    }
     
+    virtual std::unique_ptr<Piece> clone() const; // Deep clone
     virtual std::vector<Move> GetPossibleMoves(const Board &board) const;
-    virtual void ExecuteMove(Move move);
 
 protected:
     const PIECE_TYPE type;

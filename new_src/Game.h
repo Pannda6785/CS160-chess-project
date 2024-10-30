@@ -7,12 +7,19 @@
 
 #include "ChessUnits.h"
 #include "Board.h"
-#include "agents/Agent.h"
-#include "pieces/Piece.h"
 #include "Renderer.h"
 
-class Game;
-Game game;
+#include "agents/Agent.h"
+#include "agents/RandomAgent.h"
+// #include "agents/ManualAgent.h"
+
+#include "pieces/Piece.h"
+#include "pieces/Pawn.h"
+// #include "pieces/Rook.h"
+// #include "pieces/Knight.h"
+// #include "pieces/Bishop.h"
+// #include "pieces/Queen.h"
+// #include "pieces/King.h"
 
 class Game {
 public:
@@ -22,8 +29,16 @@ public:
         turn = 0;
         std::stack<Board>().swap(undoHistory);
         std::stack<Board>().swap(redoHistory);
-        board.Init();
         state = GAME_RUNNING;
+        board.Clear();
+
+        // TO DO: properly standard game
+        for (int j = 0; j < 8; j++) {
+            board.Add(std::make_unique<Pawn>(CHESS_WHITE, Position{6, j}));
+            board.Add(std::make_unique<Pawn>(CHESS_BLACK, Position{1, j}));
+        }
+        if (whiteAgent == nullptr) whiteAgent = std::make_unique<RandomAgent>(CHESS_WHITE);
+        if (blackAgent == nullptr) blackAgent = std::make_unique<RandomAgent>(CHESS_BLACK);
     }
 
     // Sets the agent that plays the game (Human or Chessbot and of which difficultoes)
@@ -122,14 +137,23 @@ private:
 
     }
 
-    void ExecuteMove(const Move &move) {
-        turn++;
+    // Board handle, turn swap, state handle, audio, stacks
+    void ExecuteMove(const Move move) {
         undoHistory.push(board);
+        if (!board.ExecuteMove(move)) { // Execute fail
+            undoHistory.pop();
+            return;
+        }
         std::stack<Board>().swap(redoHistory);
         
-        // TO DO: board handling, state handling, audio playing. a shit ton here
+        turn++;
+
+        // TO DO: properly execute game
+
     }
 
 };
+
+Game game;
 
 #endif //GAME_H

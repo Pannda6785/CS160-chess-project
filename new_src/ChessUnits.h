@@ -1,8 +1,6 @@
 #ifndef CHESS_UNITS_H
 #define CHESS_UNITS_H
 
-#include "pieces/Piece.h"
-
 enum CHESS_COLOR {
     CHESS_WHITE,
     CHESS_BLACK
@@ -49,7 +47,14 @@ struct Move {
     MOVE_TYPE type;
     Position fromPosition;
     Position toPosition;
-    PIECE_TYPE promotionPiece; // only defined when type is PROMOTION or ATTACK_AND_PROMOTION
+    PIECE_TYPE promotionPiece; // only and must be defined when type is PROMOTION or ATTACK_AND_PROMOTION
+    bool operator==(const Move &move) const {
+        if (type != move.type) return false;
+        if (fromPosition != move.fromPosition) return false;
+        if (toPosition != move.toPosition) return false;
+        if ((type == PROMOTION || type == ATTACK_AND_PROMOTION) && promotionPiece != move.promotionPiece) return false;
+        return true;
+    }
 };
 
 #endif // CHESS_UNITS_H
