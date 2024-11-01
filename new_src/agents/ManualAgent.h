@@ -3,45 +3,97 @@
 
 #include "Agent.h"
 
+#include "InputUtilities.h"
+#include "../Renderer.h"
+
 class ManualAgent : public Agent {
+public:
+    ManualAgent(CHESS_COLOR agentColor) : Agent(agentColor) {
+		selectedPosition = std::nullopt;
+	}
+
+    std::optional<Move> GetMove(const Board &board) override {
+		RenderCursor(board);
+		RenderPossibleMoves(board);
+		return _GetMove(board);
+    }
+
+private:
+    std::optional<Position> selectedPosition;
     
-        // if (InputUtilities::IsMouseInsideBoard() && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+	std::optional<Move> _GetMove(const Board &board) {
+        // No input needed to register
+        if (!InputUtilities::IsMouseInsideBoard() || !IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            return std::nullopt;
+        }
 
-        //     Position clickedPosition = InputUtilities::GetMouseChessPosition();
-        //     Piece* clickedPiece = board.GetPieceByPosition(clickedPosition);
+		Position clickedPosition = InputUtilities::GetMouseChessPosition();
 
-        //     if (clickedPiece != nullptr && clickedPiece->GetColor() == WhoseTurn()) { // Selecting a allied piece
-        //         chessAudio.PlayPieceSelectSound();
-        //         selectedPiece = clickedPiece;
-        //     } else {
-        //         if selectedPiece == nullptr
-        //         or board.GetMove(selectedPiece, clickedPosition) == nullptr
-                
-        //     }
+		// Selecting an allied piece
+		const Piece* clickedPiece = board.GetPieceByPosition(clickedPosition);
+		if (clickedPiece != nullptr && clickedPiece->GetColor() == agentColor) { 
+			// TO DO: chessAudio.PlayPieceSelectSound();
+			selectedPosition = clickedPosition;
 
-        //     // Select piece.
-        //     if (clickedPiece != nullptr && clickedPiece->color == turn) {
-        //         PlaySound(Properties::sounds["click"]);
-        //         selectedPiece = clickedPiece;
-        //     } else {
-        //         // Do movement.
-        //         Move* desiredMove = GetMoveAtPosition(clickedPosition);
+			return std::nullopt;
+		} 
+		
+		// No piece selected (and by above gate, is not trying to select a valid piece either)
+		if (selectedPosition == std::nullopt) {
+			return std::nullopt;
+		}
 
-        //         if (desiredMove && selectedPiece != nullptr) {
-        //             DoMoveOnBoard(*desiredMove);
-        //         } else {
-        //             PlaySound(Properties::sounds["clickCancel"]);
-        //         }
+		// By here, previously a piece is selected and now is not selecting an allied piece. Which means player should be trying to choose a valid move here
+		const Piece* selectedPiece = board.GetPieceByPosition(selectedPosition.value());
+		for (Move move : board.GetPossibleMoves(selectedPiece)) {
+			if (clickedPosition == move.toPosition) {
+				// TO DO: Promotion handling
+				selectedPosition = std::nullopt;
+				return move;
+			}
+		}
 
-        //         // Piece must still be selected to render promotion screen.
-        //         if (!desiredMove ||
-        //         (desiredMove->type != MOVE_TYPE::PROMOTION &&
-        //             desiredMove->type != MOVE_TYPE::ATTACK_AND_PROMOTION)
-        //         ) {
-        //             selectedPiece = nullptr;
-        //         }
-        //     }
-        // }
+		// Chosen input does not make a valid move
+		selectedPosition = std::nullopt;
+		return std::nullopt;
+	}
+
+	void RenderCursor(const Board &board) {
+		// Not interacting with game, so no need to update
+		if (!InputUtilities::IsMouseInsideBoard()) return;
+
+		Position hoveringPosition = InputUtilities::GetMouseChessPosition();
+
+		// Check hovering over an allied piece (trying to select a piece)
+		const Piece* hoveringPiece = board.GetPieceByPosition(hoveringPosition);
+		if (hoveringPiece != nullptr && hoveringPiece->GetColor() == agentColor) {
+			SetMouseCursor(4);
+			return;
+		}
+
+		// Check if a piece is previously selected and now selecting its valid move
+		if (selectedPosition != std::nullopt) {
+			const Piece* selectedPiece = board.GetPieceByPosition(selectedPosition.value());
+			for (Move move : board.GetPossibleMoves(selectedPiece)) {
+				if (hoveringPosition == move.toPosition) {
+					SetMouseCursor(4);
+					return;
+				}
+			}
+		}
+
+		SetMouseCursor(0);
+	}
+
+	void RenderPossibleMoves(const Board &board) {
+		// No piece selected, so there is no possible moves
+		if (selectedPosition == std::nullopt) return;
+		const Piece* selectedPiece = board.GetPieceByPosition(selectedPosition.value());
+		std::vector<Move> possibleMoves = board.GetPossibleMoves(selectedPiece);
+		renderer.RenderSelectedPiece(selectedPosition.value());
+		renderer.RenderPieces(board);
+		renderer.RenderPossibleMoves(possibleMoves);
+	}
 };
 
 

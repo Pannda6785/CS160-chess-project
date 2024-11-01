@@ -58,19 +58,42 @@ public:
     }
 
     bool ExecuteMove(const Move move) {
+        // Should not happen, as the agents should only provide valid moves.
         if (!IsMoveValid(move)) {
             std::cerr << "Warning: Move is invalid.\n";
             return false;
         }
+
+        // Kill the attacked piece
         if (move.type == ATTACK || move.type == ATTACK_AND_PROMOTION) {
             Destroy(move.toPosition);
+        } else if (move.type == EN_PASSANT) {
+            if (move.toPosition.i == 2) { // white did the en passant
+                Destroy(Position{ 3, move.toPosition.j });
+            } else { // i should be 5, black did it
+                Destroy(Position{ 4, move.toPosition.j });
+            }
         }
+
+        // Move the actively moved piece
         for (size_t i = 0; i < pieces.size(); i++) {
             if (pieces[i]->GetPosition() == move.fromPosition) {
                 pieces[i]->MoveToPosition(move.toPosition);
             }
         }
-        // TO DO: handle castling, enpassant and promotion
+
+        // Move the rook if castling
+        // TO DO: castling
+        if (move.type == LONG_CASTLING) {
+            
+        }
+        if (move.type == SHORT_CASTLING) {
+
+        }
+
+        // TO DO: promotion
+
+        lastMove = move;
         return true;    
     }
 

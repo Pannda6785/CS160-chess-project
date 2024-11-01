@@ -51,6 +51,22 @@ public:
         }
     }
 
+    void RenderSelectedPiece(Position position) {
+        int x = Properties::borderSize + position.j * Properties::cellSize;
+        int y = Properties::borderSize + position.i * Properties::cellSize;
+        DrawRectangle(x, y, Properties::cellSize, Properties::cellSize, LIME);
+    }
+
+    void RenderPossibleMoves(std::vector<Move> possibleMoves) {
+        for (Move move : possibleMoves) {
+            int i = move.toPosition.i;
+            int j = move.toPosition.j;
+            int x = Properties::borderSize + j * Properties::cellSize + Properties::cellSize / 2;
+            int y = Properties::borderSize + i * Properties::cellSize + Properties::cellSize / 2;
+            DrawCircle(x, y, 10, GRAY);                 
+        }
+    }
+
 private:
 
 };

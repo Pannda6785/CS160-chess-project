@@ -2,18 +2,19 @@
 #define INPUT_UTILITIES_H
 
 #include "raylib.h"
-#include "Properties.h"
-#include "ChessUnits.h"
-#include "pieces/Piece.h"
+#include "../Properties.h"
+#include "../ChessUnits.h"
 
 namespace InputUtilities {
     
     bool IsMouseInsideBoard() {
         Vector2 mousePosition = GetMousePosition();
-        return mousePosition.x < GetScreenHeight();
+        bool okX = Properties::borderSize < mousePosition.x && mousePosition.x < GetScreenHeight() - Properties::borderSize;
+        bool okY = Properties::borderSize < mousePosition.y && mousePosition.x < GetScreenHeight() - Properties::borderSize;
+        return okX && okY;
     }
 
-    Position GetMouseChessPosition() {
+    Position GetMouseChessPosition() { // assumes mouse is inside board
         Vector2 mousePosition = GetMousePosition();
         int i = (int(mousePosition.y) - Properties::borderSize) / Properties::cellSize;
         int j = (int(mousePosition.x) - Properties::borderSize) / Properties::cellSize;
@@ -25,7 +26,7 @@ namespace InputUtilities {
         // TO DO: is mouse promotion zone
     }
 
-    Piece* GetMousePromotionPiece() {
+    PIECE_TYPE GetMousePromotionPiece() {
         Vector2 mousePosition = GetMousePosition();
         // TO DO: where mouse promotion
     }
