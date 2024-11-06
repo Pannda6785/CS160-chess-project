@@ -5,8 +5,8 @@
 
 int main() {
     // Init game window
-    // SetConfigFlags(FLAG_WINDOW_RESIZABLE); // temporary disable
-    InitWindow(Properties::screenWidth, Properties::screenHeight, "CS160-chess-project");
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE); // temporary disable
+    InitWindow(Properties::GetInitialScreenWidth(), Properties::GetInitialScreenHeight(), "CS160-chess-project");
     InitAudioDevice();
     SetTargetFPS(60);
 
@@ -18,14 +18,22 @@ int main() {
 
     // Variables initialization
     scene = TITLE_SCENE;
-    isSceneChanged = false;
+    isSceneChanged = true;
     TitleScene titleScene;
     GameScene gameScene;
 
     // Main game loop
     while(!WindowShouldClose() && scene != EXIT) {
-        Properties::screenHeight = GetScreenHeight();
-        Properties::screenWidth = GetScreenWidth();
+        if (IsKeyPressed(KEY_SPACE)) {
+            if (!IsWindowFullscreen()) {
+                int monitor = GetCurrentMonitor();
+                SetWindowSize(GetMonitorWidth(monitor), GetMonitorHeight(monitor));
+                ToggleFullscreen();
+            } else {
+                ToggleFullscreen();
+                SetWindowSize(Properties::GetInitialScreenWidth(), Properties::GetInitialScreenHeight());
+            }
+        }
         BeginDrawing(); {
             switch(scene) {
                 case TITLE_SCENE: {
