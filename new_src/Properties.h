@@ -24,10 +24,18 @@ bool ChangeScene(SCENE newScene) {
 
 namespace Properties { // game properties
     // Windows Info
-    int screenWidth = 1280;
-    int screenHeight = 850;
-    int borderSize = screenHeight/20;
-    int cellSize = screenHeight*9/80;
+    int GetInitialScreenWidth() {
+        return 1280;
+    }
+    int GetInitialScreenHeight() {
+        return 850;
+    }
+    int GetBorderSize() {
+        return GetScreenHeight() / 20;
+    }
+    int GetCellSize() {
+        return GetScreenHeight() * 9 / 80;
+    }
 
     // Assets holders.
     std::map<std::string, Sound> sounds;
@@ -64,7 +72,7 @@ namespace Properties { // game properties
         for (const auto & entry : std::filesystem::directory_iterator(TEXTURES_PATH)) {
             // Load and resize image.
             Image image = LoadImage(entry.path().string().c_str());
-            ImageResize(&image, cellSize, cellSize);
+            ImageResize(&image, GetCellSize(), GetCellSize());
 
             Texture texture = LoadTextureFromImage(image);
 
