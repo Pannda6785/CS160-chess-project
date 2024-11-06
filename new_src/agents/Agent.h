@@ -1,6 +1,24 @@
+#ifndef AGENT_H
+#define AGENT_H
+
+class Board;
+
+#include "../ChessUnits.h"
+#include "../Board.h"
+
+// The abstract class for chess agent
 class Agent {
-// public:
-//     virtual Move GetMove(const Board &board) {
-//         as of now, Move is visioned to be the tuple (Piece*, Movetype, Final position)
-//     }
+public:
+    Agent(CHESS_COLOR agentColor) : agentColor(agentColor) {}
+    CHESS_COLOR GetColor() const {
+        return agentColor;
+    }
+
+    virtual std::optional<Move> GetMove(const Board &board);
+
+protected:
+    const CHESS_COLOR agentColor;
+    
 };
+
+#endif //AGENT_H

@@ -11,11 +11,7 @@ public:
     // Button(Rectangle rec, Color recColor, std::string text = "", int fontSize = 0, Color textColor = BLACK) : rec(rec), recColor(recColor), text(text), fontSize(fontSize), textColor(textColor) {}
     // Button(Rectangle rec, Color recColor, Sound sound, std::string text = "", int fontSize = 0, Color textColor = BLACK) : rec(rec), recColor(recColor), sound(sound), text(text), fontSize(fontSize), textColor(textColor) {}
     Button(Rectangle rec, Color recColor, Texture texture, Sound sound, Font font, std::string text = "", int fontSize = 0, Color textColor = BLACK) : rec(rec), recColor(recColor), texture(texture), sound(sound), font(font), text(text), fontSize(fontSize), textColor(textColor) {}
-    ~Button() {
-        UnloadTexture(texture); 
-        UnloadSound(sound);  
-        UnloadFont(font);
-    }
+    ~Button() {}
 
     // Renders the button and returns true if the button is pressed
     bool Check() {
@@ -29,8 +25,25 @@ public:
         rec = newRec;
     }
 
+    void Render() {
+        // TO DO: should do some switching of state here, as well as handling the texture if applicable
+        
+        // Render the box
+        if(texture.id == 0) {
+            DrawRectangleRec(rec, recColor);
+        }
+        else {
+            DrawTexturePro(texture, (Rectangle) {0.0, 0.0, (float) texture.width, (float) texture.height}, rec, (Vector2) {0.0, 0.0}, 0.0, recColor);
+        }
 
-
+        // Render text in the box
+        if(text != "") {
+            if(font.texture.id == 0) {
+                DrawTextRec(text.c_str(), rec, fontSize, textColor);
+            }
+            else DrawTextRecEx(font, text.c_str(), rec, fontSize, 2, LIME);
+        }
+    }
 private:
     enum BUTTON_STATE {
         NONE,
@@ -67,25 +80,6 @@ private:
         }
     }
 
-    void Render() {
-        // TO DO: should do some switching of state here, as well as handling the texture if applicable
-        
-        // Render the box
-        if(texture.id == 0) {
-            DrawRectangleRec(rec, recColor);
-        }
-        else {
-            DrawTexturePro(texture, (Rectangle) {0.0, 0.0, (float) texture.width, (float) texture.height}, rec, (Vector2) {0.0, 0.0}, 0.0, recColor);
-        }
-
-        // Render text in the box
-        if(text != "") {
-            if(font.texture.id == 0) {
-                DrawTextRec(text.c_str(), rec, fontSize, textColor);
-            }
-            else DrawTextRecEx(font, text.c_str(), rec, fontSize, 2, LIME);
-        }
-    }
 
     void ClickedSound() {
         if (sound.frameCount != 0) {

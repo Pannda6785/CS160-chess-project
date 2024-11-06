@@ -26,15 +26,44 @@ namespace Properties { // game properties
     // Windows Info
     int screenWidth = 1280;
     int screenHeight = 850;
+
     int borderSize = screenHeight/20;
     int cellSize = screenHeight*9/80;
+
+    // Windows size settings
+    void ToggleFullScreenWindow(int windowWidth, int windowHeight) {
+        if(!IsWindowFullscreen()) {
+            int monitor = GetCurrentMonitor();
+            UpdateWindowsInfo(GetMonitorWidth(monitor), GetMonitorHeight(monitor));
+            SetWindowSize(GetMonitorWidth(monitor), GetMonitorHeight(monitor));
+            // ToggleFullscreen();
+            SetWindowPosition(0,0);
+            SetWindowSize(GetMonitorWidth(monitor), GetMonitorHeight(monitor));
+        }
+        else {
+            ToggleFullscreen();
+            /*'
+            windowWidth = 1280;
+            windowHeight = 850;
+            */
+            UpdateWindowsInfo(1280, 850);
+            SetWindowSize(windowWidth, windowHeight);
+        }
+    }
+
+    void UpdateWindowsInfo(int windowWidth, int windowHeight) {
+        screenWidth = windowWidth;
+        screenHeight = windowHeight;
+        borderSize = screenHeight/20;
+        cellSize = screenHeight*9/80;
+    }
 
     // Assets holders.
     std::map<std::string, Sound> sounds;
     std::map<std::string, Texture> textures;
     std::map<std::string, Texture> elements;
     std::map<std::string, Font> fonts;
-    int fontSizes[] = {45, 80};
+    int fontSizes[] = {25, 45, 80};
     
     // Assets paths
     const std::string ASSETS_PATH = "../assets";
