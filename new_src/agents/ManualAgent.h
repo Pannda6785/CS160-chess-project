@@ -2,9 +2,7 @@
 #define MANUAL_AGENT_H
 
 #include "Agent.h"
-
 #include "InputUtilities.h"
-#include "../Renderer.h"
 
 class ManualAgent : public Agent {
 public:
@@ -14,9 +12,12 @@ public:
 
     std::optional<Move> GetMove(const Board &board) override {
 		RenderCursor(board);
-		RenderPossibleMoves(board);
 		return _GetMove(board);
     }
+
+	std::optional<Position> GetSelectedPosition() const override {
+		return selectedPosition;
+	}
 
 private:
     std::optional<Position> selectedPosition;
@@ -83,16 +84,6 @@ private:
 		}
 
 		SetMouseCursor(0);
-	}
-
-	void RenderPossibleMoves(const Board &board) {
-		// No piece selected, so there is no possible moves
-		if (selectedPosition == std::nullopt) return;
-		const Piece* selectedPiece = board.GetPieceByPosition(selectedPosition.value());
-		std::vector<Move> possibleMoves = board.GetPossibleMoves(selectedPiece);
-		renderer.RenderSelectedPiece(selectedPosition.value());
-		renderer.RenderPieces(board);
-		renderer.RenderPossibleMoves(possibleMoves);
 	}
 };
 

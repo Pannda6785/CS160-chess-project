@@ -83,7 +83,6 @@ private:
     }
     
     void MainGame() {
-        // Side panel
         // Background
         DrawLine(GetScreenHeight(), 0, GetScreenHeight(), GetScreenHeight(), BLACK);
         DrawTexturePro(Properties::elements["gameBackGround"], Rectangle{0, 0, (float)Properties::elements["gameBackGround"].width, (float)Properties::elements["gameBackGround"].height},
@@ -93,9 +92,11 @@ private:
         DrawText("This is the game, enjoy!", GetScreenHeight() + 30, 100, 25, RED);
         DrawText("Some information here for you nerds.", GetScreenHeight() + 30, 160, 15, LIGHTGRAY);
 
+        game.Render();
         game.Run();
 
         if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+            SetMouseCursor(0);
             state = PAUSE;
         }
 
@@ -106,9 +107,18 @@ private:
     }
 
     void PauseGame() {
-        // Render assets
-        // Draw the tint over the background
+        // Render the game in background and the overlaying tint. THIS IS THE SAME AS THAT IN MainGame()
+        DrawLine(GetScreenHeight(), 0, GetScreenHeight(), GetScreenHeight(), BLACK);
+        DrawTexturePro(Properties::elements["gameBackGround"], Rectangle{0, 0, (float)Properties::elements["gameBackGround"].width, (float)Properties::elements["gameBackGround"].height},
+                       Rectangle{0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()}, Vector2{0, 0}, 0, WHITE);
+        DrawText("This is the game, enjoy!", GetScreenHeight() + 30, 100, 25, RED);
+        DrawText("Some information here for you nerds.", GetScreenHeight() + 30, 160, 15, LIGHTGRAY);
+        game.Render();
+
+        // Tinting the screen
         DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){0, 0, 0, 150}); // Dark overlay
+        
+        // Render the pause menu
         DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is pause title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
         
         // Render buttons

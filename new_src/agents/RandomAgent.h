@@ -4,7 +4,6 @@
 #include <random>
 #include <chrono>
 
-#include "raylib.h"
 #include "Agent.h"
 
 class RandomAgent : public Agent {

@@ -15,6 +15,7 @@ public:
     }
 
     virtual std::optional<Move> GetMove(const Board &board);
+    virtual std::optional<Position> GetSelectedPosition() const { return std::nullopt; }
 
 protected:
     const CHESS_COLOR agentColor;

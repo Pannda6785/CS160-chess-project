@@ -55,9 +55,22 @@ public:
         // TO DO: load from game save
     }
 
-    // Is called per frame, render the game, handle input, game flow control and everything about the gameplay
+    // Is called per frame when game is running. Renders the game.
+    void Render() {
+        renderer.RenderBackground();
+        if (selectedPosition != std::nullopt) {
+            renderer.RenderSelectedPiece(selectedPosition.value());
+        }
+        renderer.RenderPieces(board);
+        if (selectedPosition != std::nullopt) {
+		    const Piece* selectedPiece = board.GetPieceByPosition(selectedPosition.value());
+		    std::vector<Move> possibleMoves = board.GetPossibleMoves(selectedPiece);
+		    renderer.RenderPossibleMoves(possibleMoves);
+        }
+    }
+
+    // Is called per frame. Handles input, game flow control and everything about the gameplay
     void Run() {
-        RenderBoard();
         switch(state) {
             case GAME_RUNNING: {
                 Running();
@@ -113,19 +126,17 @@ private:
     }; 
     GAME_STATE state;
 
-    // Renders the core of the game
-    void RenderBoard() {
-        renderer.RenderBackground();
-        renderer.RenderPieces(board);
-    }
-
+    std::optional<Position> selectedPosition;
+    
     // Handles the moving of pieces
     void Running() {
         std::optional<Move> move;
         if (WhoseTurn() == CHESS_WHITE) {
             move = whiteAgent->GetMove(board);
+            selectedPosition = whiteAgent->GetSelectedPosition();
         } else {
             move = blackAgent->GetMove(board);
+            selectedPosition = blackAgent->GetSelectedPosition();
         }
         if (move != std::nullopt) {
             ExecuteMove(move.value());
