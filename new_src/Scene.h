@@ -7,6 +7,7 @@ namespace Scene {
         TITLE_SCENE,
         GAME_SCENE
     };
+    
     inline SCENE scene;
     inline bool isSceneChanged;
 
@@ -18,4 +19,4 @@ namespace Scene {
     }
 }
 
-#endif //SCENE_H
+#endif // SCENE_H
