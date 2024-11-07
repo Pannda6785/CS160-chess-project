@@ -71,6 +71,6 @@ private:
 
 };
 
-Renderer renderer;
+inline Renderer renderer;
 
 #endif //RENDERER_H

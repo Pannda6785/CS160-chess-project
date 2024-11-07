@@ -38,7 +38,7 @@ public:
             board.Add(std::make_unique<Pawn>(CHESS_BLACK, Position{1, j}));
         }
         if (whiteAgent == nullptr) whiteAgent = std::make_unique<ManualAgent>(CHESS_WHITE);
-        if (blackAgent == nullptr) blackAgent = std::make_unique<ManualAgent>(CHESS_BLACK);
+        if (blackAgent == nullptr) blackAgent = std::make_unique<RandomAgent>(CHESS_BLACK);
     }
 
     // Sets the agent that plays the game (Human or Chessbot and of which difficultoes)
@@ -84,10 +84,12 @@ public:
 
     bool Undo() {
         // TO DO: undo
+        return false;
     }
 
     bool Redo() {
         // TO DO: redo
+        return false;
     }
 
     CHESS_COLOR WhoseTurn() const {
@@ -165,6 +167,6 @@ private:
 
 };
 
-Game game;
+inline Game game;
 
 #endif //GAME_H

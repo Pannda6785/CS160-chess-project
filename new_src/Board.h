@@ -133,11 +133,13 @@ public:
     // Is the position attacked by the otherColor(color)?
     bool IsPositionAttacked(const CHESS_COLOR color) const {
         // TO DO: is position attacked
+        return false;
     }
 
     // Is color's king attacked?
     bool IsInCheck(const CHESS_COLOR color) const {
         // TO DO: is in check
+        return false;
     }
 
     bool IsMoveValid(const Move move) {

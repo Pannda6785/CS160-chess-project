@@ -4,6 +4,7 @@
 #include "Properties.h"
 #include "Button.h"
 #include "Game.h"
+#include "Scene.h"
 
 class GameScene {
 public:
@@ -102,7 +103,7 @@ private:
 
         backButton.Render();
         if(backButton.Check()) {
-            ChangeScene(TITLE_SCENE);
+            Scene::ChangeScene(Scene::TITLE_SCENE);
         }
     }
 
