@@ -10,7 +10,7 @@
 namespace Properties { // game properties
     // Window variables
     const    int initialScreenWidth = 1280;
-    const int initialScreenHeight = 720;
+    const int initialScreenHeight = 850;
     inline bool isFullscreen = false;
 
     // Assets holders.

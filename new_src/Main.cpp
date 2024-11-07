@@ -25,7 +25,11 @@ int main() {
 
     // Main game loop
     while (!WindowShouldClose() && Scene::scene != Scene::EXIT) {
-        if (IsKeyPressed(KEY_SPACE)) Properties::ToggleFullscreen();
+        // Alt + Enter for Fullscreen
+        if ((IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)) && IsKeyPressed(KEY_ENTER)) {
+            Properties::ToggleFullscreen();
+        }
+
         BeginDrawing(); {
             switch(Scene::scene) {
                 case Scene::TITLE_SCENE: {
