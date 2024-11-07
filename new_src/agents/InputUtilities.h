@@ -24,11 +24,13 @@ namespace InputUtilities {
     bool IsMouseInsidePromotionSelectingZone() {
         Vector2 mousePosition = GetMousePosition();
         // TO DO: is mouse promotion zone
+        return false;
     }
 
-    PIECE_TYPE GetMousePromotionPiece() {
+    std::optional<PIECE_TYPE> GetMousePromotionPiece() { // assumes mouse is inside board, returns nullopt if is in the promotion-canceling area
         Vector2 mousePosition = GetMousePosition();
         // TO DO: where mouse promotion
+        return std::nullopt;
     }
     
 }
