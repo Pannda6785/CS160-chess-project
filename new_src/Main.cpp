@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include "Properties.h"
+#include "Scene.h"
 #include "TitleScene.h"
 #include "GameScene.h"
 
@@ -17,31 +18,22 @@ int main() {
     Properties::LoadFonts();
 
     // Variables initialization
-    scene = TITLE_SCENE;
-    isSceneChanged = true;
+    Scene::scene = Scene::TITLE_SCENE;
+    Scene::isSceneChanged = true;
     TitleScene titleScene;
     GameScene gameScene;
 
     // Main game loop
-    while(!WindowShouldClose() && scene != EXIT) {
-        if (IsKeyPressed(KEY_SPACE)) {
-            if (!IsWindowFullscreen()) {
-                int monitor = GetCurrentMonitor();
-                SetWindowSize(GetMonitorWidth(monitor), GetMonitorHeight(monitor));
-                ToggleFullscreen();
-            } else {
-                ToggleFullscreen();
-                SetWindowSize(Properties::GetInitialScreenWidth(), Properties::GetInitialScreenHeight());
-            }
-        }
+    while (!WindowShouldClose() && Scene::scene != Scene::EXIT) {
+        if (IsKeyPressed(KEY_SPACE)) Properties::ToggleFullscreen();
         BeginDrawing(); {
-            switch(scene) {
-                case TITLE_SCENE: {
-                    if (isSceneChanged) titleScene.Init(), isSceneChanged = false; // init the scene if entering the scene
+            switch(Scene::scene) {
+                case Scene::TITLE_SCENE: {
+                    if (Scene::isSceneChanged) titleScene.Init(), Scene::isSceneChanged = false; // init the scene if entering the scene
                     titleScene.Run();
                 }; break;
-                case GAME_SCENE: {
-                    if (isSceneChanged) gameScene.Init(), isSceneChanged = false; // init the scene if entering the scene
+                case Scene::GAME_SCENE: {
+                    if (Scene::isSceneChanged) gameScene.Init(), Scene::isSceneChanged = false; // init the scene if entering the scene
                     gameScene.Run();
                 }; break;
                 default: break;

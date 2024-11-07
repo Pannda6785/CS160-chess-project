@@ -1,5 +1,6 @@
 #include "raylib.h"
 
+#include "Scene.h"
 #include "RenderUtilities.h"
 #include "Properties.h"
 #include "Button.h"
@@ -102,7 +103,7 @@ private:
 
         backButton.Render();
         if(backButton.Check()) {
-            ChangeScene(TITLE_SCENE);
+            Scene::ChangeScene(Scene::TITLE_SCENE);
         }
     }
 

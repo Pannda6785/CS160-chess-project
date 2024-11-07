@@ -7,42 +7,18 @@
 #include <string>
 #include "raylib.h"
 
-enum SCENE {
-    EXIT,
-    TITLE_SCENE,
-    GAME_SCENE
-};
-SCENE scene;
-bool isSceneChanged;
-
-bool ChangeScene(SCENE newScene) {
-    if (newScene == scene) return false;
-    scene = newScene;
-    isSceneChanged = true;
-    return true;
-} 
-
 namespace Properties { // game properties
-    // Windows Info
-    int GetInitialScreenWidth() {
-        return 1280;
-    }
-    int GetInitialScreenHeight() {
-        return 850;
-    }
-    int GetBorderSize() {
-        return GetScreenHeight() / 20;
-    }
-    int GetCellSize() {
-        return GetScreenHeight() * 9 / 80;
-    }
+    // Window variables
+    const    int initialScreenWidth = 1280;
+    const int initialScreenHeight = 720;
+    inline bool isFullscreen = false;
 
     // Assets holders.
-    std::map<std::string, Sound> sounds;
-    std::map<std::string, Texture> textures;
-    std::map<std::string, Texture> elements;
-    std::map<std::string, Font> fonts;
-    int fontSizes[] = {45, 80};
+    inline std::map<std::string, Sound> sounds;
+    inline std::map<std::string, Texture> textures;
+    inline std::map<std::string, Texture> elements;
+    inline std::map<std::string, Font> fonts;
+    inline int fontSizes[] = {45, 80};
     
     // Assets paths
     const std::string ASSETS_PATH = "../assets";
@@ -51,8 +27,41 @@ namespace Properties { // game properties
     const std::string ELEMENTS_PATH = ASSETS_PATH + "/elements"; // titles element
     const std::string FONTS_PATH = ASSETS_PATH + "/fonts"; // fonts element
 
+    // Windows Info
+    inline int GetInitialScreenWidth() {
+        return initialScreenWidth;
+    }
+    inline int GetInitialScreenHeight() {
+        return initialScreenHeight;
+    }
+    inline int GetBorderSize() {
+        return GetScreenHeight() / 20;
+    }
+    inline int GetCellSize() {
+        return GetScreenHeight() * 9 / 80;
+    }
+
+    inline void ToggleFullscreen() {
+        if (!isFullscreen) {
+            isFullscreen = true;
+            SetWindowState(FLAG_WINDOW_UNDECORATED);
+            SetWindowPosition(0, 0);
+            int monitor = GetCurrentMonitor();
+            SetWindowSize(GetMonitorWidth(monitor), GetMonitorHeight(monitor));
+        } else {
+            isFullscreen = false;
+            ClearWindowState(FLAG_WINDOW_UNDECORATED);
+            int monitor = GetCurrentMonitor();
+            int x = GetMonitorWidth(monitor) / 2 - GetInitialScreenWidth() / 2;
+            int y = GetMonitorHeight(monitor) / 2 - GetInitialScreenHeight() / 2;
+            SetWindowPosition(x, y);
+            SetWindowSize(Properties::GetInitialScreenWidth(), Properties::GetInitialScreenHeight());
+        }
+    }
+
+
     // Load all assets
-    void LoadSounds() {
+    inline void LoadSounds() {
         for (const auto & entry : std::filesystem::directory_iterator(SOUNDS_PATH)) {
             // Load sound.
             Sound sound = LoadSound(entry.path().string().c_str());
@@ -68,7 +77,7 @@ namespace Properties { // game properties
             // UnloadSound(sound);
         }
     }
-    void LoadTextures() {
+    inline void LoadTextures() {
         for (const auto & entry : std::filesystem::directory_iterator(TEXTURES_PATH)) {
             // Load and resize image.
             Image image = LoadImage(entry.path().string().c_str());
@@ -87,7 +96,7 @@ namespace Properties { // game properties
             UnloadImage(image);
         }
     }
-    void LoadElements() {
+    inline void LoadElements() {
         for (const auto & entry : std::filesystem::directory_iterator(ELEMENTS_PATH)) {
             // Load and resize image.
             Image image = LoadImage(entry.path().string().c_str());
@@ -104,7 +113,7 @@ namespace Properties { // game properties
             UnloadImage(image);
         }
     }
-    void LoadFonts() {
+    inline void LoadFonts() {
         for (const auto & entry : std::filesystem::directory_iterator(FONTS_PATH)) {
             for(const auto & fontSize : fontSizes) {
                 // Load font.

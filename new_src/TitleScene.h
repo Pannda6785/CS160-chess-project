@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "vector"
 
+#include "Scene.h"
 #include "RenderUtilities.h"
 #include "Properties.h"
 #include "Button.h"
@@ -118,7 +119,7 @@ private:
             title = OPTIONS;
         }
         if (exitButton.Check()) {
-            ChangeScene(EXIT);
+            Scene::ChangeScene(Scene::EXIT);
         }
     }
 
@@ -136,11 +137,11 @@ private:
         // Button detectings
         if (onePlayerButton.Check()) {  
             game.Init();
-            ChangeScene(GAME_SCENE);
+            Scene::ChangeScene(Scene::GAME_SCENE);
         }
         if (twoPlayerButton.Check()) {
             game.Init();
-            ChangeScene(GAME_SCENE);
+            Scene::ChangeScene(Scene::GAME_SCENE);
         }
         if (backButton.Check()) {
             title = MAIN;
