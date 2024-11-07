@@ -45,3 +45,5 @@ private:
     void LoadTitle();
     void OptionsTitle();
 };
+
+extern TitleScene titleScene;

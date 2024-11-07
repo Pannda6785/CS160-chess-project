@@ -5,6 +5,8 @@
 #include "Game.h"
 #include "Scene.h"
 
+TitleScene titleScene;
+
 TitleScene::TitleScene() { 
     InitButtons();
     Init(); 
@@ -144,7 +146,11 @@ void TitleScene::LoadTitle() {
 
 void TitleScene::OptionsTitle() {
     // Render assets
-    DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is option title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 4), 80, 2, PINK);
+    DrawTexturePro(Properties::elements["optionsBackGround"], (Rectangle) {0.0, 0.0, (float) Properties::elements["gameBackGround"].width, (float) Properties::elements["gameBackGround"].height}, 
+                    (Rectangle) {0.0, 0.0, (float) GetScreenWidth(), (float) GetScreenHeight()}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
+    
+    // Move to other scenes
+    DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is option title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
     
     backButton.Render();
     if (backButton.Check()) {
