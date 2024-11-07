@@ -1,6 +1,11 @@
 #include "Renderer.h"
+#include "Properties.h"
 
 Renderer renderer;
+
+void Renderer::Init() {
+    // TO DO: add assets
+}
 
 void Renderer::SetBackgroundTexture(const Texture &texture) {
     backgroundTexture = texture;

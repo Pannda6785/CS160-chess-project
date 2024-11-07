@@ -6,6 +6,7 @@
 #include <map>
 #include <string>
 #include "raylib.h"
+#include <iostream>
 
 namespace Properties { // game properties
     // Window variables
@@ -162,7 +163,7 @@ namespace Properties { // game properties
 
                 std::string fileNameWithoutExtension = entry.path().filename().string().substr(0, dotIndex) + "_" + std::to_string(fontSize);
                 fonts[fileNameWithoutExtension] = font;
-
+                std::cout << fileNameWithoutExtension << "\n";
                 // Free font data.
                 // UnloadFont(font);
             }

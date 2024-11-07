@@ -1,18 +1,15 @@
-#include "raylib.h"
-
 #include "Button.h"
 
 class TitleScene {
 public:
-    TitleScene();
-    ~TitleScene();
-
     void Init();
+    void InitButtons();
 
     // Is called per frame. Controls the flow of the title scene.
     void Run();
 
 private:
+    // lists of pre-title for backButton
     enum TITLE {
         MAIN,
         MODE,
@@ -21,9 +18,7 @@ private:
         LOAD,
         OPTIONS
     };
-
-    // lists of pre-title for backButton
-    TITLE title;
+    TITLE title = MAIN;
 
     // List of buttons 
     Button backButton;
@@ -35,8 +30,6 @@ private:
     // Mode title buttons
     Button onePlayerButton;
     Button twoPlayerButton;
-
-    void InitButtons();
 
     // List of TitleScene;
     void MainTitle();

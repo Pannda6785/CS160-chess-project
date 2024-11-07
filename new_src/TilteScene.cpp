@@ -1,44 +1,17 @@
 #include "TitleScene.h"
 #include "RenderUtilities.h"
-#include "Properties.h"
 #include "Button.h"
 #include "Game.h"
 #include "Scene.h"
+#include "Properties.h"
+#include "raylib.h"
 
 TitleScene titleScene;
 
-TitleScene::TitleScene() { 
-    InitButtons();
-    Init(); 
-}
-TitleScene::~TitleScene() {}
-
+// Init
 void TitleScene::Init() {
     title = MAIN;    
 }
-
-void TitleScene::Run() {
-    ClearBackground(RAYWHITE);
-    switch(title) {
-        case MAIN: {
-            MainTitle();
-        }; break;
-        case MODE: {
-            ModeTitle();
-        }; break;
-        case DIFFICULTY: {
-            DifficultyTitle();
-        }; break;
-        case LOAD: {
-            LoadTitle();
-        }; break;
-        case OPTIONS: {
-            OptionsTitle();
-        }; break;
-        default: break;
-    }
-}
-
 void TitleScene::InitButtons() {
     backButton.SetRatio(0, 10, 1, -70, 0, 180, 0, 60, WHITE); 
     backButton.SetText("Back", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
@@ -68,6 +41,29 @@ void TitleScene::InitButtons() {
     twoPlayerButton.SetText("2 Player", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     twoPlayerButton.SetSound(Properties::sounds["buttonClick"]);
 }
+
+void TitleScene::Run() {
+    ClearBackground(RAYWHITE);
+    switch(title) {
+        case MAIN: {
+            MainTitle();
+        }; break;
+        case MODE: {
+            ModeTitle();
+        }; break;
+        case DIFFICULTY: {
+            DifficultyTitle();
+        }; break;
+        case LOAD: {
+            LoadTitle();
+        }; break;
+        case OPTIONS: {
+            OptionsTitle();
+        }; break;
+        default: break;
+    }
+}
+
 
 void TitleScene::MainTitle() {
     // Render assets

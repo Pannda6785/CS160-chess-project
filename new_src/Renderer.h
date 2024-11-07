@@ -5,16 +5,12 @@
 
 #include "raylib.h"
 #include "Board.h"
-#include "Properties.h"
 
 class Renderer {
 public:
     // TO DO: all about renderer
-
-    std::map<std::string, Texture> pieceTextures;
-    Texture backgroundTexture;
-
     // Set textures
+    void Init();
     void SetBackgroundTexture(const Texture &texture);
     void SetPieceTextures(const std::map<std::string, Texture> &textures);
 
@@ -25,7 +21,9 @@ public:
     void RenderPossibleMoves(std::vector<Move> possibleMoves);
 
 private:
-
+    // Current boardTextures
+    std::map<std::string, Texture> pieceTextures;
+    Texture backgroundTexture;
 };
 
 extern Renderer renderer;
