@@ -26,7 +26,7 @@ public:
                 MainGame();
             }; break;
             case PAUSE: {
-                PauseGame();
+                MainGame();
             }; break;
             case SAVE: {
                 SaveGame();
@@ -90,8 +90,10 @@ private:
                        Rectangle{0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()}, Vector2{0, 0}, 0, WHITE);
 
         // Text box
-        DrawText("This is the game, enjoy!", GetScreenHeight() + 30, 100, 25, RED);
-        DrawText("Some information here for you nerds.", GetScreenHeight() + 30, 160, 15, LIGHTGRAY);
+        DrawRectangleRec((Rectangle) {(float) Properties::screenHeight + Properties::borderSize, (float) Properties::borderSize, (float) Properties::screenWidth - Properties::screenHeight - 2 * Properties::borderSize, (float) Properties::screenWidth - Properties::screenHeight - Properties::borderSize}, WHITE);
+        // DrawRectangleRec((Rectangle) {(float) Properties::screenHeight + Properties::borderSize, (float) Properties::borderSize, (float) Properties::screenWidth - Properties::screenHeight - 2 * Properties::borderSize, (float) Properties::screenWidth - Properties::screenHeight - Properties::borderSize}, WHITE);
+        DrawTextEx(Properties::fonts["Rubik-Regular_25"], "This is the game, enjoy!", (Vector2) {(float) Properties::screenHeight + 30 , (float) 100}, 25, 2, RED);
+        DrawText("Some information here for you nerds.", Properties::screenHeight + 30, 160, 15, WHITE);
 
         game.Render();
         game.Run();
@@ -140,6 +142,9 @@ private:
         }
         if (optionsButton.Check()) {
             state = OPTIONS;
+        }
+        if(exitToMainMenu.Check()) {
+            ChangeScene(TITLE_SCENE);
         }
     }
 
