@@ -6,7 +6,7 @@
 #include "pieces/Pawn.h"
 // #include "pieces/Rook.h"
 // #include "pieces/Knight.h"
-// #include "pieces/Bishop.h"
+#include "pieces/Bishop.h"
 // #include "pieces/Queen.h"
 // #include "pieces/King.h"
 
@@ -39,6 +39,10 @@ void Board::Init() {
         Add(std::make_unique<Pawn>(CHESS_WHITE, Position{6, j}));
         Add(std::make_unique<Pawn>(CHESS_BLACK, Position{1, j}));
     }
+    Add(std::make_unique<Bishop>(CHESS_WHITE, Position{7, 2}));
+    Add(std::make_unique<Bishop>(CHESS_WHITE, Position{7, 5}));
+    Add(std::make_unique<Bishop>(CHESS_BLACK, Position{0, 2}));
+    Add(std::make_unique<Bishop>(CHESS_BLACK, Position{0, 5}));
 }
 
 bool Board::Add(std::unique_ptr<Piece> piece) {

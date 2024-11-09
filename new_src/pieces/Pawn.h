@@ -12,7 +12,7 @@ public:
 
 private:
     bool IsEnPassant(const Board &board, Position enPosition) const;
-
+    
 };
 
 #endif //PAWN_H
