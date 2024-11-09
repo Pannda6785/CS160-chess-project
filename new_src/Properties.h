@@ -6,16 +6,19 @@
 #include <map>
 #include <string>
 #include "raylib.h"
+#include <iostream>
 
 namespace Properties { // game properties
     // Window variables
-    const    int initialScreenWidth = 1280;
+    const int initialScreenWidth = 1280;
     const int initialScreenHeight = 850;
     inline bool isFullscreen = false;
 
     // Assets holders.
     inline std::map<std::string, Sound> sounds;
-    inline std::map<std::string, Texture> textures;
+    inline std::map<std::string, Texture> skin1;
+    inline std::map<std::string, Texture> skin2;
+    inline std::map<std::string, Texture> skin3;
     inline std::map<std::string, Texture> elements;
     inline std::map<std::string, Font> fonts;
     inline int fontSizes[] = {45, 80};
@@ -23,7 +26,9 @@ namespace Properties { // game properties
     // Assets paths
     const std::string ASSETS_PATH = "../assets";
     const std::string SOUNDS_PATH = ASSETS_PATH + "/sounds"; // Sounds
-    const std::string TEXTURES_PATH = ASSETS_PATH + "/textures"; // On-board elements (need to modified one)
+    const std::string SKIN1_PATH = ASSETS_PATH + "/textures/skin1"; // On-board elements (need to modified one)
+    const std::string SKIN2_PATH = ASSETS_PATH + "/textures/skin2"; // On-board elements (need to modified one)
+    const std::string SKIN3_PATH = ASSETS_PATH + "/textures/skin3"; // On-board elements (need to modified one)
     const std::string ELEMENTS_PATH = ASSETS_PATH + "/elements"; // titles element
     const std::string FONTS_PATH = ASSETS_PATH + "/fonts"; // fonts element
 
@@ -59,7 +64,6 @@ namespace Properties { // game properties
         }
     }
 
-
     // Load all assets
     inline void LoadSounds() {
         for (const auto & entry : std::filesystem::directory_iterator(SOUNDS_PATH)) {
@@ -78,7 +82,7 @@ namespace Properties { // game properties
         }
     }
     inline void LoadTextures() {
-        for (const auto & entry : std::filesystem::directory_iterator(TEXTURES_PATH)) {
+        for (const auto & entry : std::filesystem::directory_iterator(SKIN1_PATH)) {
             // Load and resize image.
             Image image = LoadImage(entry.path().string().c_str());
             ImageResize(&image, GetCellSize(), GetCellSize());
@@ -90,7 +94,41 @@ namespace Properties { // game properties
             size_t dotIndex = fileName.find('.');
 
             std::string fileNameWithoutExtension = entry.path().filename().string().substr(0, dotIndex);
-            textures[fileNameWithoutExtension] = texture;
+            skin1[fileNameWithoutExtension] = texture;
+
+            // Free image data.
+            UnloadImage(image);
+        }
+        for (const auto & entry : std::filesystem::directory_iterator(SKIN2_PATH)) {
+            // Load and resize image.
+            Image image = LoadImage(entry.path().string().c_str());
+            ImageResize(&image, GetCellSize(), GetCellSize());
+
+            Texture texture = LoadTextureFromImage(image);
+
+            // Add texture to map of textures.
+            std::string fileName = entry.path().filename().string();
+            size_t dotIndex = fileName.find('.');
+
+            std::string fileNameWithoutExtension = entry.path().filename().string().substr(0, dotIndex);
+            skin2[fileNameWithoutExtension] = texture;
+
+            // Free image data.
+            UnloadImage(image);
+        }
+        for (const auto & entry : std::filesystem::directory_iterator(SKIN3_PATH)) {
+            // Load and resize image.
+            Image image = LoadImage(entry.path().string().c_str());
+            ImageResize(&image, GetCellSize(), GetCellSize());
+
+            Texture texture = LoadTextureFromImage(image);
+
+            // Add texture to map of textures.
+            std::string fileName = entry.path().filename().string();
+            size_t dotIndex = fileName.find('.');
+
+            std::string fileNameWithoutExtension = entry.path().filename().string().substr(0, dotIndex);
+            skin3[fileNameWithoutExtension] = texture;
 
             // Free image data.
             UnloadImage(image);
@@ -125,7 +163,7 @@ namespace Properties { // game properties
 
                 std::string fileNameWithoutExtension = entry.path().filename().string().substr(0, dotIndex) + "_" + std::to_string(fontSize);
                 fonts[fileNameWithoutExtension] = font;
-
+                std::cout << fileNameWithoutExtension << "\n";
                 // Free font data.
                 // UnloadFont(font);
             }

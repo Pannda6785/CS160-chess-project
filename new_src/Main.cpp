@@ -18,10 +18,8 @@ int main() {
     Properties::LoadFonts();
 
     // Variables initialization
-    Scene::scene = Scene::TITLE_SCENE;
-    Scene::isSceneChanged = true;
-    TitleScene titleScene;
-    GameScene gameScene;
+    titleScene.InitButtons();
+    gameScene.InitButtons();
 
     // Main game loop
     while (!WindowShouldClose() && Scene::scene != Scene::EXIT) {

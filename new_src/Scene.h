@@ -8,8 +8,8 @@ namespace Scene {
         GAME_SCENE
     };
     
-    inline SCENE scene;
-    inline bool isSceneChanged;
+    inline SCENE scene = TITLE_SCENE;
+    inline bool isSceneChanged = true;
 
     inline bool ChangeScene(SCENE newScene) {
         if (newScene == scene) return false;
@@ -20,4 +20,3 @@ namespace Scene {
 }
 
 #endif // SCENE_H
-
