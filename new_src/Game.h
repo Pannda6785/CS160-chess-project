@@ -49,7 +49,10 @@ private:
     }; 
     GAME_STATE state;
 
+    // Volatile info to render human player related moves
     std::optional<Position> selectedPosition;
+    bool isPromoting;
+    int promotingFile;
     
     void Running(); // Handles the moving of pieces
     void Ended(); // Probably does nothing (chess board is retained and game informations as well as extra buttons are handled in GameScene)

@@ -17,6 +17,7 @@ private:
     std::optional<Position> selectedPosition;
 	bool isPromoting;
 	int promotingFile;
+    Move promotionMove;
     
 	std::optional<Move> _GetMove(const Board &board);
 	void RenderCursor(const Board &board);

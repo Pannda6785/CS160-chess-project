@@ -4,10 +4,10 @@
 
 #include "pieces/Piece.h"
 #include "pieces/Pawn.h"
-// #include "pieces/Rook.h"
-// #include "pieces/Knight.h"
-// #include "pieces/Bishop.h"
-// #include "pieces/Queen.h"
+#include "pieces/Rook.h"
+#include "pieces/Knight.h"
+#include "pieces/Bishop.h"
+#include "pieces/Queen.h"
 // #include "pieces/King.h"
 
 Board::Board() {}
@@ -35,10 +35,38 @@ void Board::Clear() {
 void Board::Init() {
     // TO DO: properly set up the right board
     Clear();
+
+    // Pawns
     for (int j = 0; j < 8; j++) {
         Add(std::make_unique<Pawn>(CHESS_WHITE, Position{6, j}));
         Add(std::make_unique<Pawn>(CHESS_BLACK, Position{1, j}));
     }
+    
+    // Queens
+    Add(std::make_unique<Queen>(CHESS_WHITE, Position{7, 3}));
+    Add(std::make_unique<Queen>(CHESS_BLACK, Position{0, 3}));
+
+    // Kings
+    // Add(std::make_unique<Bishop>(CHESS_WHITE, Position{7, 4}));
+    // Add(std::make_unique<Bishop>(CHESS_BLACK, Position{0, 4}));
+
+    // Bishops
+    Add(std::make_unique<Bishop>(CHESS_WHITE, Position{7, 2}));
+    Add(std::make_unique<Bishop>(CHESS_WHITE, Position{7, 5}));
+    Add(std::make_unique<Bishop>(CHESS_BLACK, Position{0, 2}));
+    Add(std::make_unique<Bishop>(CHESS_BLACK, Position{0, 5}));
+
+    // Knights
+    Add(std::make_unique<Knight>(CHESS_WHITE, Position{7, 1}));
+    Add(std::make_unique<Knight>(CHESS_WHITE, Position{7, 6}));
+    Add(std::make_unique<Knight>(CHESS_BLACK, Position{0, 1}));
+    Add(std::make_unique<Knight>(CHESS_BLACK, Position{0, 6}));
+
+    // Rooks
+    Add(std::make_unique<Rook>(CHESS_WHITE, Position{7, 0}));
+    Add(std::make_unique<Rook>(CHESS_WHITE, Position{7, 7}));
+    Add(std::make_unique<Rook>(CHESS_BLACK, Position{0, 0}));
+    Add(std::make_unique<Rook>(CHESS_BLACK, Position{0, 7}));
 }
 
 bool Board::Add(std::unique_ptr<Piece> piece) {
@@ -68,6 +96,8 @@ bool Board::ExecuteMove(const Move move) {
         return false;
     }
 
+    CHESS_COLOR color = GetPieceByPosition(move.fromPosition)->GetColor(); // color of the moving piece
+
     // Kill the attacked piece
     if (move.type == ATTACK || move.type == ATTACK_AND_PROMOTION) {
         Destroy(move.toPosition);
@@ -79,7 +109,7 @@ bool Board::ExecuteMove(const Move move) {
         }
     }
 
-    // Move the actively moved piece
+    // Move the actively moved piece (including the King in a castling)
     for (size_t i = 0; i < pieces.size(); i++) {
         if (pieces[i]->GetPosition() == move.fromPosition) {
             pieces[i]->MoveToPosition(move.toPosition);
@@ -95,7 +125,14 @@ bool Board::ExecuteMove(const Move move) {
 
     }
 
-    // TO DO: promotion
+    // Promotion: kill the pawn and replace it with a nicer lady
+    if (move.type == PROMOTION || move.type == ATTACK_AND_PROMOTION) {
+        Destroy(move.toPosition);
+        if (move.promotionPiece == QUEEN) Add(std::make_unique<Queen>(color, move.toPosition));
+        if (move.promotionPiece == KNIGHT) Add(std::make_unique<Knight>(color, move.toPosition));
+        if (move.promotionPiece == BISHOP) Add(std::make_unique<Bishop>(color, move.toPosition));
+        if (move.promotionPiece == ROOK) Add(std::make_unique<Rook>(color, move.toPosition));
+    }
 
     lastMove = move;
     return true;    
@@ -146,4 +183,9 @@ bool Board::IsMoveValid(const Move move) {
         if (move == validMove) return true;
     }
     return false;
+}
+
+std::vector<Move> Board::FilterSelfCheckMoves(std::vector<Move> moves) const {
+    // TO DO: Filter properly
+    return moves;
 }

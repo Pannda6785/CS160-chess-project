@@ -21,16 +21,34 @@ namespace InputUtilities {
         return Position{i, j};
     }
 
-    inline bool IsMouseInsidePromotionSelectingZone() {
+    inline bool IsMouseInsidePromotionSelectingZone(CHESS_COLOR color, int promotingFile) {
         Vector2 mousePosition = GetMousePosition();
-        // TO DO: is mouse promotion zone
-        return false;
+        if (mousePosition.x < Properties::GetBorderSize() + Properties::GetCellSize() * promotingFile) return false;
+        if (mousePosition.x > Properties::GetBorderSize() + Properties::GetCellSize() * (promotingFile + 1)) return false;
+        if (color == CHESS_WHITE) {
+            if (mousePosition.y < Properties::GetBorderSize()) return false;
+            if (mousePosition.y > Properties::GetBorderSize() + 4.5 * Properties::GetCellSize()) return false;
+        } else {
+            if (mousePosition.y < Properties::GetBorderSize() + 3.5 * Properties::GetCellSize()) return false;
+            if (mousePosition.y > Properties::GetBorderSize() + 8 * Properties::GetCellSize()) return false;
+        }
+        return true;
     }
 
-    inline std::optional<PIECE_TYPE> GetMousePromotionPiece() { // assumes mouse is inside board, returns nullopt if is in the promotion-canceling area
+    inline std::optional<PIECE_TYPE> GetMousePromotionPiece(CHESS_COLOR color, int promotingFile) { // assumes mouse is inside promotion choosing zone, returns nullopt if is in the promotion-canceling area
         Vector2 mousePosition = GetMousePosition();
-        // TO DO: where mouse promotion
-        return std::nullopt;
+        if (color == CHESS_WHITE) {
+            if (mousePosition.y > Properties::GetBorderSize() + 4 * Properties::GetCellSize()) return std::nullopt;
+            if (mousePosition.y > Properties::GetBorderSize() + 3 * Properties::GetCellSize()) return BISHOP;
+            if (mousePosition.y > Properties::GetBorderSize() + 2 * Properties::GetCellSize()) return ROOK;
+            if (mousePosition.y > Properties::GetBorderSize() + 1 * Properties::GetCellSize()) return KNIGHT;
+        } else {
+            if (mousePosition.y < Properties::GetBorderSize() + 4 * Properties::GetCellSize()) return std::nullopt;
+            if (mousePosition.y < Properties::GetBorderSize() + 5 * Properties::GetCellSize()) return BISHOP;
+            if (mousePosition.y < Properties::GetBorderSize() + 6 * Properties::GetCellSize()) return ROOK;
+            if (mousePosition.y < Properties::GetBorderSize() + 7 * Properties::GetCellSize()) return KNIGHT;
+        }
+        return QUEEN;
     }
     
 }

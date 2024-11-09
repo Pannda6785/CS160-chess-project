@@ -34,6 +34,8 @@ public:
     bool IsInCheck(const CHESS_COLOR color) const; // Is color's king attacked?
     bool IsMoveValid(const Move move);
 
+    std::vector<Move> FilterSelfCheckMoves(std::vector<Move> moves) const; // filter the moves that doesn't help allied king out of check, or put allied king in check
+
 private:
     std::vector<std::unique_ptr<Piece>> pieces;
     std::optional<Move> lastMove;
