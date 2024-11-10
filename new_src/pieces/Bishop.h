@@ -12,6 +12,7 @@ public:
 
 private:
     void AddValidMoves(const Board& board, std::vector<Move>& ret, Position position, Position walk, int iIncrement, int jIncrement) const;
+
 };
 
 #endif //BISHOP_H

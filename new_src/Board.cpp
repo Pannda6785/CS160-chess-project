@@ -8,7 +8,7 @@
 #include "pieces/Knight.h"
 #include "pieces/Bishop.h"
 #include "pieces/Queen.h"
-// #include "pieces/King.h"
+#include "pieces/King.h"
 
 Board::Board() {}
 Board::Board(const Board& other) {
@@ -33,7 +33,6 @@ void Board::Clear() {
     lastMove = std::nullopt;
 }
 void Board::Init() {
-    // TO DO: properly set up the right board
     Clear();
 
     // Pawns
@@ -47,8 +46,8 @@ void Board::Init() {
     Add(std::make_unique<Queen>(CHESS_BLACK, Position{0, 3}));
 
     // Kings
-    // Add(std::make_unique<Bishop>(CHESS_WHITE, Position{7, 4}));
-    // Add(std::make_unique<Bishop>(CHESS_BLACK, Position{0, 4}));
+    Add(std::make_unique<King>(CHESS_WHITE, Position{7, 4}));
+    Add(std::make_unique<King>(CHESS_BLACK, Position{0, 4}));
 
     // Bishops
     Add(std::make_unique<Bishop>(CHESS_WHITE, Position{7, 2}));
@@ -90,12 +89,6 @@ bool Board::Destroy(const Position position) {
     return false;
 }
 bool Board::ExecuteMove(const Move move) {
-    // Should not happen, as the agents should only provide valid moves.
-    if (!IsMoveValid(move)) {
-        std::cerr << "Warning: Move is invalid.\n";
-        return false;
-    }
-
     CHESS_COLOR color = GetPieceByPosition(move.fromPosition)->GetColor(); // color of the moving piece
 
     // Kill the attacked piece
@@ -113,16 +106,21 @@ bool Board::ExecuteMove(const Move move) {
     for (size_t i = 0; i < pieces.size(); i++) {
         if (pieces[i]->GetPosition() == move.fromPosition) {
             pieces[i]->MoveToPosition(move.toPosition);
+            break;
         }
     }
 
     // Move the rook if castling
-    // TO DO: castling
-    if (move.type == LONG_CASTLING) {
-        
-    }
-    if (move.type == SHORT_CASTLING) {
-
+    if (move.type == SHORT_CASTLING || move.type == LONG_CASTLING) {
+        int rank = move.fromPosition.i;
+        Position rookPosition = move.type == SHORT_CASTLING ? Position{rank, 7} : Position{rank, 0};
+        Position newRookPosition = move.type == SHORT_CASTLING ? Position{rank, 5} : Position{rank, 3};
+        for (size_t i = 0; i < pieces.size(); i++) {
+            if (pieces[i]->GetPosition() == rookPosition) {
+                pieces[i]->MoveToPosition(newRookPosition);
+                break;
+            }
+        }   
     }
 
     // Promotion: kill the pawn and replace it with a nicer lady
@@ -159,7 +157,9 @@ std::vector<const Piece*> Board::GetPiecesByColor(const CHESS_COLOR color) const
     return ret;
 }
 std::vector<Move> Board::GetPossibleMoves(const Piece* piece) const {
-    return piece->GetPossibleMoves(*this);
+    std::vector<Move> moves = piece->GetPossibleMoves(*this);
+    moves = FilterSelfCheckMoves(moves);
+    return moves;
 }
 
 bool Board::IsPositionInsideBoard(const Position position) const {
@@ -167,15 +167,7 @@ bool Board::IsPositionInsideBoard(const Position position) const {
     if (position.j < 0 || position.j >= 8) return false; 
     return true;
 }
-bool Board::IsPositionAttacked(const CHESS_COLOR color) const {
-    // TO DO: is position attacked
-    return false;
-}
-bool Board::IsInCheck(const CHESS_COLOR color) const {
-    // TO DO: is in check
-    return false;
-}
-bool Board::IsMoveValid(const Move move) {
+bool Board::IsMoveValid(const Move move) const {
     if (!IsPositionInsideBoard(move.fromPosition) || !IsPositionInsideBoard(move.toPosition)) return false;
     const Piece* piece = GetPieceByPosition(move.fromPosition);
     if (piece == nullptr) return false;
@@ -185,7 +177,46 @@ bool Board::IsMoveValid(const Move move) {
     return false;
 }
 
+bool Board::IsPositionAttacked(const CHESS_COLOR color, const Position position) const {
+    for (size_t i = 0; i < pieces.size(); i++) {
+        if (pieces[i]->GetColor() == color) continue;
+        const Piece* piece = pieces[i].get();
+        if (piece->GetType() == PAWN) { // since pawn's attack pattern is a bit weird
+            int i = piece->GetPosition().i + (color == CHESS_WHITE ? +1 : -1);
+            int j = piece->GetPosition().j;
+            if (position == Position{i, j - 1} || position == Position{i, j + 1}) return true; 
+        } else { // Non-pawn (King, Queen, Knight, Bishop, Rooks) attacks the same way they move (except for castling)
+            for (Move move : piece->GetPossibleMoves(*this)) {
+                if (move.type == SHORT_CASTLING || move.type == LONG_CASTLING) continue;
+                // just to clarify, by now move.type can only be either WALK or ATTACK
+                if (move.toPosition == position) return true;
+            }
+        }
+    }
+    return false;
+}
+bool Board::IsInCheck(const CHESS_COLOR color) const {
+    for (size_t i = 0; i < pieces.size(); i++) {
+        if (pieces[i]->GetType() == KING && pieces[i]->GetColor() == color) {
+            return IsPositionAttacked(color, pieces[i]->GetPosition());
+        }
+    }
+    return false; // should never reach this line
+}
+
 std::vector<Move> Board::FilterSelfCheckMoves(std::vector<Move> moves) const {
-    // TO DO: Filter properly
-    return moves;
+    if (moves.empty()) return moves;
+
+    CHESS_COLOR color = GetPieceByPosition(moves[0].fromPosition)->GetColor();
+    std::vector<Move> ret;
+
+    for (Move move : moves) {
+        Board hypothBoard = *this;
+        hypothBoard.ExecuteMove(move);
+        if (!hypothBoard.IsInCheck(color)) {
+            ret.push_back(move);
+        }
+    }
+    
+    return ret;
 }

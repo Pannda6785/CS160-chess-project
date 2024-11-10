@@ -16,17 +16,14 @@ std::vector<Move> Knight::GetPossibleMoves(const Board &board) const {
             if (di * di == dj * dj) continue; // compare the absolute values
             Position toPosition{position.i + di, position.j + dj};
             if (!board.IsPositionInsideBoard(toPosition)) continue;
-            const Piece* attackPiece = board.GetPieceByPosition(toPosition);
-            if (attackPiece == nullptr) { // check for walk
+            const Piece* attackedPiece = board.GetPieceByPosition(toPosition);
+            if (attackedPiece == nullptr) { // check for walk
                 ret.push_back({ WALK, position, toPosition });
-            } else if (attackPiece->GetColor() != color) { // check for attacks
+            } else if (attackedPiece->GetColor() != color) { // check for attacks
                 ret.push_back({ ATTACK, position, toPosition });
             } else continue;
         }
     }
-
-    // Filter the moves that put allied King in check
-    ret = board.FilterSelfCheckMoves(ret);
 
     return ret;
 }
