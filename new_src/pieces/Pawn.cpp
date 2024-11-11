@@ -53,9 +53,6 @@ std::vector<Move> Pawn::GetPossibleMoves(const Board &board) const {
         }
     }
 
-    // Filter the moves that put allied King in check
-    ret = board.FilterSelfCheckMoves(ret);
-
     return ret;
 }
 

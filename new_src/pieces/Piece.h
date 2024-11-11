@@ -24,7 +24,7 @@ public:
     void MoveToPosition(const Position pos);
     
     virtual std::unique_ptr<Piece> Clone() const; // Deep clone
-    virtual std::vector<Move> GetPossibleMoves(const Board &board) const; // Must implement
+    virtual std::vector<Move> GetPossibleMoves(const Board &board) const; // Must implement. Returns the moves without regard to the king's safety (i.e. it may put king in check). It is necessary, think of the piece as a freeman.
 
 protected:
     const PIECE_TYPE type;

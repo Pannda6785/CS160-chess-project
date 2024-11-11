@@ -21,9 +21,6 @@ std::vector<Move> Rook::GetPossibleMoves(const Board &board) const {
 
     // Check down
     AddValidMoves(board, ret, position, {position.i + 1, position.j}, +1, 0);
-    
-    // Filter the moves that put allied King in check
-    ret = board.FilterSelfCheckMoves(ret);
 
     return ret;
 }
