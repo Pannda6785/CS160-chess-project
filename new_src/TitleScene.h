@@ -30,6 +30,12 @@ private:
     // Mode title buttons
     Button onePlayerButton;
     Button twoPlayerButton;
+    Button backModeButton;
+    // Difficulty title buttons
+    Button easyDiffButton;
+    Button mediumDiffButton;
+    Button hardDiffButton;
+    Button backDiffButton;
 
     // List of TitleScene;
     void MainTitle();
