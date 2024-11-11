@@ -38,7 +38,8 @@ void Renderer::RenderPieces(const Board& board) {
                 int x = Properties::GetBorderSize() + j * Properties::GetCellSize() + Properties::GetCellSize() / 2;
                 int y = Properties::GetBorderSize() + i * Properties::GetCellSize() + Properties::GetCellSize() / 2;
                 Color color = piece->GetColor() == CHESS_WHITE ? PINK : GREEN;
-                DrawCircle(x, y, 30, color);                 
+                DrawTexturePro(Properties::elements["gameBackGround"], Rectangle{0, 0, (float)Properties::elements["gameBackGround"].width, (float)Properties::elements["gameBackGround"].height},
+                    Rectangle{0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()}, Vector2{0, 0}, 0, WHITE);                 
             }
         }
     }

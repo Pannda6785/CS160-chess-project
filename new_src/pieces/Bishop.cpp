@@ -10,16 +10,16 @@ std::unique_ptr<Piece> Bishop::Clone() const {
 std::vector<Move> Bishop::GetPossibleMoves(const Board &board) const {
     std::vector<Move> ret;
 
-    // Check down left
+    // Check up left
     AddValidMoves(board, ret, position, {position.i -1, position.j -1}, -1, -1);
 
-    // Check down right
+    // Check up right
     AddValidMoves(board, ret, position, {position.i -1, position.j +1}, -1, +1);
 
-    // Check up left
+    // Check down left
     AddValidMoves(board, ret, position, {position.i +1, position.j -1}, +1, -1);
 
-    // Check up right
+    // Check down right
     AddValidMoves(board, ret, position, {position.i +1, position.j +1}, +1, +1);
 
     return ret;

@@ -90,6 +90,7 @@ void GameScene::PauseGame() {
     DrawText("Some information here for you nerds.", GetScreenHeight() + 30, 160, 15, LIGHTGRAY);
     game.Render();
 
+    // Pause mainGameMusic
     // Tinting the screen
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){0, 0, 0, 150}); // Dark overlay
     
