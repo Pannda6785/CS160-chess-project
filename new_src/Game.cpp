@@ -16,17 +16,25 @@ void Game::Init() {
     std::stack<Board>().swap(redoHistory);
     state = GAME_RUNNING;
     board.Init();
-    renderer.Init();
     // TO DO: properly have the right kind of agent set
     if (whiteAgent == nullptr) whiteAgent = std::make_unique<ManualAgent>(CHESS_WHITE);
-    if (blackAgent == nullptr) blackAgent = std::make_unique<RandomAgent>(CHESS_BLACK);
+    if (blackAgent == nullptr) blackAgent = std::make_unique<ManualAgent>(CHESS_BLACK);
+
+    selectedPosition = std::nullopt;
+    isPromoting = false;
 }
 void Game::LoadGame() {
     // TO DO: load from game save
+    
+    selectedPosition = std::nullopt;
+    isPromoting = false;
 }
 
 void Game::Render() {
     renderer.RenderBackground();
+    if (board.GetLastMove() != std::nullopt) {
+        renderer.RenderLastMove(board.GetLastMove().value());
+    }
     if (selectedPosition != std::nullopt) {
         renderer.RenderSelectedPiece(selectedPosition.value());
     }
@@ -35,6 +43,12 @@ void Game::Render() {
         const Piece* selectedPiece = board.GetPieceByPosition(selectedPosition.value());
         std::vector<Move> possibleMoves = board.GetPossibleMoves(selectedPiece);
         renderer.RenderPossibleMoves(possibleMoves);
+    }
+    if (whiteAgent->IsPromoting()) {
+        renderer.RenderPromotion(CHESS_WHITE, whiteAgent->GetPromotingFile());
+    }
+    if (blackAgent->IsPromoting()) {
+        renderer.RenderPromotion(CHESS_BLACK, blackAgent->GetPromotingFile());
     }
 }
 void Game::Run() {
@@ -80,12 +94,18 @@ void Game::Running() {
     if (WhoseTurn() == CHESS_WHITE) {
         move = whiteAgent->GetMove(board);
         selectedPosition = whiteAgent->GetSelectedPosition();
+        isPromoting = whiteAgent->IsPromoting();
+        promotingFile = whiteAgent->GetPromotingFile();
     } else {
         move = blackAgent->GetMove(board);
         selectedPosition = blackAgent->GetSelectedPosition();
+        isPromoting = blackAgent->IsPromoting();
+        promotingFile = blackAgent->GetPromotingFile();
     }
     if (move != std::nullopt) {
         ExecuteMove(move.value());
+        selectedPosition = std::nullopt;
+        isPromoting = false;
     }
 }
 void Game::Ended() {

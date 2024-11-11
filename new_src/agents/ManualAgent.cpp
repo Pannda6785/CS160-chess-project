@@ -49,6 +49,12 @@ void ManualAgent::RenderCursor(const Board &board) {
         }
     }
 
+    // Check promoting and hovering over the promotion zone
+    if (isPromoting && InputUtilities::IsMouseInsidePromotionSelectingZone(agentColor, promotingFile)) {
+        SetMouseCursor(4);
+        return;
+    }
+
     SetMouseCursor(0);
 }
 
@@ -60,12 +66,25 @@ std::optional<Move> ManualAgent::_GetMove(const Board &board) {
 
     Position clickedPosition = InputUtilities::GetMouseChessPosition();
 
+    // Promotion handling foremost
+    if (isPromoting) {
+        if (InputUtilities::IsMouseInsidePromotionSelectingZone(agentColor, promotingFile) && InputUtilities::GetMousePromotionPiece(agentColor, promotingFile) != std::nullopt) { // valid promotion action
+            PIECE_TYPE promotionPiece = InputUtilities::GetMousePromotionPiece(agentColor, promotingFile).value();
+            promotionMove.promotionPiece = promotionPiece;
+            isPromoting = false;
+            selectedPosition = std::nullopt;
+            return promotionMove;
+        } else { // cancel the promotion, does not deselect the selected piece.
+            isPromoting = false;
+            return std::nullopt;
+        }
+    }
+
     // Selecting an allied piece
     const Piece* clickedPiece = board.GetPieceByPosition(clickedPosition);
     if (clickedPiece != nullptr && clickedPiece->GetColor() == agentColor) { 
         // TO DO: chessAudio.PlayPieceSelectSound();
         selectedPosition = clickedPosition;
-
         return std::nullopt;
     } 
     
@@ -78,7 +97,14 @@ std::optional<Move> ManualAgent::_GetMove(const Board &board) {
     const Piece* selectedPiece = board.GetPieceByPosition(selectedPosition.value());
     for (Move move : board.GetPossibleMoves(selectedPiece)) {
         if (clickedPosition == move.toPosition) {
-            // TO DO: Promotion handling
+            // Check for promotion move
+            if (move.type == PROMOTION || move.type == ATTACK_AND_PROMOTION) {
+                isPromoting = true;
+                promotingFile = move.toPosition.j;
+                promotionMove = move;
+                return std::nullopt;
+            }
+            // Normal move (including castling or enpassant)
             selectedPosition = std::nullopt;
             return move;
         }

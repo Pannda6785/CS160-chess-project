@@ -1,6 +1,6 @@
 #include "Pawn.h"
 
-Pawn::Pawn(CHESS_COLOR color, Position position, bool hasMoved) : Piece(PAWN, color, position, hasMoved) {}
+Pawn::Pawn(CHESS_COLOR color, Position position, bool hasMoved) : Piece(PAWN, "P", color, position, hasMoved) {}
 
 // Deep clone
 std::unique_ptr<Piece> Pawn::Clone() const {
@@ -16,7 +16,14 @@ std::vector<Move> Pawn::GetPossibleMoves(const Board &board) const {
         MOVE_TYPE type = WALK;
         if (color == CHESS_WHITE && walk.i == 0) type = PROMOTION;
         if (color == CHESS_BLACK && walk.i == 7) type = PROMOTION;
-        ret.push_back({ type, position, walk });
+        if (type == PROMOTION) {
+            ret.push_back({ type, position, walk, QUEEN });
+            ret.push_back({ type, position, walk, KNIGHT });
+            ret.push_back({ type, position, walk, ROOK });
+            ret.push_back({ type, position, walk, BISHOP });
+        } else {
+            ret.push_back({ type, position, walk });
+        }
     }
 
     // Check double walk
@@ -33,14 +40,18 @@ std::vector<Move> Pawn::GetPossibleMoves(const Board &board) const {
             MOVE_TYPE type = ATTACK;
             if (color == CHESS_WHITE && attack.i == 0) type = ATTACK_AND_PROMOTION;
             if (color == CHESS_BLACK && attack.i == 7) type = ATTACK_AND_PROMOTION;
-            ret.push_back({ type, position, attack });
+            if (type == ATTACK_AND_PROMOTION) {
+                ret.push_back({ type, position, attack, QUEEN });
+                ret.push_back({ type, position, attack, KNIGHT });
+                ret.push_back({ type, position, attack, ROOK });
+                ret.push_back({ type, position, attack, BISHOP });
+            } else {
+                ret.push_back({ type, position, attack });
+            }
         } else if (IsEnPassant(board, attack)) { // En passant 
             ret.push_back({ EN_PASSANT, position, attack });
         }
     }
-
-    // Filter the moves that put allied King in check
-    // TO DO: Filter self check moves
 
     return ret;
 }

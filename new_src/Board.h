@@ -22,7 +22,7 @@ public:
 
     bool Add(std::unique_ptr<Piece> piece);
     bool Destroy(const Position position);
-    bool ExecuteMove(const Move move);
+    bool ExecuteMove(const Move move); // Should only provide valid move
 
     std::optional<Move> GetLastMove() const;
     const Piece* GetPieceByPosition(const Position position) const;
@@ -30,9 +30,12 @@ public:
     std::vector<Move> GetPossibleMoves(const Piece* piece) const;
 
     bool IsPositionInsideBoard(const Position position) const;
-    bool IsPositionAttacked(const CHESS_COLOR color) const; // Is the position attacked by the other color?
+    bool IsMoveValid(const Move move) const;
+    
+    bool IsPositionAttacked(const CHESS_COLOR color, const Position position) const; // Is the position attacked by the other color?
     bool IsInCheck(const CHESS_COLOR color) const; // Is color's king attacked?
-    bool IsMoveValid(const Move move);
+
+    std::vector<Move> FilterSelfCheckMoves(std::vector<Move> moves) const; // filter the moves that doesn't help allied king out of check, or put allied king in check
 
 private:
     std::vector<std::unique_ptr<Piece>> pieces;

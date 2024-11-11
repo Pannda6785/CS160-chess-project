@@ -1,14 +1,26 @@
-#include "Bishop.h"
+#include "Queen.h"
 
-Bishop::Bishop(CHESS_COLOR color, Position position, bool hasMoved) : Piece(BISHOP, "B", color, position, hasMoved) {}
+Queen::Queen(CHESS_COLOR color, Position position, bool hasMoved) : Piece(QUEEN, "Q", color, position, hasMoved) {}
 
 // Deep clone
-std::unique_ptr<Piece> Bishop::Clone() const {
-    return std::make_unique<Bishop>(*this); 
+std::unique_ptr<Piece> Queen::Clone() const {
+    return std::make_unique<Queen>(*this); 
 }
 
-std::vector<Move> Bishop::GetPossibleMoves(const Board &board) const {
+std::vector<Move> Queen::GetPossibleMoves(const Board &board) const {
     std::vector<Move> ret;
+
+    // Check left
+    AddValidMoves(board, ret, position, {position.i, position.j - 1}, 0, -1);
+
+    // Check right
+    AddValidMoves(board, ret, position, {position.i, position.j + 1}, 0, +1);
+
+    // Check up
+    AddValidMoves(board, ret, position, {position.i - 1, position.j}, -1, 0);
+
+    // Check down
+    AddValidMoves(board, ret, position, {position.i + 1, position.j}, +1, 0);
 
     // Check up left
     AddValidMoves(board, ret, position, {position.i - 1, position.j - 1}, -1, -1);
@@ -25,7 +37,7 @@ std::vector<Move> Bishop::GetPossibleMoves(const Board &board) const {
     return ret;
 }
 
-void Bishop::AddValidMoves(const Board& board, std::vector<Move>& ret, Position position, Position walk, int iIncrement, int jIncrement) const {
+void Queen::AddValidMoves(const Board& board, std::vector<Move>& ret, Position position, Position walk, int iIncrement, int jIncrement) const {
     while (board.IsPositionInsideBoard(walk)) {
         if (board.GetPieceByPosition(walk) == nullptr) { // Check for walk
             MOVE_TYPE type = WALK;
