@@ -22,10 +22,12 @@ private:
 
     // List of buttons
     Button backButton;
+    // pauseGame
     Button continueButton;
     Button saveButton;
     Button loadButton;
     Button optionsButton;
+    Button exitButton;
     
     // List of gameScene
     void MainGame();

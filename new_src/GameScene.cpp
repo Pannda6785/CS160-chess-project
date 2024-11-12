@@ -12,25 +12,31 @@ void GameScene::Init() {
     state = MAIN;
 }
 void GameScene::InitButtons() {
-    backButton.SetRatio(0, 10, 1, -70, 0, 180, 0, 60, WHITE);
-    backButton.SetText("Back", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    // Duplicated buttons
+    backButton.SetRatio(0, 10, 1, -70, 0, 180, 0, 60, LIGHTGRAY, WHITE);
+    backButton.SetText("Exit", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     backButton.SetSound(Properties::sounds["buttonClick"]);
-    
-    continueButton.SetRatio(0.5, -130, 3.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY);
+
+    // pauseGame
+    continueButton.SetRatio(0.5, -130, 3.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     continueButton.SetText("Continue", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     continueButton.SetSound(Properties::sounds["buttonClick"]);
     
-    saveButton.SetRatio(0.5, -130, 0.5, -30, 0, 260, 0, 70, LIGHTGRAY);
+    saveButton.SetRatio(0.5, -130, 0.5, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     saveButton.SetText("Save", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     saveButton.SetSound(Properties::sounds["buttonClick"]);
     
-    loadButton.SetRatio(0.5, -130, 5.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY);
+    loadButton.SetRatio(0.5, -130, 5.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     loadButton.SetText("Load", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     loadButton.SetSound(Properties::sounds["buttonClick"]);
     
-    optionsButton.SetRatio(0.5, -130, 0.75, -30, 0, 260, 0, 70, LIGHTGRAY);
+    optionsButton.SetRatio(0.5, -130, 0.75, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     optionsButton.SetText("Options", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     optionsButton.SetSound(Properties::sounds["buttonClick"]);
+    
+    exitButton.SetRatio(0.5, -130, 7.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
+    exitButton.SetText("Exit", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    exitButton.SetSound(Properties::sounds["buttonClick"]);
 }
 
 // Is called per frame. Controls the flow of the game scene.
@@ -74,11 +80,6 @@ void GameScene::MainGame() {
         SetMouseCursor(0);
         state = PAUSE;
     }
-
-    backButton.Render();
-    if(backButton.Check()) {
-        Scene::ChangeScene(Scene::TITLE_SCENE);
-    }
 }
 
 void GameScene::PauseGame() {
@@ -101,6 +102,7 @@ void GameScene::PauseGame() {
     saveButton.Render();
     loadButton.Render();
     optionsButton.Render();
+    exitButton.Render();
 
     // Move to other scenes
     if (continueButton.Check()) {
@@ -114,6 +116,9 @@ void GameScene::PauseGame() {
     }
     if (optionsButton.Check()) {
         state = OPTIONS;
+    }
+    if(exitButton.Check()) {
+        Scene::ChangeScene(Scene::TITLE_SCENE);
     }
 }
 

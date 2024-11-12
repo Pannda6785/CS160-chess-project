@@ -14,54 +14,54 @@ void TitleScene::Init() {
 }
 void TitleScene::InitButtons() {
     // Duplicated buttons
-    backButton.SetRatio(0, 10, 1, -70, 0, 180, 0, 60, WHITE); 
+    backButton.SetRatio(0, 10, 1, -70, 0, 180, 0, 60, LIGHTGRAY, WHITE); 
     backButton.SetText("Back", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     backButton.SetSound(Properties::sounds["buttonClick"]);
     
     // mainTitle
-    newGameButton.SetRatio(0.5, -130, 0.5, -30, 0, 260, 0, 70, LIGHTGRAY);
+    newGameButton.SetRatio(0.5, -130, 0.5, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     newGameButton.SetText("New Game", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     newGameButton.SetSound(Properties::sounds["buttonClick"]);
     
-    loadButton.SetRatio(0.5, -130, 5.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY);
+    loadButton.SetRatio(0.5, -130, 5.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     loadButton.SetText("Load", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     loadButton.SetSound(Properties::sounds["buttonClick"]);
     
-    optionsButton.SetRatio(0.5, -130, 0.75, -30, 0, 260, 0, 70, LIGHTGRAY);
+    optionsButton.SetRatio(0.5, -130, 0.75, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     optionsButton.SetText("Options", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     optionsButton.SetSound(Properties::sounds["buttonClick"]);
     
-    exitButton.SetRatio(0.5, -130, 7.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY);
+    exitButton.SetRatio(0.5, -130, 7.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     exitButton.SetText("Exit", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     exitButton.SetSound(Properties::sounds["buttonClick"]);
     
     // modeTitle
-    onePlayerButton.SetRatio(0.5, -130, 0.5, -30, 0, 260, 0, 70, LIGHTGRAY);
+    onePlayerButton.SetRatio(0.5, -130, 0.5, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     onePlayerButton.SetText("1 Player", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     onePlayerButton.SetSound(Properties::sounds["buttonClick"]);
     
-    twoPlayerButton.SetRatio(0.5, -130, 5.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY);
+    twoPlayerButton.SetRatio(0.5, -130, 5.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     twoPlayerButton.SetText("2 Player", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     twoPlayerButton.SetSound(Properties::sounds["buttonClick"]);
 
-    backModeButton.SetRatio(0.5, -130, 0.75, -30, 0, 260, 0, 70, LIGHTGRAY);
+    backModeButton.SetRatio(0.5, -130, 0.75, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     backModeButton.SetText("Back", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     backModeButton.SetSound(Properties::sounds["buttonClick"]);
 
     // difficultyTitle
-    easyDiffButton.SetRatio(0.5, -130, 0.5, -30, 0, 260, 0, 70, LIGHTGRAY);
+    easyDiffButton.SetRatio(0.5, -130, 0.5, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     easyDiffButton.SetText("Easy", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     easyDiffButton.SetSound(Properties::sounds["buttonClick"]);
     
-    mediumDiffButton.SetRatio(0.5, -130, 5.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY);
+    mediumDiffButton.SetRatio(0.5, -130, 5.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     mediumDiffButton.SetText("Medium", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     mediumDiffButton.SetSound(Properties::sounds["buttonClick"]);
     
-    hardDiffButton.SetRatio(0.5, -130, 0.75, -30, 0, 260, 0, 70, LIGHTGRAY);
+    hardDiffButton.SetRatio(0.5, -130, 0.75, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     hardDiffButton.SetText("Hard", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     hardDiffButton.SetSound(Properties::sounds["buttonClick"]);
 
-    backDiffButton.SetRatio(0.5, -130, 7.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY);
+    backDiffButton.SetRatio(0.5, -130, 7.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
     backDiffButton.SetText("Back", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     backDiffButton.SetSound(Properties::sounds["buttonClick"]);
 }
@@ -137,7 +137,7 @@ void TitleScene::ModeTitle() {
         Scene::ChangeScene(Scene::GAME_SCENE);
     }
     if(backModeButton.Check()) {
-        title = MODE;
+        title = MAIN;
     }
 }
 
@@ -151,7 +151,7 @@ void TitleScene::DifficultyTitle() {
     easyDiffButton.Render();
     mediumDiffButton.Render();
     hardDiffButton.Render();
-    backButton.Render();
+    backDiffButton.Render();
 
     // Button detectings
     if (easyDiffButton.Check()) {  
