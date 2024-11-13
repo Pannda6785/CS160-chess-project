@@ -49,11 +49,11 @@ void Button::Render() {
     if(texture.id == 0) {
         switch(state) {
             case HOVERING: {
-                DrawRectangleRec(rec, hoveringColor);
+                DrawRectangleRec(rec, {255, 255, 255, 100});
                 break;
             }
             default: {
-                DrawRectangleRec(rec, recColor);
+                DrawRectangleRec(rec, {0, 0, 0, 0});
                 break;
             }
         }

@@ -117,10 +117,6 @@ void GameScene::MainGame() {
     if (testLoadButton.Check()) {
         game.LoadGame(1); // please do not call when slot is empty
     }
-
-    if (backButton.Check()) {
-        Scene::ChangeScene(Scene::TITLE_SCENE);
-    }
 }
 
 void GameScene::PauseGame() {

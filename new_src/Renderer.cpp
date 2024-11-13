@@ -44,14 +44,18 @@ void Renderer::RenderPieces(const Board& board) {
         for (int j = 0; j < 8; j++) {
             const Piece* piece = board.GetPieceByPosition({i, j});
             if (piece != nullptr) {
-                int x = Properties::GetBorderSize() + j * Properties::GetCellSize();
-                int y = Properties::GetBorderSize() + i * Properties::GetCellSize();
+                /*
+                // Render chess piece demo
                 int xc = Properties::GetBorderSize() + j * Properties::GetCellSize() + Properties::GetCellSize() / 2;
                 int yc = Properties::GetBorderSize() + i * Properties::GetCellSize() + Properties::GetCellSize() / 2;
                 Color color = piece->GetColor() == CHESS_WHITE ? PINK : GREEN;
+                */
+                
                 std::string pieceName = (piece->GetColor() == CHESS_WHITE ? "w" : "b") + piece->GetTag();
-                DrawTexturePro(Properties::skin1[pieceName], Rectangle{0, 0, (float)Properties::skin1[pieceName].width, (float)Properties::skin1[pieceName].height},
-                    Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+                int x = Properties::GetBorderSize() + j * Properties::GetCellSize();
+                int y = Properties::GetBorderSize() + (i + 1) * Properties::GetCellSize() - Properties::GetCellSize() * Properties::skin1[pieceName].height / Properties::skin1[pieceName].width;
+                DrawTexturePro(Properties::skin1[pieceName], Rectangle{0, 0, (float) Properties::skin1[pieceName].width, (float) Properties::skin1[pieceName].height},
+                    Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize() * Properties::skin1[pieceName].height / Properties::skin1[pieceName].width}, Vector2{0, 0}, 0, WHITE);              
             }
         }
     }
