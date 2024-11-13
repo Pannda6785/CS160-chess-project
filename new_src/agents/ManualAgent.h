@@ -7,6 +7,8 @@ class ManualAgent : public Agent {
 public:
     ManualAgent(CHESS_COLOR agentColor);
 
+    void Init() override;
+
     std::optional<Position> GetSelectedPosition() const override;
     bool IsPromoting() const override; 
     int GetPromotingFile() const override;

@@ -20,13 +20,17 @@ public:
     void Clear(); // wipe all pieces out of the board
     void Init(); // make the board the default configuration (2 kings, 2 queens, 16 pawns,... that kind of meaning)
 
+    bool Add(std::string tag, CHESS_COLOR coolr, Position position, bool hasMoved);
     bool Add(std::unique_ptr<Piece> piece);
     bool Destroy(const Position position);
     bool ExecuteMove(const Move move); // Should only provide valid move
-
-    std::optional<Move> GetLastMove() const;
+    void SetLastMove(const std::optional<Move> move);
+    
     const Piece* GetPieceByPosition(const Position position) const;
     std::vector<const Piece*> GetPiecesByColor(const CHESS_COLOR color) const;
+    std::vector<const Piece*> GetPieces() const;
+
+    std::optional<Move> GetLastMove() const;
     std::vector<Move> GetPossibleMoves(const Piece* piece) const;
 
     bool IsPositionInsideBoard(const Position position) const;

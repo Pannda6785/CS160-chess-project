@@ -2,10 +2,11 @@
 
 #include "InputUtilities.h"
 
-ManualAgent::ManualAgent(CHESS_COLOR agentColor) : Agent(agentColor) {
+ManualAgent::ManualAgent(CHESS_COLOR agentColor) : Agent(agentColor, "Human") {}
+
+void ManualAgent::Init() {
     selectedPosition = std::nullopt;
     isPromoting = false;
-    promotingFile = -1;
 }
 
 std::optional<Position> ManualAgent::GetSelectedPosition() const {
@@ -63,7 +64,8 @@ std::optional<Move> ManualAgent::_GetMove(const Board &board) {
     if (!InputUtilities::IsMouseInsideBoard() || !IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         return std::nullopt;
     }
-
+    
+    SetMouseCursor(0);
     Position clickedPosition = InputUtilities::GetMouseChessPosition();
 
     // Promotion handling foremost

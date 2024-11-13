@@ -31,6 +31,22 @@ void GameScene::InitButtons() {
     optionsButton.SetRatio(0.5, -130, 0.75, -30, 0, 260, 0, 70, LIGHTGRAY);
     optionsButton.SetText("Options", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     optionsButton.SetSound(Properties::sounds["buttonClick"]);
+    
+    undoButton.SetRatio(0.75, -70, 0.6, -30, 0, 140, 0, 60, SKYBLUE);
+    undoButton.SetText("Undo", 30, LIME, Properties::fonts["Rubik-Regular_45"]);
+    undoButton.SetSound(Properties::sounds["buttonClick"]);
+    
+    redoButton.SetRatio(0.88, -70, 0.6, -30, 0, 140, 0, 60, SKYBLUE);
+    redoButton.SetText("Redo", 30, LIME, Properties::fonts["Rubik-Regular_45"]);
+    redoButton.SetSound(Properties::sounds["buttonClick"]);
+
+    testLoadButton.SetRatio(0.75, -70, 0.7, -30, 0, 140, 0, 60, SKYBLUE);
+    testLoadButton.SetText("Load", 30, LIME, Properties::fonts["Rubik-Regular_45"]);
+    testLoadButton.SetSound(Properties::sounds["buttonClick"]);
+    
+    testSaveButton.SetRatio(0.88, -70, 0.7, -30, 0, 140, 0, 60, SKYBLUE);
+    testSaveButton.SetText("Save", 30, LIME, Properties::fonts["Rubik-Regular_45"]);
+    testSaveButton.SetSound(Properties::sounds["buttonClick"]);
 }
 
 // Is called per frame. Controls the flow of the game scene.
@@ -69,14 +85,34 @@ void GameScene::MainGame() {
 
     game.Render();
     game.Run();
+    undoButton.Render();
+    redoButton.Render();
+    backButton.Render();
 
     if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
         SetMouseCursor(0);
         state = PAUSE;
+        return;
     }
 
-    backButton.Render();
-    if(backButton.Check()) {
+    if (undoButton.Check()) {
+        game.Undo();
+    }
+    if (redoButton.Check()) {
+        game.Redo();
+    }
+
+    // TESTING
+    testSaveButton.Render();
+    testLoadButton.Render();
+    if (testSaveButton.Check()) {
+        game.SaveGame(1);
+    }
+    if (testLoadButton.Check()) {
+        game.LoadGame(1); // please do not call when slot is empty
+    }
+
+    if (backButton.Check()) {
         Scene::ChangeScene(Scene::TITLE_SCENE);
     }
 }
@@ -101,6 +137,8 @@ void GameScene::PauseGame() {
     saveButton.Render();
     loadButton.Render();
     optionsButton.Render();
+    undoButton.Render();
+    redoButton.Render();
 
     // Move to other scenes
     if (continueButton.Check()) {

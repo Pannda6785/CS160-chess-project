@@ -26,6 +26,12 @@ private:
     Button saveButton;
     Button loadButton;
     Button optionsButton;
+    Button undoButton;
+    Button redoButton;
+    
+    // TESTING
+    Button testSaveButton;
+    Button testLoadButton;
     
     // List of gameScene
     void MainGame();
