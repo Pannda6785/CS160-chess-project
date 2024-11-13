@@ -38,21 +38,24 @@ void Renderer::RenderLastMove(Move lastMove) {
     DrawRectangle(x1, y1, Properties::GetCellSize(), Properties::GetCellSize(), Color{144, 238, 144, 150});
 }
 
-void Renderer::RenderPieces(const Board& board) {
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            const Piece* piece = board.GetPieceByPosition({i, j});
-            if (piece != nullptr) {
-                int x = Properties::GetBorderSize() + j * Properties::GetCellSize() + Properties::GetCellSize() / 2;
-                int y = Properties::GetBorderSize() + i * Properties::GetCellSize() + Properties::GetCellSize() / 2;
-                Color color = piece->GetColor() == CHESS_WHITE ? PINK : GREEN;
-                DrawCircle(x, y, 30, color);                 
-            }
-        }
+void Renderer::RenderPieces(std::vector<const Piece*> pieces) {
+    for (const Piece* piece : pieces) {
+        int i = piece->GetPosition().i;
+        int j = piece->GetPosition().j;
+        int x = Properties::GetBorderSize() + j * Properties::GetCellSize() + Properties::GetCellSize() / 2;
+        int y = Properties::GetBorderSize() + i * Properties::GetCellSize() + Properties::GetCellSize() / 2;
+        Color color = piece->GetColor() == CHESS_WHITE ? PINK : GREEN;
+        DrawCircle(x, y, 30, color);  
     }
 }
 
-void Renderer::RenderSelectedPiece(Position position) {
+void Renderer::RenderDraggingPiece(const Piece* piece) {
+    Vector2 mousePosition = GetMousePosition();
+    Color color = piece->GetColor() == CHESS_WHITE ? PINK : GREEN;
+    DrawCircle(mousePosition.x, mousePosition.y, 30, color);  
+}
+
+void Renderer::RenderSelectedPosition(Position position) {
     int x = Properties::GetBorderSize() + position.j * Properties::GetCellSize();
     int y = Properties::GetBorderSize() + position.i * Properties::GetCellSize();
     DrawRectangle(x, y, Properties::GetCellSize(), Properties::GetCellSize(), Color{144, 238, 144, 150});

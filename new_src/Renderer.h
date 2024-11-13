@@ -2,6 +2,7 @@
 #define RENDERER_H
 
 #include <map>
+#include <vector>
 
 #include "raylib.h"
 #include "Board.h"
@@ -15,8 +16,9 @@ public:
     // Render stuffs
     void RenderBackground();
     void RenderLastMove(Move lastMove);
-    void RenderPieces(const Board& board);
-    void RenderSelectedPiece(Position position);
+    void RenderPieces(std::vector<const Piece*> pieces);
+    void RenderDraggingPiece(const Piece* piece);
+    void RenderSelectedPosition(Position position);
     void RenderPossibleMoves(std::vector<Move> possibleMoves);
     void RenderPromotion(CHESS_COLOR color, int promotingFile);
 

@@ -12,6 +12,7 @@
 class Game {
 public:
     // Sets the agent that plays the game (Human or Chessbot and of which difficultoes)
+    void SetAgent(CHESS_COLOR agentColor, std::string agentTag);
     void SetAgent(std::unique_ptr<Agent> agent);
     
     void Init(); // Makes game the default game
@@ -25,6 +26,7 @@ public:
     bool Redo();
 
     CHESS_COLOR WhoseTurn() const;
+    const Agent* GetCurrentAgent() const;
     int GetTurn() const; // The number of turns passed
     bool IsGameEnded() const;
     CHESS_VERDICT GetVerdict() const;
@@ -39,11 +41,6 @@ private:
     std::vector<Board> redoHistory;
 
     CHESS_VERDICT verdict;
-
-    // Volatile info to render human player related moves
-    std::optional<Position> selectedPosition;
-    bool isPromoting;
-    int promotingFile;
     
     void Running(); // Handles the moving of pieces
     void Ended(); // Probably does nothing (chess board is retained and game informations as well as extra buttons are handled in GameScene)

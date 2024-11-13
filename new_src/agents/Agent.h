@@ -19,6 +19,7 @@ public:
     virtual std::optional<Position> GetSelectedPosition() const;
     virtual bool IsPromoting() const; 
     virtual int GetPromotingFile() const;
+    virtual bool IsDragging() const;
 
     // Must be implemented by any agent
     virtual std::optional<Move> GetMove(const Board &board);
