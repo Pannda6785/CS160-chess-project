@@ -104,7 +104,7 @@ void GameScene::PauseGame() {
     optionsButton.Render();
     exitButton.Render();
 
-    // Move to other scenes
+    // Button detectings
     if (continueButton.Check()) {
         state = MAIN;
     }
@@ -127,8 +127,10 @@ void GameScene::SaveGame() {
     DrawTexturePro(Properties::elements["saveBackGround"], (Rectangle) {0.0, 0.0, (float) Properties::elements["gameBackGround"].width, (float) Properties::elements["gameBackGround"].height}, 
                     (Rectangle) {0.0, 0.0, (float) GetScreenWidth(), (float) GetScreenHeight()}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
     DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is save title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
-
+    // Render buttons
     backButton.Render();
+
+    // Button detectings
     if (backButton.Check()) {
         state = PAUSE;
     }
@@ -140,7 +142,10 @@ void GameScene::LoadGame() {
                     (Rectangle) {0.0, 0.0, (float) GetScreenWidth(), (float) GetScreenHeight()}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
     DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is load title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
 
+    // Render buttons
     backButton.Render();
+
+    // Button detectings
     if (backButton.Check()) {
         state = PAUSE;
     }
@@ -151,10 +156,11 @@ void GameScene::OptionsGame() {
     DrawTexturePro(Properties::elements["optionsBackGround"], (Rectangle) {0.0, 0.0, (float) Properties::elements["gameBackGround"].width, (float) Properties::elements["gameBackGround"].height}, 
                     (Rectangle) {0.0, 0.0, (float) GetScreenWidth(), (float) GetScreenHeight()}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
     
-    // Move to other scenes
     DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is option title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
-    
+    // Render buttons
     backButton.Render();
+
+    // Button detectings
     if (backButton.Check()) {
         state = PAUSE;
     }
