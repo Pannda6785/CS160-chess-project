@@ -12,18 +12,25 @@ public:
     std::optional<Position> GetSelectedPosition() const override;
     bool IsPromoting() const override; 
     int GetPromotingFile() const override;
+    bool IsDragging() const override;
 
     std::optional<Move> GetMove(const Board &board) override;
 
 private:
+    // the move to make, parts of decision are decided during different times
+    bool isMoveFinalized;
+    Move finalMove; 
+
     std::optional<Position> selectedPosition;
+
 	bool isPromoting;
 	int promotingFile;
-    Move promotionMove;
     
-	std::optional<Move> _GetMove(const Board &board);
-	void RenderCursor(const Board &board);
+    bool isDragging;
 
+	void RenderCursor(const Board &board);
+    void RegisterPressing(const Board &board);
+    void RegisterReleasing(const Board &board);
 };
 
 

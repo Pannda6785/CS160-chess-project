@@ -9,6 +9,13 @@
 
 Game game;
 
+void Game::SetAgent(CHESS_COLOR agentColor, std::string agentTag) {
+        // TO DO: set the right agent
+    if (agentTag == "Human") SetAgent(std::make_unique<ManualAgent>(agentColor));
+    if (agentTag == "Bot1") SetAgent(std::make_unique<RandomAgent>(agentColor));
+    if (agentTag == "Bot2") SetAgent(std::make_unique<RandomAgent>(agentColor));
+    if (agentTag == "Bot3") SetAgent(std::make_unique<RandomAgent>(agentColor));
+}
 void Game::SetAgent(std::unique_ptr<Agent> agent) {
     if (agent->GetColor() == CHESS_WHITE) {
         whiteAgent = std::move(agent);
@@ -29,22 +36,14 @@ void Game::Init() {
     std::vector<Board>().swap(undoHistory);
     std::vector<Board>().swap(redoHistory);
     verdict = CHESS_RUNNING;
-
-    selectedPosition = std::nullopt;
-    isPromoting = false;
 }
 void Game::LoadGame(int slot) {
     std::ifstream savefile(Properties::GetSavefilePath(slot));
 
-    auto loadAgent = [&](CHESS_COLOR color) -> std::unique_ptr<Agent> {
-        // TO DO: set the right agent
-        std::string agentType;
-        savefile >> agentType;
-        if (agentType == "Human") return std::make_unique<ManualAgent>(color);
-        if (agentType == "Bot1") return std::make_unique<RandomAgent>(color);
-        if (agentType == "Bot2") return std::make_unique<RandomAgent>(color);
-        if (agentType == "Bot3") return std::make_unique<RandomAgent>(color);
-        return nullptr;
+    auto loadAgent = [&](CHESS_COLOR color) -> void {
+        std::string agentTag;
+        savefile >> agentTag;
+        SetAgent(color, agentTag);
     };
     auto loadBoard = [&]() -> Board {
         Board board;
@@ -73,8 +72,8 @@ void Game::LoadGame(int slot) {
         return board;   
     };
 
-    whiteAgent = loadAgent(CHESS_WHITE);
-    blackAgent = loadAgent(CHESS_BLACK);
+    loadAgent(CHESS_WHITE);
+    loadAgent(CHESS_BLACK);
     whiteAgent->Init();
     blackAgent->Init();
 
@@ -97,9 +96,6 @@ void Game::LoadGame(int slot) {
     }
 
     savefile >> verdict;
-
-    selectedPosition = std::nullopt;
-    isPromoting = false;
 
     savefile.close();
 }
@@ -150,24 +146,44 @@ void Game::SaveGame(int slot) const {
 }
 
 void Game::Render() {
+    // First render the background
     renderer.RenderBackground();
+
+    // Then render the last move, if any
     if (board.GetLastMove() != std::nullopt) {
         renderer.RenderLastMove(board.GetLastMove().value());
     }
+
+    // Then render the highlight of the selected position
+    std::optional<Position> selectedPosition = GetCurrentAgent()->GetSelectedPosition();
     if (selectedPosition != std::nullopt) {
-        renderer.RenderSelectedPiece(selectedPosition.value());
+        renderer.RenderSelectedPosition(selectedPosition.value());
     }
-    renderer.RenderPieces(board);
-    if (selectedPosition != std::nullopt) {
-        const Piece* selectedPiece = board.GetPieceByPosition(selectedPosition.value());
-        std::vector<Move> possibleMoves = board.GetPossibleMoves(selectedPiece);
-        renderer.RenderPossibleMoves(possibleMoves);
+
+    // Then render the non-selected pieces
+    std::vector<const Piece*> staticPieces;
+    for (const Piece* piece : board.GetPieces()) {
+        if (piece->GetPosition() != selectedPosition) {
+            staticPieces.push_back(piece);
+        }
     }
-    if (whiteAgent->IsPromoting()) {
-        renderer.RenderPromotion(CHESS_WHITE, whiteAgent->GetPromotingFile());
-    }
-    if (blackAgent->IsPromoting()) {
-        renderer.RenderPromotion(CHESS_BLACK, blackAgent->GetPromotingFile());
+    renderer.RenderPieces(staticPieces);
+
+    if (GetCurrentAgent()->IsPromoting()) { // Promotion render: The selected piece is not rendered and the promotion options are shown.
+        renderer.RenderPromotion(WhoseTurn(), GetCurrentAgent()->GetPromotingFile());
+    } else { 
+        // Render the possible moves of the selected position
+        if (selectedPosition != std::nullopt) {
+            const Piece* selectedPiece = board.GetPieceByPosition(selectedPosition.value());
+            std::vector<Move> possibleMoves = board.GetPossibleMoves(selectedPiece);
+            renderer.RenderPossibleMoves(possibleMoves);
+        }
+        // Render the pieces along the drag. Render the piece at intial position if not dragging.
+        if (GetCurrentAgent()->IsDragging()) {
+            renderer.RenderDraggingPiece(board.GetPieceByPosition(selectedPosition.value()));
+        } else if (selectedPosition != std::nullopt) {
+            renderer.RenderPieces(std::vector<const Piece*>{board.GetPieceByPosition(selectedPosition.value())});
+        }
     }
 }
 void Game::Run() {
@@ -186,8 +202,6 @@ bool Game::Undo() {
 
     whiteAgent->Init();
     blackAgent->Init();
-    selectedPosition = std::nullopt;
-    isPromoting = false;
 
     turn--;
     redoHistory.push_back(board);
@@ -203,8 +217,6 @@ bool Game::Redo() {
 
     whiteAgent->Init();
     blackAgent->Init();
-    selectedPosition = std::nullopt;
-    isPromoting = false;
 
     turn++;
     undoHistory.push_back(board);
@@ -220,6 +232,10 @@ CHESS_COLOR Game::WhoseTurn() const {
     if (turn % 2 == 0) return CHESS_WHITE;
     else return CHESS_BLACK;
 }
+const Agent* Game::GetCurrentAgent() const {
+    if (WhoseTurn() == CHESS_WHITE) return whiteAgent.get();
+    else return blackAgent.get();
+}
 int Game::GetTurn() const {
     return turn;
 }
@@ -234,14 +250,8 @@ void Game::Running() {
     std::optional<Move> move;
     if (WhoseTurn() == CHESS_WHITE) {
         move = whiteAgent->GetMove(board);
-        selectedPosition = whiteAgent->GetSelectedPosition();
-        isPromoting = whiteAgent->IsPromoting();
-        promotingFile = whiteAgent->GetPromotingFile();
     } else {
         move = blackAgent->GetMove(board);
-        selectedPosition = blackAgent->GetSelectedPosition();
-        isPromoting = blackAgent->IsPromoting();
-        promotingFile = blackAgent->GetPromotingFile();
     }
     if (move != std::nullopt) {
         ExecuteMove(move.value());
@@ -258,9 +268,6 @@ void Game::ExecuteMove(const Move move) {
     }
     std::vector<Board>().swap(redoHistory); // clear the redo history
     turn++;
-
-    selectedPosition = std::nullopt;
-    isPromoting = false;
 
     UpdateGameStatus();
 }

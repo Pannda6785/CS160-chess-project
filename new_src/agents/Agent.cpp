@@ -27,6 +27,10 @@ int Agent::GetPromotingFile() const {
     return -1;
 }
 
+bool Agent::IsDragging() const {
+    return false;
+}
+
 std::optional<Move> Agent::GetMove(const Board &board) {
     // Is not expected to be called
     return std::nullopt;
