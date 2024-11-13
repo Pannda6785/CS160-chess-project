@@ -89,7 +89,7 @@ namespace Properties { // game properties
         for (const auto & entry : std::filesystem::directory_iterator(SKIN1_PATH)) {
             // Load and resize image.
             Image image = LoadImage(entry.path().string().c_str());
-            ImageResize(&image, GetCellSize(), GetCellSize());
+            // ImageResize(&image, GetCellSize(), GetCellSize()); // No need now
 
             Texture texture = LoadTextureFromImage(image);
 
@@ -106,7 +106,8 @@ namespace Properties { // game properties
         for (const auto & entry : std::filesystem::directory_iterator(SKIN2_PATH)) {
             // Load and resize image.
             Image image = LoadImage(entry.path().string().c_str());
-            ImageResize(&image, GetCellSize(), GetCellSize());
+            // ImageResize(&image, GetCellSize(), GetCellSize());
+            
 
             Texture texture = LoadTextureFromImage(image);
 
@@ -123,7 +124,7 @@ namespace Properties { // game properties
         for (const auto & entry : std::filesystem::directory_iterator(SKIN3_PATH)) {
             // Load and resize image.
             Image image = LoadImage(entry.path().string().c_str());
-            ImageResize(&image, GetCellSize(), GetCellSize());
+            // ImageResize(&image, GetCellSize(), GetCellSize());
 
             Texture texture = LoadTextureFromImage(image);
 

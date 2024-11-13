@@ -39,14 +39,25 @@ void Renderer::RenderLastMove(Move lastMove) {
     DrawRectangle(x1, y1, Properties::GetCellSize(), Properties::GetCellSize(), Color{144, 238, 144, 150});
 }
 
-void Renderer::RenderPieces(std::vector<const Piece*> pieces) {
-    for (const Piece* piece : pieces) {
-        int i = piece->GetPosition().i;
-        int j = piece->GetPosition().j;
-        int x = Properties::GetBorderSize() + j * Properties::GetCellSize() + Properties::GetCellSize() / 2;
-        int y = Properties::GetBorderSize() + i * Properties::GetCellSize() + Properties::GetCellSize() / 2;
-        Color color = piece->GetColor() == CHESS_WHITE ? PINK : GREEN;
-        DrawCircle(x, y, 30, color);  
+void Renderer::RenderPieces(const Board& board) {
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            const Piece* piece = board.GetPieceByPosition({i, j});
+            if (piece != nullptr) {
+                /*
+                // Render chess piece demo
+                int xc = Properties::GetBorderSize() + j * Properties::GetCellSize() + Properties::GetCellSize() / 2;
+                int yc = Properties::GetBorderSize() + i * Properties::GetCellSize() + Properties::GetCellSize() / 2;
+                Color color = piece->GetColor() == CHESS_WHITE ? PINK : GREEN;
+                */
+                
+                std::string pieceName = (piece->GetColor() == CHESS_WHITE ? "w" : "b") + piece->GetTag();
+                int x = Properties::GetBorderSize() + j * Properties::GetCellSize();
+                int y = Properties::GetBorderSize() + (i + 1) * Properties::GetCellSize() - Properties::GetCellSize() * Properties::skin1[pieceName].height / Properties::skin1[pieceName].width;
+                DrawTexturePro(Properties::skin1[pieceName], Rectangle{0, 0, (float) Properties::skin1[pieceName].width, (float) Properties::skin1[pieceName].height},
+                    Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize() * Properties::skin1[pieceName].height / Properties::skin1[pieceName].width}, Vector2{0, 0}, 0, WHITE);              
+            }
+        }
     }
 }
 
