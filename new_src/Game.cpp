@@ -18,7 +18,7 @@ void Game::Init() {
     board.Init();
     // TO DO: properly have the right kind of agent set
     if (whiteAgent == nullptr) whiteAgent = std::make_unique<ManualAgent>(CHESS_WHITE);
-    if (blackAgent == nullptr) blackAgent = std::make_unique<ManualAgent>(CHESS_BLACK);
+    if (blackAgent == nullptr) blackAgent = std::make_unique<RandomAgent>(CHESS_BLACK);
 
     selectedPosition = std::nullopt;
     isPromoting = false;

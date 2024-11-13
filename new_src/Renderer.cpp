@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "RenderUtilities.h"
 #include "Properties.h"
+#include <string>
 
 Renderer renderer;
 
@@ -43,10 +44,14 @@ void Renderer::RenderPieces(const Board& board) {
         for (int j = 0; j < 8; j++) {
             const Piece* piece = board.GetPieceByPosition({i, j});
             if (piece != nullptr) {
-                int x = Properties::GetBorderSize() + j * Properties::GetCellSize() + Properties::GetCellSize() / 2;
-                int y = Properties::GetBorderSize() + i * Properties::GetCellSize() + Properties::GetCellSize() / 2;
+                int x = Properties::GetBorderSize() + j * Properties::GetCellSize();
+                int y = Properties::GetBorderSize() + i * Properties::GetCellSize();
+                int xc = Properties::GetBorderSize() + j * Properties::GetCellSize() + Properties::GetCellSize() / 2;
+                int yc = Properties::GetBorderSize() + i * Properties::GetCellSize() + Properties::GetCellSize() / 2;
                 Color color = piece->GetColor() == CHESS_WHITE ? PINK : GREEN;
-                DrawCircle(x, y, 30, color);                 
+                std::string pieceName = (piece->GetColor() == CHESS_WHITE ? "w" : "b") + piece->GetTag();
+                DrawTexturePro(Properties::skin1[pieceName], Rectangle{0, 0, (float)Properties::skin1[pieceName].width, (float)Properties::skin1[pieceName].height},
+                    Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
             }
         }
     }
@@ -74,11 +79,17 @@ void Renderer::RenderPromotion(CHESS_COLOR color, int promotingFile) {
     int x = b + promotingFile * c;
     if (color == CHESS_WHITE) {
         DrawRectangle(x, b, c, 4.5 * c, GOLD);
-        DrawTextCen("Q", x + c / 2, b + c * 0.5, 35, PINK);
-        DrawTextCen("N", x + c / 2, b + c * 1.5, 35, PINK);
-        DrawTextCen("R", x + c / 2, b + c * 2.5, 35, PINK);
-        DrawTextCen("B", x + c / 2, b + c * 3.5, 35, PINK);
-        DrawTextCen("X", x + c / 2, b + c * 4.25, 20, GRAY);
+        DrawTexturePro(Properties::skin1["wQ"], Rectangle{0, 0, (float)Properties::skin1["wQ"].width, (float)Properties::skin1["wQ"].height},
+            Rectangle{(float) x, (float) b, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+        DrawTexturePro(Properties::skin1["wR"], Rectangle{0, 0, (float)Properties::skin1["wR"].width, (float)Properties::skin1["wR"].height},
+            Rectangle{(float) x, (float) b + c * 1, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+        DrawTexturePro(Properties::skin1["wB"], Rectangle{0, 0, (float)Properties::skin1["wB"].width, (float)Properties::skin1["wB"].height},
+            Rectangle{(float) x, (float) b + c * 2, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+        DrawTexturePro(Properties::skin1["wN"], Rectangle{0, 0, (float)Properties::skin1["wN"].width, (float)Properties::skin1["wN"].height},
+            Rectangle{(float) x, (float) b + c * 3, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+        DrawTextCen("x", x + c / 2, b + c * 4.25, 20, GRAY);
+        // DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "X", x + c / 2, b + c * 4.25, 20, GRAY);
+        // DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "GAY CHESS", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
     } else {
         DrawRectangle(x, b + c * 3.5, c, 4.5 * c, GOLD);
         DrawTextCen("Q", x + c / 2, b + c * 7.5, 35, GREEN);
