@@ -6,7 +6,6 @@
 #include <map>
 #include <string>
 #include "raylib.h"
-#include <iostream>
 
 namespace Properties { // game properties
     // Window variables
@@ -19,6 +18,7 @@ namespace Properties { // game properties
     inline std::map<std::string, Texture> skin1;
     inline std::map<std::string, Texture> skin2;
     inline std::map<std::string, Texture> skin3;
+    inline std::map<std::string, Texture> textures;
     inline std::map<std::string, Texture> elements;
     inline std::map<std::string, Font> fonts;
     inline int fontSizes[] = {45, 80};
@@ -167,7 +167,6 @@ namespace Properties { // game properties
 
                 std::string fileNameWithoutExtension = entry.path().filename().string().substr(0, dotIndex) + "_" + std::to_string(fontSize);
                 fonts[fileNameWithoutExtension] = font;
-                std::cout << fileNameWithoutExtension << "\n";
                 // Free font data.
                 // UnloadFont(font);
             }

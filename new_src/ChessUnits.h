@@ -186,5 +186,4 @@ inline std::istream& operator>>(std::istream& is, Move& move) {
     }
     return is;
 }
-
 #endif // CHESS_UNITS_H

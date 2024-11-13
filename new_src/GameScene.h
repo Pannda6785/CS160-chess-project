@@ -22,6 +22,7 @@ private:
 
     // List of buttons
     Button backButton;
+    // pauseGame
     Button continueButton;
     Button saveButton;
     Button loadButton;
@@ -32,6 +33,7 @@ private:
     // TESTING
     Button testSaveButton;
     Button testLoadButton;
+    Button exitButton;
     
     // List of gameScene
     void MainGame();
