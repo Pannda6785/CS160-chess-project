@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "RenderUtilities.h"
 #include "Properties.h"
+#include <string>
 
 Renderer renderer;
 
@@ -77,11 +78,17 @@ void Renderer::RenderPromotion(CHESS_COLOR color, int promotingFile) {
     int x = b + promotingFile * c;
     if (color == CHESS_WHITE) {
         DrawRectangle(x, b, c, 4.5 * c, GOLD);
-        DrawTextCen("Q", x + c / 2, b + c * 0.5, 35, PINK);
-        DrawTextCen("N", x + c / 2, b + c * 1.5, 35, PINK);
-        DrawTextCen("R", x + c / 2, b + c * 2.5, 35, PINK);
-        DrawTextCen("B", x + c / 2, b + c * 3.5, 35, PINK);
-        DrawTextCen("X", x + c / 2, b + c * 4.25, 20, GRAY);
+        DrawTexturePro(Properties::skin1["wQ"], Rectangle{0, 0, (float)Properties::skin1["wQ"].width, (float)Properties::skin1["wQ"].height},
+            Rectangle{(float) x, (float) b, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+        DrawTexturePro(Properties::skin1["wR"], Rectangle{0, 0, (float)Properties::skin1["wR"].width, (float)Properties::skin1["wR"].height},
+            Rectangle{(float) x, (float) b + c * 1, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+        DrawTexturePro(Properties::skin1["wB"], Rectangle{0, 0, (float)Properties::skin1["wB"].width, (float)Properties::skin1["wB"].height},
+            Rectangle{(float) x, (float) b + c * 2, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+        DrawTexturePro(Properties::skin1["wN"], Rectangle{0, 0, (float)Properties::skin1["wN"].width, (float)Properties::skin1["wN"].height},
+            Rectangle{(float) x, (float) b + c * 3, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+        DrawTextCen("x", x + c / 2, b + c * 4.25, 20, GRAY);
+        // DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "X", x + c / 2, b + c * 4.25, 20, GRAY);
+        // DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "GAY CHESS", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
     } else {
         DrawRectangle(x, b + c * 3.5, c, 4.5 * c, GOLD);
         DrawTextCen("Q", x + c / 2, b + c * 7.5, 35, GREEN);
