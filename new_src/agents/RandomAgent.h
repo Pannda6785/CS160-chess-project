@@ -6,6 +6,7 @@
 class RandomAgent : public Agent {
 public:
     RandomAgent(CHESS_COLOR agentColor, double moveDelay = 0.5);
+    void Init() override;
     std::optional<Move> GetMove(const Board &board) override;
     
 private:

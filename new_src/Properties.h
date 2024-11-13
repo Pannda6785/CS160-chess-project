@@ -31,6 +31,10 @@ namespace Properties { // game properties
     const std::string SKIN3_PATH = ASSETS_PATH + "/textures/skin3"; // On-board elements (need to modified one)
     const std::string ELEMENTS_PATH = ASSETS_PATH + "/elements"; // titles element
     const std::string FONTS_PATH = ASSETS_PATH + "/fonts"; // fonts element
+    const std::string SAVEFILES_PATH = "../savefiles";
+    const std::string SAVEFILES_SLOT1 = SAVEFILES_PATH + "/slot1.txt";
+    const std::string SAVEFILES_SLOT2 = SAVEFILES_PATH + "/slot2.txt";
+    const std::string SAVEFILES_SLOT3 = SAVEFILES_PATH + "/slot3.txt";
 
     // Windows Info
     inline int GetInitialScreenWidth() {
@@ -167,6 +171,13 @@ namespace Properties { // game properties
                 // UnloadFont(font);
             }
         }
+    }
+
+    inline std::string GetSavefilePath(int slot) {
+        if (slot == 1) return SAVEFILES_SLOT1;
+        if (slot == 2) return SAVEFILES_SLOT2;
+        if (slot == 3) return SAVEFILES_SLOT3;
+        return ""; // shoud not reach this
     }
 };
 

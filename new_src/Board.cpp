@@ -68,6 +68,16 @@ void Board::Init() {
     Add(std::make_unique<Rook>(CHESS_BLACK, Position{0, 7}));
 }
 
+bool Board::Add(std::string tag, CHESS_COLOR color, Position position, bool hasMoved = false) {
+    if (tag == "K") return Add(std::make_unique<King>(color, position, hasMoved));
+    if (tag == "Q") return Add(std::make_unique<Queen>(color, position, hasMoved));
+    if (tag == "B") return Add(std::make_unique<Bishop>(color, position, hasMoved));
+    if (tag == "N") return Add(std::make_unique<Knight>(color, position, hasMoved));
+    if (tag == "R") return Add(std::make_unique<Rook>(color, position, hasMoved));
+    if (tag == "P") return Add(std::make_unique<Pawn>(color, position, hasMoved));
+    std::cerr << "Warning: Add failed. Tag not match to any known piece.\n";
+    return false;
+}
 bool Board::Add(std::unique_ptr<Piece> piece) {
     for (size_t i = 0; i < pieces.size(); i++) {
         if (pieces[i]->GetPosition() == piece->GetPosition()) {
@@ -132,13 +142,13 @@ bool Board::ExecuteMove(const Move move) {
         if (move.promotionPiece == ROOK) Add(std::make_unique<Rook>(color, move.toPosition));
     }
 
-    lastMove = move;
+    SetLastMove(move);
     return true;    
 }
-
-std::optional<Move> Board::GetLastMove() const {
-    return lastMove;
+void Board::SetLastMove(const std::optional<Move> move) {
+    lastMove = move;
 }
+
 const Piece* Board::GetPieceByPosition(const Position position) const {
     for (size_t i = 0; i < pieces.size(); i++) {
         if (pieces[i]->GetPosition() == position) {
@@ -155,6 +165,17 @@ std::vector<const Piece*> Board::GetPiecesByColor(const CHESS_COLOR color) const
         }
     }
     return ret;
+}
+std::vector<const Piece*> Board::GetPieces() const {
+    std::vector<const Piece*> ret;
+    for (const std::unique_ptr<Piece> &piece : pieces) {
+        ret.push_back(piece.get());
+    }
+    return ret;
+}
+
+std::optional<Move> Board::GetLastMove() const {
+    return lastMove;
 }
 std::vector<Move> Board::GetPossibleMoves(const Piece* piece) const {
     std::vector<Move> moves = piece->GetPossibleMoves(*this);

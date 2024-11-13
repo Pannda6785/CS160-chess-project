@@ -1,19 +1,13 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <stack>
+#include <vector>
 #include <memory>
 #include <optional>
 
 #include "ChessUnits.h"
 #include "Board.h"
-#include "pieces/Piece.h"
 #include "agents/Agent.h"
-
-#include "agents/RandomAgent.h"
-#include "agents/ManualAgent.h"
-
-#include "Renderer.h"
 
 class Game {
 public:
@@ -21,7 +15,8 @@ public:
     void SetAgent(std::unique_ptr<Agent> agent);
     
     void Init(); // Makes game the default game
-    void LoadGame(); // Load from gamesave
+    void LoadGame(int slot); // Load from gamesave
+    void SaveGame(int slot) const; // Save to gamesave
 
     void Render(); // Is called per frame when game is running. Renders the game.
     void Run(); // Is called per frame. Handles input, game flow control and everything about the gameplay
@@ -40,14 +35,10 @@ private:
 
     int turn;
     Board board;
-    std::stack<Board> undoHistory;
-    std::stack<Board> redoHistory;
+    std::vector<Board> undoHistory;
+    std::vector<Board> redoHistory;
 
-    enum GAME_STATE {
-        GAME_RUNNING,
-        GAME_ENDED
-    }; 
-    GAME_STATE state;
+    CHESS_VERDICT verdict;
 
     // Volatile info to render human player related moves
     std::optional<Position> selectedPosition;
@@ -57,7 +48,7 @@ private:
     void Running(); // Handles the moving of pieces
     void Ended(); // Probably does nothing (chess board is retained and game informations as well as extra buttons are handled in GameScene)
     void ExecuteMove(const Move move); // Board handle, turn swap, state handle, audio, stacks
-        
+    void UpdateGameStatus(); // update state and verdict. checks for end of game and stuffs
 };
 
 extern Game game;
