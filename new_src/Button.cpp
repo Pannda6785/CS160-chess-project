@@ -8,13 +8,14 @@ Button::~Button() {
     UnloadFont(font);
 }
 
-void Button::SetRec(Rectangle rec, Color recColor = Color{255, 255, 255, 0}) {
+void Button::SetRec(Rectangle rec, Color recColor = BLANK, Color hoveringColor = Color{255, 255, 255, 0}) {
     this->useRatio = false;
     this->rec = rec;
     this->recColor = recColor;
+    this->hoveringColor = hoveringColor;
 }
 
-void Button::SetRatio(float rx, float dx, float ry, float dy, float rw, float dw, float rh, float dh, Color recColor = Color{255, 255, 255, 0}) {
+void Button::SetRatio(float rx, float dx, float ry, float dy, float rw, float dw, float rh, float dh, Color recColor = BLANK, Color hoveringColor = Color{255, 255, 255, 0}) {
     this->useRatio = true;
     this->rx = rx;
     this->dx = dx;
@@ -25,6 +26,7 @@ void Button::SetRatio(float rx, float dx, float ry, float dy, float rw, float dw
     this->rh = rh;
     this->dh = dh;
     this->recColor = recColor;
+    this->hoveringColor = hoveringColor;
 }
 
 void Button::SetText(std::string text, int fontSize = 0, Color textColor = GRAY, Font font = {}) {
@@ -45,7 +47,8 @@ void Button::Render() {
 
     // Render the box
     if(texture.id == 0) {
-        if(state == HOVERING) DrawRectangleRec(rec, recColor);
+        if(state == HOVERING) DrawRectangleRec(rec, hoveringColor);
+        else DrawRectangleRec(rec, recColor);
     } else {
         DrawTexturePro(texture, (Rectangle) {0.0, 0.0, (float) texture.width, (float) texture.height}, rec, (Vector2) {0.0, 0.0}, 0.0, recColor);
     }

@@ -6,15 +6,17 @@
 #include "Renderer.h"
 #include "Properties.h"
 #include <fstream>
+#include <iostream>
 
 Game game;
 
 void Game::SetAgent(CHESS_COLOR agentColor, std::string agentTag) {
         // TO DO: set the right agent
+    std::cout << ((agentColor == CHESS_WHITE) ? "white" : "black") << " " << agentTag << "\n";
     if (agentTag == "Human") SetAgent(std::make_unique<ManualAgent>(agentColor));
-    if (agentTag == "Bot1") SetAgent(std::make_unique<RandomAgent>(agentColor));
-    if (agentTag == "Bot2") SetAgent(std::make_unique<RandomAgent>(agentColor));
-    if (agentTag == "Bot3") SetAgent(std::make_unique<RandomAgent>(agentColor));
+    if (agentTag == "Easy") SetAgent(std::make_unique<RandomAgent>(agentColor));
+    if (agentTag == "Medium") SetAgent(std::make_unique<RandomAgent>(agentColor));
+    if (agentTag == "Hard") SetAgent(std::make_unique<RandomAgent>(agentColor));
 }
 void Game::SetAgent(std::unique_ptr<Agent> agent) {
     if (agent->GetColor() == CHESS_WHITE) {
