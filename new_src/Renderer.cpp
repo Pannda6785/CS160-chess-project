@@ -2,6 +2,7 @@
 #include "RenderUtilities.h"
 #include "Properties.h"
 #include <string>
+#include <algorithm>
 
 Renderer renderer;
 
@@ -60,8 +61,13 @@ void Renderer::RenderPieces(std::vector<const Piece*> pieces) {
 
 void Renderer::RenderDraggingPiece(const Piece* piece) {
     Vector2 mousePosition = GetMousePosition();
-    Color color = piece->GetColor() == CHESS_WHITE ? PINK : GREEN;
-    DrawCircle(mousePosition.x, mousePosition.y, 30, color);  
+    std::string pieceName = (piece->GetColor() == CHESS_WHITE ? "w" : "b") + piece->GetTag();
+    int x = std::max(std::min((int) mousePosition.x, Properties::GetBorderSize() + 8 * Properties::GetCellSize()), Properties::GetBorderSize());
+    x = x - Properties::GetCellSize() / 2;
+    int y = std::max(std::min((int) mousePosition.y, Properties::GetBorderSize() + 8 * Properties::GetCellSize()), Properties::GetBorderSize());
+    y = y - Properties::GetCellSize() * Properties::skin1[pieceName].height / Properties::skin1[pieceName].width / 2;
+    DrawTexturePro(Properties::skin1[pieceName], Rectangle{0, 0, (float) Properties::skin1[pieceName].width, (float) Properties::skin1[pieceName].height},
+        Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize() * Properties::skin1[pieceName].height / Properties::skin1[pieceName].width}, Vector2{0, 0}, 0, WHITE);              
 }
 
 void Renderer::RenderSelectedPosition(Position position) {
@@ -86,23 +92,33 @@ void Renderer::RenderPromotion(CHESS_COLOR color, int promotingFile) {
     int x = b + promotingFile * c;
     if (color == CHESS_WHITE) {
         DrawRectangle(x, b, c, 4.5 * c, GOLD);
-        DrawTexturePro(Properties::skin1["wQ"], Rectangle{0, 0, (float)Properties::skin1["wQ"].width, (float)Properties::skin1["wQ"].height},
-            Rectangle{(float) x, (float) b, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
-        DrawTexturePro(Properties::skin1["wR"], Rectangle{0, 0, (float)Properties::skin1["wR"].width, (float)Properties::skin1["wR"].height},
-            Rectangle{(float) x, (float) b + c * 1, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
-        DrawTexturePro(Properties::skin1["wB"], Rectangle{0, 0, (float)Properties::skin1["wB"].width, (float)Properties::skin1["wB"].height},
-            Rectangle{(float) x, (float) b + c * 2, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
-        DrawTexturePro(Properties::skin1["wN"], Rectangle{0, 0, (float)Properties::skin1["wN"].width, (float)Properties::skin1["wN"].height},
-            Rectangle{(float) x, (float) b + c * 3, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
-        DrawTextCen("x", x + c / 2, b + c * 4.25, 20, GRAY);
-        // DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "X", x + c / 2, b + c * 4.25, 20, GRAY);
-        // DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "GAY CHESS", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
+        DrawTexturePro(Properties::skin1["wQ"], Rectangle{0, 0, (float) Properties::skin1["wQ"].width, (float) Properties::skin1["wQ"].height},
+            Rectangle{(float) x, (float) b + 1 * c - c * Properties::skin1["wQ"].height / Properties::skin1["wQ"].width, (float) Properties::GetCellSize(),
+            (float) c * Properties::skin1["wQ"].height / Properties::skin1["wQ"].width}, Vector2{0, 0}, 0, WHITE);              
+        DrawTexturePro(Properties::skin1["wR"], Rectangle{0, 0, (float) Properties::skin1["wR"].width, (float) Properties::skin1["wR"].height},
+            Rectangle{(float) x, (float) b + 2 * c - c * Properties::skin1["wR"].height / Properties::skin1["wR"].width, (float) Properties::GetCellSize(),
+            (float) c * Properties::skin1["wR"].height / Properties::skin1["wR"].width}, Vector2{0, 0}, 0, WHITE);              
+        DrawTexturePro(Properties::skin1["wB"], Rectangle{0, 0, (float) Properties::skin1["wB"].width, (float) Properties::skin1["wB"].height},
+            Rectangle{(float) x, (float) b + 3 * c - c * Properties::skin1["wB"].height / Properties::skin1["wB"].width, (float) Properties::GetCellSize(),
+            (float) c * Properties::skin1["wB"].height / Properties::skin1["wB"].width}, Vector2{0, 0}, 0, WHITE);              
+        DrawTexturePro(Properties::skin1["wN"], Rectangle{0, 0, (float) Properties::skin1["wN"].width, (float) Properties::skin1["wN"].height},
+            Rectangle{(float) x, (float) b + 4 * c - c * Properties::skin1["wN"].height / Properties::skin1["wN"].width, (float) Properties::GetCellSize(),
+            (float) c * Properties::skin1["wN"].height / Properties::skin1["wN"].width}, Vector2{0, 0}, 0, WHITE);
+        DrawTextCen("x", x + c / 2, b + c * 3.75, 20, GRAY);         
     } else {
         DrawRectangle(x, b + c * 3.5, c, 4.5 * c, GOLD);
-        DrawTextCen("Q", x + c / 2, b + c * 7.5, 35, GREEN);
-        DrawTextCen("N", x + c / 2, b + c * 6.5, 35, GREEN);
-        DrawTextCen("R", x + c / 2, b + c * 5.5, 35, GREEN);
-        DrawTextCen("B", x + c / 2, b + c * 4.5, 35, GREEN);
-        DrawTextCen("X", x + c / 2, b + c * 3.75, 20, GRAY);
+        DrawTexturePro(Properties::skin1["bN"], Rectangle{0, 0, (float) Properties::skin1["bN"].width, (float) Properties::skin1["bN"].height},
+            Rectangle{(float) x, (float) b + 5 * c - c * Properties::skin1["bN"].height / Properties::skin1["bN"].width, (float) Properties::GetCellSize(),
+            (float) c * Properties::skin1["bN"].height / Properties::skin1["bN"].width}, Vector2{0, 0}, 0, WHITE);              
+        DrawTexturePro(Properties::skin1["bB"], Rectangle{0, 0, (float) Properties::skin1["bB"].width, (float) Properties::skin1["bB"].height},
+            Rectangle{(float) x, (float) b + 6 * c - c * Properties::skin1["bB"].height / Properties::skin1["bB"].width, (float) Properties::GetCellSize(),
+            (float) c * Properties::skin1["bB"].height / Properties::skin1["bB"].width}, Vector2{0, 0}, 0, WHITE);              
+        DrawTexturePro(Properties::skin1["bR"], Rectangle{0, 0, (float) Properties::skin1["bR"].width, (float) Properties::skin1["bR"].height},
+            Rectangle{(float) x, (float) b + 7 * c - c * Properties::skin1["bR"].height / Properties::skin1["bR"].width, (float) Properties::GetCellSize(),
+            (float) c * Properties::skin1["bR"].height / Properties::skin1["bR"].width}, Vector2{0, 0}, 0, WHITE);              
+        DrawTexturePro(Properties::skin1["bQ"], Rectangle{0, 0, (float) Properties::skin1["bQ"].width, (float) Properties::skin1["bQ"].height},
+            Rectangle{(float) x, (float) b + 8 * c - c * Properties::skin1["bQ"].height / Properties::skin1["bQ"].width, (float) Properties::GetCellSize(),
+            (float) c * Properties::skin1["bQ"].height / Properties::skin1["bQ"].width}, Vector2{0, 0}, 0, WHITE);              
+        DrawTextCen("x", x + c / 2, b + c * 3.75, 20, GRAY);
     }
 }
