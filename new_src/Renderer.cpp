@@ -62,10 +62,13 @@ void Renderer::RenderPieces(std::vector<const Piece*> pieces) {
 void Renderer::RenderDraggingPiece(const Piece* piece) {
     Vector2 mousePosition = GetMousePosition();
     std::string pieceName = (piece->GetColor() == CHESS_WHITE ? "w" : "b") + piece->GetTag();
+    
+    // the min-max is for the boundary. feel free to unlock the limit.
     int x = std::max(std::min((int) mousePosition.x, Properties::GetBorderSize() + 8 * Properties::GetCellSize()), Properties::GetBorderSize());
     x = x - Properties::GetCellSize() / 2;
     int y = std::max(std::min((int) mousePosition.y, Properties::GetBorderSize() + 8 * Properties::GetCellSize()), Properties::GetBorderSize());
     y = y - Properties::GetCellSize() * Properties::skin1[pieceName].height / Properties::skin1[pieceName].width / 2;
+    
     DrawTexturePro(Properties::skin1[pieceName], Rectangle{0, 0, (float) Properties::skin1[pieceName].width, (float) Properties::skin1[pieceName].height},
         Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize() * Properties::skin1[pieceName].height / Properties::skin1[pieceName].width}, Vector2{0, 0}, 0, WHITE);              
 }

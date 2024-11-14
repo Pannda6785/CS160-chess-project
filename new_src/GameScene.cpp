@@ -177,7 +177,7 @@ void GameScene::PauseGame() {
 
 void GameScene::SaveGame() {
     // Render assets
-    DrawTexturePro(Properties::elements["saveBackGround"], (Rectangle) {0.0, 0.0, (float) Properties::elements["loadBackGround"].width, (float) Properties::elements["loadBackGround"].height}, 
+    DrawTexturePro(Properties::elements["saveBackGround"], (Rectangle) {0.0, 0.0, (float) Properties::elements["saveBackGround"].width, (float) Properties::elements["saveBackGround"].height}, 
                     (Rectangle) {0.0, 0.0, (float) GetScreenWidth(), (float) GetScreenHeight()}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
     DrawTextCenEx(Properties::fonts["Mondwild_80"], "Save", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
     
@@ -342,9 +342,9 @@ void GameScene::LoadGame() {
 
 void GameScene::OptionsGame() {
     // Render assets
-    DrawTexturePro(Properties::elements["optionsBackGround"], (Rectangle) {0.0, 0.0, (float) Properties::elements["gameBackGround"].width, (float) Properties::elements["gameBackGround"].height}, 
+    DrawTexturePro(Properties::elements["optionsBackGround"], (Rectangle) {0.0, 0.0, (float) Properties::elements["optionsBackGround"].width, (float) Properties::elements["optionsBackGround"].height}, 
                     (Rectangle) {0.0, 0.0, (float) GetScreenWidth(), (float) GetScreenHeight()}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
-    DrawTextCenEx(Properties::fonts["Mondwild_80"], "Options", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
+    DrawTextCenEx(Properties::fonts["Mondwild_80"], "Option", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
 
     // Render buttons
     backButton.Render();
