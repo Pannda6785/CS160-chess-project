@@ -22,6 +22,7 @@ private:
 
     // List of buttons 
     Button backButton;
+    Button backLoadSaveButton;
     // Main title buttons
     Button newGameButton;
     Button loadButton;
@@ -36,6 +37,10 @@ private:
     Button mediumDiffButton;
     Button hardDiffButton;
     Button backDiffButton;
+    // Save title buttons
+    Button save1Button;
+    Button save2Button;
+    Button save3Button;
 
     // List of TitleScene;
     void MainTitle();

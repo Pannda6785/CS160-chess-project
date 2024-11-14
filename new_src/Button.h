@@ -10,8 +10,8 @@ public:
     ~Button();
 
     // Process input
-    void SetRec(Rectangle rec, Color recColor, Color hoveringColor);
-    void SetRatio(float rx, float dx, float ry, float dy, float rw, float dw, float rh, float dh, Color recColor, Color hoveringColor);
+    void SetRec(Rectangle rec, Color recColor);
+    void SetRatio(float rx, float dx, float ry, float dy, float rw, float dw, float rh, float dh, Color recColor);
     void SetText(std::string text, int fontSize, Color textColor, Font font);
     void SetSound(Sound sound);
 
@@ -32,8 +32,7 @@ private:
     bool useRatio = false;
     float rx, dx, ry, dy;
     float rw, dw, rh, dh;
-    Color recColor = LIGHTGRAY;
-    Color hoveringColor = WHITE;
+    Color recColor = Color{255, 255, 255, 0};
 
     // Input properties
     std::string text = "";

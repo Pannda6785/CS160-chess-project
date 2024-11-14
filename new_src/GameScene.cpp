@@ -13,44 +13,44 @@ void GameScene::Init() {
 }
 void GameScene::InitButtons() {
     // Duplicated buttons
-    backButton.SetRatio(0, 10, 1, -70, 0, 180, 0, 60, LIGHTGRAY, WHITE);
+    backButton.SetRatio(0, 10, 1, -70, 0, 180, 0, 60, {255, 255, 255, 100});
     backButton.SetText("Exit", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     backButton.SetSound(Properties::sounds["buttonClick"]);
 
     // pauseGame
-    continueButton.SetRatio(0.5, -130, 3.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
+    continueButton.SetRatio(0.5, -130, 3.0 / 8.0, -35, 0, 260, 0, 70, {255, 255, 255, 100});
     continueButton.SetText("Continue", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     continueButton.SetSound(Properties::sounds["buttonClick"]);
     
-    saveButton.SetRatio(0.5, -130, 0.5, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
+    saveButton.SetRatio(0.5, -130, 0.5, -35, 0, 260, 0, 70, {255, 255, 255, 100});
     saveButton.SetText("Save", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     saveButton.SetSound(Properties::sounds["buttonClick"]);
     
-    loadButton.SetRatio(0.5, -130, 5.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
+    loadButton.SetRatio(0.5, -130, 5.0 / 8.0, -35, 0, 260, 0, 70, {255, 255, 255, 100});
     loadButton.SetText("Load", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     loadButton.SetSound(Properties::sounds["buttonClick"]);
     
-    optionsButton.SetRatio(0.5, -130, 0.75, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
+    optionsButton.SetRatio(0.5, -130, 0.75, -35, 0, 260, 0, 70, {255, 255, 255, 100});
     optionsButton.SetText("Options", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     optionsButton.SetSound(Properties::sounds["buttonClick"]);
     
-    undoButton.SetRatio(0.75, -70, 0.6, -30, 0, 140, 0, 60, SKYBLUE, WHITE);
+    undoButton.SetRatio(0.75, -70, 0.6, -35, 0, 140, 0, 60, {255, 255, 255, 100});
     undoButton.SetText("Undo", 30, LIME, Properties::fonts["Rubik-Regular_45"]);
     undoButton.SetSound(Properties::sounds["buttonClick"]);
     
-    redoButton.SetRatio(0.88, -70, 0.6, -30, 0, 140, 0, 60, SKYBLUE, WHITE);
+    redoButton.SetRatio(0.88, -70, 0.6, -35, 0, 140, 0, 60, {255, 255, 255, 100});
     redoButton.SetText("Redo", 30, LIME, Properties::fonts["Rubik-Regular_45"]);
     redoButton.SetSound(Properties::sounds["buttonClick"]);
 
-    testLoadButton.SetRatio(0.75, -70, 0.7, -30, 0, 140, 0, 60, SKYBLUE, WHITE);
+    testLoadButton.SetRatio(0.75, -70, 0.7, -35, 0, 140, 0, 60, {255, 255, 255, 100});
     testLoadButton.SetText("Load", 30, LIME, Properties::fonts["Rubik-Regular_45"]);
     testLoadButton.SetSound(Properties::sounds["buttonClick"]);
     
-    testSaveButton.SetRatio(0.88, -70, 0.7, -30, 0, 140, 0, 60, SKYBLUE, WHITE);
+    testSaveButton.SetRatio(0.88, -70, 0.7, -35, 0, 140, 0, 60, {255, 255, 255, 100});
     testSaveButton.SetText("Save", 30, LIME, Properties::fonts["Rubik-Regular_45"]);
     testSaveButton.SetSound(Properties::sounds["buttonClick"]);
   
-    exitButton.SetRatio(0.5, -130, 7.0 / 8.0, -30, 0, 260, 0, 70, LIGHTGRAY, WHITE);
+    exitButton.SetRatio(0.5, -130, 7.0 / 8.0, -35, 0, 260, 0, 70, {255, 255, 255, 100});
     exitButton.SetText("Exit", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     exitButton.SetSound(Properties::sounds["buttonClick"]);
 }

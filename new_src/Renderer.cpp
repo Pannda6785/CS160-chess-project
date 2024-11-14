@@ -16,6 +16,8 @@ void Renderer::SetPieceTextures(const std::map<std::string, Texture> &textures) 
 }
 
 void Renderer::RenderBackground() {
+    /*
+    // default board
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             int x = Properties::GetBorderSize() + j * Properties::GetCellSize();
@@ -28,6 +30,22 @@ void Renderer::RenderBackground() {
             DrawRectangle(x, y, Properties::GetCellSize(), Properties::GetCellSize(), cellColor);
         }
     }   
+    */
+    
+    DrawTexturePro(Properties::elements["board"], Rectangle{0, 0, (float) Properties::elements["board"].width, (float) Properties::elements["board"].height},
+        Rectangle{(float) Properties::GetBorderSize(), (float) Properties::GetBorderSize(), (float) GetScreenHeight() - Properties::GetCellSize(), (float) GetScreenHeight() - Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            int x = Properties::GetBorderSize() + j * Properties::GetCellSize();
+            int y = Properties::GetBorderSize() + i * Properties::GetCellSize();
+
+            int startingColorInRow = i % 2 == 0 ? 0 : 1;
+            int colorIndex = (startingColorInRow + j) % 2;
+            Color cellColor = colorIndex == 0 ? (Color){255, 255, 255, 100} : (Color){0, 0, 0, 100};
+
+            DrawRectangle(x, y, Properties::GetCellSize(), Properties::GetCellSize(), cellColor);
+        }
+    } 
 }
 
 void Renderer::RenderLastMove(Move lastMove) {
