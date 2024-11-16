@@ -14,6 +14,7 @@ public:
     void SetRatio(float rx, float dx, float ry, float dy, float rw, float dw, float rh, float dh, Color recColor, Color hoveringColor);
     void SetText(std::string text, int fontSize, Color textColor, Font font);
     void SetSound(Sound sound);
+    void SetTexture(std::string name, std::string hoveringName);
 
     void Render();
     bool Check();
@@ -42,6 +43,7 @@ private:
     Font font = {};
     Sound sound = {};
     Texture texture = {};
+    Texture hoveringTexture = {};
 
     void ClickedSound();
     void UpdateState();

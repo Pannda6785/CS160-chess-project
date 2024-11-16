@@ -107,7 +107,7 @@ void GameScene::Run() {
 void GameScene::MainGame() {
     // Background
     DrawLine(GetScreenHeight(), 0, GetScreenHeight(), GetScreenHeight(), BLACK);
-    DrawTexturePro(Properties::skin1["backGround"], Rectangle{0, 0, (float)Properties::skin1["backGround"].width, (float)Properties::skin1["backGround"].height},
+    DrawTexturePro(Properties::skins["backGround"], Rectangle{0, 0, (float)Properties::skins["backGround"].width, (float)Properties::skins["backGround"].height},
                     Rectangle{0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()}, Vector2{0, 0}, 0, WHITE);
 
     // Text box

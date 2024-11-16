@@ -16,12 +16,16 @@ namespace Properties { // game properties
     // Assets holders.
     inline std::map<std::string, Sound> sounds;
     inline std::map<std::string, Music> musics;
+    inline std::map<std::string, Texture> skins;
     inline std::map<std::string, Texture> skin1;
     inline std::map<std::string, Texture> skin2;
     inline std::map<std::string, Texture> skin3;
     inline std::map<std::string, Texture> textures;
     inline std::map<std::string, Texture> elements;
     inline std::map<std::string, Font> fonts;
+    inline int skin;
+    inline bool isMusicsMute, isSoundsMute;
+    inline float musicsVolume, soundsVolume;
     inline int fontSizes[] = {20, 45, 80};
     
     // Assets paths
@@ -80,6 +84,10 @@ namespace Properties { // game properties
             // Free sound data.
             // UnloadSound(sound);
         }
+
+        // Initial values
+        isSoundsMute = false;
+        soundsVolume = 1.0f;
     }
     inline void LoadMusics() {
         for (const auto & entry : std::filesystem::directory_iterator(MUSICS_PATH)) {
@@ -96,6 +104,10 @@ namespace Properties { // game properties
             // Free sound data.
             // UnloadSound(sound);
         }
+
+        // Initial values
+        isMusicsMute = false;
+        musicsVolume = 1.0f;
     }
     inline void LoadTextures() {
         for (const auto & entry : std::filesystem::directory_iterator(SKIN1_PATH)) {
@@ -150,6 +162,10 @@ namespace Properties { // game properties
             // Free image data.
             UnloadImage(image);
         }
+
+        // default skin
+        skin = 1;
+        skins = skin1;
     }
     inline void LoadElements() {
         for (const auto & entry : std::filesystem::directory_iterator(ELEMENTS_PATH)) {
@@ -195,14 +211,68 @@ namespace Properties { // game properties
     
     // Sound settings
     inline void SetSoundsVolume(float volume) {
-        for(auto v : sounds) {
-            SetSoundVolume(v.second, volume);
+        soundsVolume = volume;
+        if(!isSoundsMute) {
+            for(auto v : sounds) {
+                SetSoundVolume(v.second, volume);
+            }
+        }
+    }
+
+    inline void MuteSounds() {
+        if(!isSoundsMute) {
+            isSoundsMute = true;
+            for(auto v : sounds) {
+                SetSoundVolume(v.second, 0.0f);
+            }
+        }
+        else {
+            isSoundsMute = false;
+            for(auto v : sounds) {
+                SetSoundVolume(v.second, soundsVolume);
+            }
         }
     }
 
     inline void SetMusicsVolume(float volume) {
-        for(auto v : musics) {
-            SetMusicVolume(v.second, volume);
+        musicsVolume = volume;
+        if(isMusicsMute) {
+            for(auto v : musics) {
+                SetMusicVolume(v.second, volume);
+            }
+        }
+    }
+    
+    inline void MuteMusics() {
+        if(!isMusicsMute) {
+            isMusicsMute = true;
+            for(auto v : musics) {
+                SetMusicVolume(v.second, 0.0f);
+            }
+        }
+        else {
+            isMusicsMute = false;
+            for(auto v : musics) {
+                SetMusicVolume(v.second, musicsVolume);
+            }
+        }
+    }
+
+    // Chess' custom
+    inline void changeSkin(int newSkin) {
+        switch (newSkin) {
+            case 1: {
+                skins = skin1;
+                skin = 1;
+            } break;
+            case 2: {
+                skins = skin2;
+                skin = 2;
+            } break;
+            case 3: {
+                skins = skin3;
+                skin = 3;
+            }
         }
     }
 };

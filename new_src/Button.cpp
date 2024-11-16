@@ -1,9 +1,11 @@
 #include "Button.h"
 #include "RenderUtilities.h"
+#include "Properties.h"
 
 Button::Button() {}
 Button::~Button() {
     UnloadTexture(texture); 
+    UnloadTexture(hoveringTexture); 
     UnloadSound(sound);  
     UnloadFont(font);
 }
@@ -40,6 +42,11 @@ void Button::SetSound(Sound sound) {
     this->sound = sound;
 }
 
+void Button::SetTexture(std::string name, std::string hoveringName){
+    texture = Properties::elements[name];
+    hoveringTexture = Properties::elements[hoveringName];
+}
+
 void Button::Render() {
     // TO DO: should do some switching of state here, as well as handling the texture if applicable
 
@@ -50,7 +57,8 @@ void Button::Render() {
         if(state == HOVERING) DrawRectangleRec(rec, hoveringColor);
         else DrawRectangleRec(rec, recColor);
     } else {
-        DrawTexturePro(texture, (Rectangle) {0.0, 0.0, (float) texture.width, (float) texture.height}, rec, (Vector2) {0.0, 0.0}, 0.0, recColor);
+        if(state == HOVERING) DrawTexturePro(hoveringTexture, (Rectangle) {0.0, 0.0, (float) texture.width, (float) texture.height}, rec, (Vector2) {0.0, 0.0}, 0.0, WHITE);
+        else DrawTexturePro(texture, (Rectangle) {0.0, 0.0, (float) texture.width, (float) texture.height}, rec, (Vector2) {0.0, 0.0}, 0.0, WHITE);
     }
 
     // Render text in the box
@@ -82,7 +90,7 @@ void Button::UpdateState() {
         } else {
             if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                 state = HOLDING;
-            } else {
+            } else if(!IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                 state = HOVERING;
             }
         }

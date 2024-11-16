@@ -52,6 +52,13 @@ private:
     Button resolution2Button;
     Button resolution3Button;
     Button resolution4Button;
+    Button skin1Button;
+    Button skin2Button;
+    Button skin3Button;
+    Button leftButton;
+    Button rightButton;
+    Button muteMusicsButton;
+    Button muteSoundsButton;
     Slider musicsVolume;
     Slider soundsVolume;
 

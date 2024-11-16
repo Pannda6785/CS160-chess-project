@@ -104,6 +104,16 @@ void TitleScene::InitButtons() {
     resolution3Button.SetSound(Properties::sounds["buttonClick"]);
     resolution4Button.SetText("Fullscreen", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     resolution4Button.SetSound(Properties::sounds["buttonClick"]);
+
+    skin1Button.SetText("Theme 1", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    skin1Button.SetSound(Properties::sounds["buttonClick"]);
+    skin2Button.SetText("Theme 2", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    skin2Button.SetSound(Properties::sounds["buttonClick"]);
+    skin3Button.SetText("Theme 3", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    skin3Button.SetSound(Properties::sounds["buttonClick"]);
+
+    muteMusicsButton.SetSound(Properties::sounds["buttonClick"]);
+    muteSoundsButton.SetSound(Properties::sounds["buttonClick"]);
 }
 
 void TitleScene::Run() {
@@ -344,8 +354,10 @@ void TitleScene::OptionsTitle() {
     // Text
     DrawTextCenEx(Properties::fonts["Mondwild_80"], "Option", int(GetScreenWidth() / 2), int(GetScreenHeight() / 6), 80, 2, PINK);    
     DrawTextCenEx(Properties::fonts["Mondwild_45"], "Resolution", int(Properties::GetBorderSize() / 2 + GetScreenWidth() / 4), int(GetScreenHeight() / 6 + 2 * Properties::GetBorderSize()), 45, 2, PINK);    
+    DrawTextCenEx(Properties::fonts["Mondwild_45"], "Chess themes", int(GetScreenWidth() * 3 / 4 - Properties::GetBorderSize() / 2), int(GetScreenHeight() / 6 + 2 * Properties::GetBorderSize()), 45, 2, PINK);    
 
-    // Resize slider TODO: fix screen
+    // Resize slider and button
+    // TODO: change to screen ratio
     resolution1Button.SetRec(Rectangle{(float) Properties::GetBorderSize() * 5 / 4 + GetScreenWidth() / 8 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 200, 70},
                         BLANK, {255, 255, 255, 100});
     resolution2Button.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 8 - Properties::GetBorderSize() / 4 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 200, 70},
@@ -354,20 +366,67 @@ void TitleScene::OptionsTitle() {
                         BLANK, {255, 255, 255, 100});
     resolution4Button.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 8 - Properties::GetBorderSize() / 4 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize() + 75,(float) 200, 70},
                         BLANK, {255, 255, 255, 100});
+    muteMusicsButton.SetRec(Rectangle{(float) Properties::GetBorderSize() * 4 - 35, (float) GetScreenHeight() * 5 / 8, 70, 70},
+                        BLANK, {255, 255, 255, 100});
+    if(!Properties::isMusicsMute) muteMusicsButton.SetTexture("musics", "hoveringMusics");
+    else muteMusicsButton.SetTexture("muteMusics", "hoveringMuteMusics");
     musicsVolume.SetRec(Rectangle{(float) Properties::GetBorderSize() * 5, (float) GetScreenHeight() * 5 / 8,(float) GetScreenWidth() / 2 - 7 * Properties::GetBorderSize(), 70},
                         Color{0, 158, 47, 100}, Color{255, 109, 194, 255},  {255, 255, 255, 100});
+    muteSoundsButton.SetRec(Rectangle{(float) Properties::GetBorderSize() * 4 - 35, (float) GetScreenHeight() * 6 / 8, 70, 70},
+                        BLANK, {255, 255, 255, 100});
+    if(Properties::isSoundsMute || Properties::soundsVolume == 0.0f) muteSoundsButton.SetTexture("muteSounds", "hoveringMuteSounds");
+    else if(Properties::soundsVolume < 0.4f) {
+        muteSoundsButton.SetTexture("sounds1", "hoveringSounds1");
+    }
+    else if(Properties::soundsVolume < 0.7f) {
+        muteSoundsButton.SetTexture("sounds2", "hoveringSounds2");
+    }
+    else muteSoundsButton.SetTexture("sounds3", "hoveringSounds3");
     soundsVolume.SetRec(Rectangle{(float) Properties::GetBorderSize() * 5, (float) GetScreenHeight() * 6 / 8,(float) GetScreenWidth() / 2 - 7 * Properties::GetBorderSize(), 70},
                         Color{0, 158, 47, 100}, Color{255, 109, 194, 255},  {255, 255, 255, 100});
+    skin1Button.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 4 - Properties::GetBorderSize() / 2 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 200, 70},
+                        BLANK, {255, 255, 255, 100});
+    skin2Button.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 4 - Properties::GetBorderSize() / 2 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 200, 70},
+                        BLANK, {255, 255, 255, 100});
+    skin3Button.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 4 - Properties::GetBorderSize() / 2 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 200, 70},
+                        BLANK, {255, 255, 255, 100});
 
     // Render buttons
     resolution1Button.Render();
     resolution2Button.Render();
     resolution3Button.Render();
     resolution4Button.Render();
+    muteMusicsButton.Render();
     musicsVolume.Render();
+    muteSoundsButton.Render();
     soundsVolume.Render();
     backButton.Render();
-    
+
+    // skin's skin
+    switch(Properties::skin) {
+        case 1: {
+            skin1Button.Render();
+
+            if(skin1Button.Check()) {
+                Properties::changeSkin(1);
+            }
+        } break;
+        case 2: {
+            skin2Button.Render();
+
+            if(skin2Button.Check()) {
+                Properties::changeSkin(2);
+            }
+        } break;
+        case 3: {
+            skin3Button.Render();
+
+            if(skin3Button.Check()) {
+                Properties::changeSkin(3);
+            }
+        } break;
+    }
+
     // Button detectings
     if(resolution1Button.Check()) {
         Properties::ToggleFullscreen(0);
@@ -381,13 +440,19 @@ void TitleScene::OptionsTitle() {
     if(resolution4Button.Check()) {
         Properties::ToggleFullscreen(3);
     }
-    if (musicsVolume.Check()) {
+    if(muteMusicsButton.Check()) {
+        Properties::MuteMusics();
+    }
+    if(musicsVolume.Check()) {
         Properties::SetMusicsVolume(musicsVolume.Get());
     }
-    if (soundsVolume.Check()) {
+    if(muteSoundsButton.Check()) {
+        Properties::MuteSounds();
+    }
+    if(soundsVolume.Check()) {
         Properties::SetSoundsVolume(soundsVolume.Get());
     }
-    if (backButton.Check()) {
+    if(backButton.Check()) {
         title = MAIN;
     }
 }
