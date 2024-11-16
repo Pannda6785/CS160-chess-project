@@ -17,6 +17,8 @@ void Renderer::SetPieceTextures(const std::map<std::string, Texture> &textures) 
 }
 
 void Renderer::RenderBackground() {
+    DrawTexturePro(Properties::skin1["board"], (Rectangle) {0.0, 0.0, (float) Properties::skin1["board"].width, (float) Properties::skin1["board"].height}, 
+                (Rectangle) {(float) Properties::GetBorderSize(), (float) Properties::GetBorderSize(), (float) 8 * Properties::GetCellSize(), (float) 8 * Properties::GetCellSize()}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             int x = Properties::GetBorderSize() + j * Properties::GetCellSize();
@@ -24,7 +26,7 @@ void Renderer::RenderBackground() {
 
             int startingColorInRow = i % 2 == 0 ? 0 : 1;
             int colorIndex = (startingColorInRow + j) % 2;
-            Color cellColor = colorIndex == 0 ? WHITE : BROWN;
+            Color cellColor = colorIndex == 0 ? Color{255, 255, 255, 100} : Color{0, 0, 0, 100};
 
             DrawRectangle(x, y, Properties::GetCellSize(), Properties::GetCellSize(), cellColor);
         }
@@ -107,7 +109,7 @@ void Renderer::RenderPromotion(CHESS_COLOR color, int promotingFile) {
         DrawTexturePro(Properties::skin1["wN"], Rectangle{0, 0, (float) Properties::skin1["wN"].width, (float) Properties::skin1["wN"].height},
             Rectangle{(float) x, (float) b + 4 * c - c * Properties::skin1["wN"].height / Properties::skin1["wN"].width, (float) Properties::GetCellSize(),
             (float) c * Properties::skin1["wN"].height / Properties::skin1["wN"].width}, Vector2{0, 0}, 0, WHITE);
-        DrawTextCen("x", x + c / 2, b + c * 3.75, 20, GRAY);         
+        DrawTextCen("x", x + c / 2, b + c * 4.25, 20, GRAY);         
     } else {
         DrawRectangle(x, b + c * 3.5, c, 4.5 * c, GOLD);
         DrawTexturePro(Properties::skin1["bN"], Rectangle{0, 0, (float) Properties::skin1["bN"].width, (float) Properties::skin1["bN"].height},

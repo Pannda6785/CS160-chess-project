@@ -95,6 +95,15 @@ void TitleScene::InitButtons() {
     // optionTitle
     musicsVolume.SetSound(Properties::sounds["buttonClick"]);
     soundsVolume.SetSound(Properties::sounds["buttonClick"]);
+
+    resolution1Button.SetText("1280x800", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    resolution1Button.SetSound(Properties::sounds["buttonClick"]);
+    resolution2Button.SetText("1366x768", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    resolution2Button.SetSound(Properties::sounds["buttonClick"]);
+    resolution3Button.SetText("1440x900", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    resolution3Button.SetSound(Properties::sounds["buttonClick"]);
+    resolution4Button.SetText("Fullscreen", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    resolution4Button.SetSound(Properties::sounds["buttonClick"]);
 }
 
 void TitleScene::Run() {
@@ -334,24 +343,49 @@ void TitleScene::OptionsTitle() {
     
     // Text
     DrawTextCenEx(Properties::fonts["Mondwild_80"], "Option", int(GetScreenWidth() / 2), int(GetScreenHeight() / 6), 80, 2, PINK);    
-    
+    DrawTextCenEx(Properties::fonts["Mondwild_45"], "Resolution", int(Properties::GetBorderSize() / 2 + GetScreenWidth() / 4), int(GetScreenHeight() / 6 + 2 * Properties::GetBorderSize()), 45, 2, PINK);    
+
     // Resize slider TODO: fix screen
-    musicsVolume.SetRec(Rectangle{(float) Properties::GetBorderSize() * 3, (float) GetScreenHeight() * 5 / 8,(float) GetScreenWidth() / 2 - 5 * Properties::GetBorderSize(), 70},
-                        BLANK, Color{255, 109, 194, 255},  {255, 255, 255, 100});
-    soundsVolume.SetRec(Rectangle{(float) Properties::GetBorderSize() * 3, (float) GetScreenHeight() * 6 / 8,(float) GetScreenWidth() / 2 - 5 * Properties::GetBorderSize(), 70},
-                        BLANK, Color{255, 109, 194, 255},  {255, 255, 255, 100});
+    resolution1Button.SetRec(Rectangle{(float) Properties::GetBorderSize() * 5 / 4 + GetScreenWidth() / 8 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 200, 70},
+                        BLANK, {255, 255, 255, 100});
+    resolution2Button.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 8 - Properties::GetBorderSize() / 4 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 200, 70},
+                        BLANK, {255, 255, 255, 100});
+    resolution3Button.SetRec(Rectangle{(float) Properties::GetBorderSize() * 5 / 4 + GetScreenWidth() / 8 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize() + 75,(float) 200, 70},
+                        BLANK, {255, 255, 255, 100});
+    resolution4Button.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 8 - Properties::GetBorderSize() / 4 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize() + 75,(float) 200, 70},
+                        BLANK, {255, 255, 255, 100});
+    musicsVolume.SetRec(Rectangle{(float) Properties::GetBorderSize() * 5, (float) GetScreenHeight() * 5 / 8,(float) GetScreenWidth() / 2 - 7 * Properties::GetBorderSize(), 70},
+                        Color{0, 158, 47, 100}, Color{255, 109, 194, 255},  {255, 255, 255, 100});
+    soundsVolume.SetRec(Rectangle{(float) Properties::GetBorderSize() * 5, (float) GetScreenHeight() * 6 / 8,(float) GetScreenWidth() / 2 - 7 * Properties::GetBorderSize(), 70},
+                        Color{0, 158, 47, 100}, Color{255, 109, 194, 255},  {255, 255, 255, 100});
 
     // Render buttons
+    resolution1Button.Render();
+    resolution2Button.Render();
+    resolution3Button.Render();
+    resolution4Button.Render();
     musicsVolume.Render();
     soundsVolume.Render();
     backButton.Render();
     
     // Button detectings
+    if(resolution1Button.Check()) {
+        Properties::ToggleFullscreen(0);
+    }
+    if(resolution2Button.Check()) {
+        Properties::ToggleFullscreen(1);
+    }
+    if(resolution3Button.Check()) {
+        Properties::ToggleFullscreen(2);
+    }
+    if(resolution4Button.Check()) {
+        Properties::ToggleFullscreen(3);
+    }
     if (musicsVolume.Check()) {
-        SetMasterVolume(masterVolume.Get());
+        Properties::SetMusicsVolume(musicsVolume.Get());
     }
     if (soundsVolume.Check()) {
-        SetMasterVolume(masterVolume.Get());
+        Properties::SetSoundsVolume(soundsVolume.Get());
     }
     if (backButton.Check()) {
         title = MAIN;

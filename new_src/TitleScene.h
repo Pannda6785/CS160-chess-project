@@ -48,6 +48,10 @@ private:
     Button load2Button;
     Button load3Button;
     // Option title buttons
+    Button resolution1Button;
+    Button resolution2Button;
+    Button resolution3Button;
+    Button resolution4Button;
     Slider musicsVolume;
     Slider soundsVolume;
 

@@ -78,9 +78,9 @@ void Slider::UpdateState() {
         if (state == HOLDING && IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             state = CLICKED;
         } else {
-            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+            if (state == HOVERING && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                 state = HOLDING;
-            } else {
+            } else if(!IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                 state = HOVERING;
             }
         }
@@ -88,7 +88,7 @@ void Slider::UpdateState() {
         if (state == HOLDING && IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             state = CLICKED;
         } else {
-            if ((state == HOLDING) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+            if (state == HOLDING && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                 state = HOLDING;
             } else {
                 state = NONE;
