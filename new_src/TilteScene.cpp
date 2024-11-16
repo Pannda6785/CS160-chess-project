@@ -1,6 +1,5 @@
 #include "TitleScene.h"
 #include "RenderUtilities.h"
-#include "Button.h"
 #include "Game.h"
 #include "Scene.h"
 #include "Properties.h"
@@ -92,6 +91,10 @@ void TitleScene::InitButtons() {
     load3Button.SetRatio(13.0 / 16.0, -130, 9.0 / 12.0, 0, 0, 260, 0, 70, BLANK,  {255, 255, 255, 100}); 
     load3Button.SetText("Load", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     load3Button.SetSound(Properties::sounds["buttonClick"]);
+
+    // optionTitle
+    musicsVolume.SetSound(Properties::sounds["buttonClick"]);
+    soundsVolume.SetSound(Properties::sounds["buttonClick"]);
 }
 
 void TitleScene::Run() {
@@ -327,12 +330,29 @@ void TitleScene::OptionsTitle() {
                     (Rectangle) {0.0, 0.0, (float) GetScreenWidth(), (float) GetScreenHeight()}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
     DrawRectangle(Properties::GetBorderSize(), GetScreenHeight() / 6, GetScreenWidth() - 2 * Properties::GetBorderSize(), GetScreenHeight() * 5 / 6 - Properties::GetBorderSize(), Color{0, 0, 0, 100});
     DrawRectangle(GetScreenWidth() / 2 + Properties::GetBorderSize(), GetScreenHeight() / 6 + Properties::GetBorderSize(), GetScreenWidth() / 2 - 3 * Properties::GetBorderSize(), GetScreenHeight() * 5 / 6 - 3 * Properties::GetBorderSize(), Color{255, 255, 255, 100});
+    DrawRectangle(Properties::GetBorderSize() * 2, GetScreenHeight() / 6 + Properties::GetBorderSize(), GetScreenWidth() / 2 - 3 * Properties::GetBorderSize(), GetScreenHeight() * 5 / 6 - 3 * Properties::GetBorderSize(), Color{255, 255, 255, 100});
+    
+    // Text
     DrawTextCenEx(Properties::fonts["Mondwild_80"], "Option", int(GetScreenWidth() / 2), int(GetScreenHeight() / 6), 80, 2, PINK);    
     
+    // Resize slider TODO: fix screen
+    musicsVolume.SetRec(Rectangle{(float) Properties::GetBorderSize() * 3, (float) GetScreenHeight() * 5 / 8,(float) GetScreenWidth() / 2 - 5 * Properties::GetBorderSize(), 70},
+                        BLANK, Color{255, 109, 194, 255},  {255, 255, 255, 100});
+    soundsVolume.SetRec(Rectangle{(float) Properties::GetBorderSize() * 3, (float) GetScreenHeight() * 6 / 8,(float) GetScreenWidth() / 2 - 5 * Properties::GetBorderSize(), 70},
+                        BLANK, Color{255, 109, 194, 255},  {255, 255, 255, 100});
+
     // Render buttons
+    musicsVolume.Render();
+    soundsVolume.Render();
     backButton.Render();
     
     // Button detectings
+    if (musicsVolume.Check()) {
+        SetMasterVolume(masterVolume.Get());
+    }
+    if (soundsVolume.Check()) {
+        SetMasterVolume(masterVolume.Get());
+    }
     if (backButton.Check()) {
         title = MAIN;
     }

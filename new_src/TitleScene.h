@@ -1,4 +1,5 @@
 #include "Button.h"
+#include "Slider.h"
 
 class TitleScene {
 public:
@@ -46,6 +47,9 @@ private:
     Button load1Button;
     Button load2Button;
     Button load3Button;
+    // Option title buttons
+    Slider musicsVolume;
+    Slider soundsVolume;
 
     // List of TitleScene;
     void MainTitle();

@@ -25,12 +25,13 @@ namespace Properties { // game properties
     
     // Assets paths
     const std::string ASSETS_PATH = "../assets";
-    const std::string SOUNDS_PATH = ASSETS_PATH + "/sounds"; // Sounds
+    const std::string SOUNDS_PATH = ASSETS_PATH + "/sounds"; // Sounds effects
+    const std::string MUSICS_PATH = ASSETS_PATH + "/sounds/music"; // Background musics
     const std::string SKIN1_PATH = ASSETS_PATH + "/textures/skin1"; // On-board elements (need to modified one)
     const std::string SKIN2_PATH = ASSETS_PATH + "/textures/skin2"; // On-board elements (need to modified one)
     const std::string SKIN3_PATH = ASSETS_PATH + "/textures/skin3"; // On-board elements (need to modified one)
     const std::string ELEMENTS_PATH = ASSETS_PATH + "/elements"; // titles element
-    const std::string FONTS_PATH = ASSETS_PATH + "/fonts"; // fonts element
+    const std::string FONTS_PATH = ASSETS_PATH + "/fonts"; 
     const std::string SAVEFILES_PATH = "../savefiles";
     const std::string SAVEFILES_SLOT1 = SAVEFILES_PATH + "/slot1.txt";
     const std::string SAVEFILES_SLOT2 = SAVEFILES_PATH + "/slot2.txt";
