@@ -1,4 +1,5 @@
 #include "Button.h"
+#include "Slider.h"
 
 class GameScene {
 public:
@@ -39,6 +40,21 @@ private:
     Button load1Button;
     Button load2Button;
     Button load3Button;
+    // Option title buttons
+    Button resolution1Button;
+    Button resolution2Button;
+    Button resolution3Button;
+    Button resolution4Button;
+    Button skin1Button;
+    Button skin2Button;
+    Button skin3Button;
+    Button leftButton;
+    Button rightButton;
+    Button muteMusicsButton;
+    Button muteSoundsButton;
+    Slider musicsVolume;
+    Slider soundsVolume;
+    Button backOptionsButton;
     
     // List of gameScene
     void MainGame();

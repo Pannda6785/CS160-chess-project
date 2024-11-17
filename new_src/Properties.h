@@ -164,7 +164,7 @@ namespace Properties { // game properties
         }
 
         // default skin
-        skin = 1;
+        skin = 0;
         skins = skin1;
     }
     inline void LoadElements() {
@@ -261,17 +261,17 @@ namespace Properties { // game properties
     // Chess' custom
     inline void changeSkin(int newSkin) {
         switch (newSkin) {
-            case 1: {
+            case 0: {
                 skins = skin1;
+                skin = 0;
+            } break;
+            case 1: {
+                skins = skin2;
                 skin = 1;
             } break;
             case 2: {
-                skins = skin2;
-                skin = 2;
-            } break;
-            case 3: {
                 skins = skin3;
-                skin = 3;
+                skin = 2;
             }
         }
     }

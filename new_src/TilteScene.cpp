@@ -15,10 +15,6 @@ void TitleScene::Init() {
 }
 void TitleScene::InitButtons() {
     // Duplicated buttons
-    backButton.SetRatio(0, 10, 1, -70, 0, 180, 0, 60, BLANK,  {255, 255, 255, 100}); 
-    backButton.SetText("Back", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
-    backButton.SetSound(Properties::sounds["buttonClick"]);
-
     backLoadSaveButton.SetRatio(0.5, -90, 1, -70, 0, 180, 0, 60, BLANK,  {255, 255, 255, 100}); 
     backLoadSaveButton.SetText("Back", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     backLoadSaveButton.SetSound(Properties::sounds["buttonClick"]);
@@ -114,6 +110,13 @@ void TitleScene::InitButtons() {
 
     muteMusicsButton.SetSound(Properties::sounds["buttonClick"]);
     muteSoundsButton.SetSound(Properties::sounds["buttonClick"]);
+    
+    leftButton.SetSound(Properties::sounds["buttonClick"]);
+    rightButton.SetSound(Properties::sounds["buttonClick"]);
+
+    backOptionsButton.SetRatio(0.5, -90, 19.0 / 20.0, -30, 0, 180, 0, 60, BLANK,  {255, 255, 255, 100}); 
+    backOptionsButton.SetText("Back", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    backOptionsButton.SetSound(Properties::sounds["buttonClick"]);
 }
 
 void TitleScene::Run() {
@@ -374,7 +377,7 @@ void TitleScene::OptionsTitle() {
                         Color{0, 158, 47, 100}, Color{255, 109, 194, 255},  {255, 255, 255, 100});
     muteSoundsButton.SetRec(Rectangle{(float) Properties::GetBorderSize() * 4 - 35, (float) GetScreenHeight() * 6 / 8, 70, 70},
                         BLANK, {255, 255, 255, 100});
-    if(Properties::isSoundsMute || Properties::soundsVolume == 0.0f) muteSoundsButton.SetTexture("muteSounds", "hoveringMuteSounds");
+    if(Properties::isSoundsMute || Properties::soundsVolume == 0) muteSoundsButton.SetTexture("muteSounds", "hoveringMuteSounds");
     else if(Properties::soundsVolume < 0.4f) {
         muteSoundsButton.SetTexture("sounds1", "hoveringSounds1");
     }
@@ -390,7 +393,12 @@ void TitleScene::OptionsTitle() {
                         BLANK, {255, 255, 255, 100});
     skin3Button.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 4 - Properties::GetBorderSize() / 2 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 200, 70},
                         BLANK, {255, 255, 255, 100});
-
+    leftButton.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 4 - Properties::GetBorderSize() / 2 - 100 - 70, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 70, 70},
+                        BLANK, {255, 255, 255, 100});
+    leftButton.SetTexture("left", "hoveringLeft");
+    rightButton.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 4 - Properties::GetBorderSize() / 2 + 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 70, 70},
+                        BLANK, {255, 255, 255, 100});
+    rightButton.SetTexture("right", "hoveringRight");
     // Render buttons
     resolution1Button.Render();
     resolution2Button.Render();
@@ -400,29 +408,50 @@ void TitleScene::OptionsTitle() {
     musicsVolume.Render();
     muteSoundsButton.Render();
     soundsVolume.Render();
-    backButton.Render();
+    leftButton.Render();
+    rightButton.Render();
+    backOptionsButton.Render();
 
     // skin's skin
+    if(leftButton.Check()) {
+        Properties::skin = (Properties::skin - 1 + 3) % 3;
+    }
+    if(rightButton.Check()) {
+        Properties::skin = (Properties::skin + 1) % 3;
+    }
     switch(Properties::skin) {
-        case 1: {
+        case 0: {
             skin1Button.Render();
 
+            DrawTexturePro(Properties::skin1["preview"], (Rectangle) {0.0, 0.0, (float) Properties::skin1["preview"].width, (float) Properties::skin1["preview"].height},
+                (Rectangle) {(float) GetScreenWidth() / 2 + 2 * Properties::GetBorderSize(), (float) GetScreenHeight() / 2,
+                    (float) GetScreenWidth() / 2 - 5 * Properties::GetBorderSize(), (float) (GetScreenWidth() / 2 - 5 * Properties::GetBorderSize()) * Properties::skin1["preview"].height / Properties::skin1["preview"].width}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
+
             if(skin1Button.Check()) {
+                Properties::changeSkin(0);
+            }
+        } break;
+        case 1: {
+            skin2Button.Render();
+
+            DrawTexturePro(Properties::skin2["preview"], (Rectangle) {0.0, 0.0, (float) Properties::skin2["preview"].width, (float) Properties::skin2["preview"].height},
+                (Rectangle) {(float) GetScreenWidth() / 2 + 2 * Properties::GetBorderSize(), (float) GetScreenHeight() / 2,
+                    (float) GetScreenWidth() / 2 - 5 * Properties::GetBorderSize(), (float) (GetScreenWidth() / 2 - 5 * Properties::GetBorderSize()) * Properties::skin2["preview"].height / Properties::skin2["preview"].width}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
+
+
+            if(skin2Button.Check()) {
                 Properties::changeSkin(1);
             }
         } break;
         case 2: {
-            skin2Button.Render();
-
-            if(skin2Button.Check()) {
-                Properties::changeSkin(2);
-            }
-        } break;
-        case 3: {
             skin3Button.Render();
 
+            DrawTexturePro(Properties::skin3["preview"], (Rectangle) {0.0, 0.0, (float) Properties::skin3["preview"].width, (float) Properties::skin3["preview"].height},
+                (Rectangle) {(float) GetScreenWidth() / 2 + 2 * Properties::GetBorderSize(), (float) GetScreenHeight() / 2,
+                    (float) GetScreenWidth() / 2 - 5 * Properties::GetBorderSize(), (float) (GetScreenWidth() / 2 - 5 * Properties::GetBorderSize()) * Properties::skin3["preview"].height / Properties::skin3["preview"].width}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
+
             if(skin3Button.Check()) {
-                Properties::changeSkin(3);
+                Properties::changeSkin(2);
             }
         } break;
     }
@@ -452,7 +481,7 @@ void TitleScene::OptionsTitle() {
     if(soundsVolume.Check()) {
         Properties::SetSoundsVolume(soundsVolume.Get());
     }
-    if(backButton.Check()) {
+    if(backOptionsButton.Check()) {
         title = MAIN;
     }
 }

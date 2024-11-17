@@ -24,7 +24,6 @@ private:
     bool isWhite = 0;
 
     // List of buttons 
-    Button backButton;
     Button backModeButton;
     Button backLoadSaveButton;
     // Main title buttons
@@ -61,6 +60,7 @@ private:
     Button muteSoundsButton;
     Slider musicsVolume;
     Slider soundsVolume;
+    Button backOptionsButton;
 
     // List of TitleScene;
     void MainTitle();
