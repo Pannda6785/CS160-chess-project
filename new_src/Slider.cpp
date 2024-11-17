@@ -58,7 +58,7 @@ bool Slider::Check() {
         ClickedSound();
         // bla bla bla
     }
-    return state == CLICKED;
+    return state == CLICKED || state == HOLDING;
 }
 
 float Slider::Get() {

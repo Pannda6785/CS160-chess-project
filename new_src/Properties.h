@@ -24,6 +24,8 @@ namespace Properties { // game properties
     inline std::map<std::string, Texture> elements;
     inline std::map<std::string, Font> fonts;
     inline int skin;
+    inline int music;
+    inline std::string musicName;
     inline bool isMusicsMute, isSoundsMute;
     inline float musicsVolume, soundsVolume;
     inline int fontSizes[] = {20, 45, 80};
@@ -31,7 +33,7 @@ namespace Properties { // game properties
     // Assets paths
     const std::string ASSETS_PATH = "../assets";
     const std::string SOUNDS_PATH = ASSETS_PATH + "/sounds"; // Sounds effects
-    const std::string MUSICS_PATH = ASSETS_PATH + "/music"; // Background musics
+    const std::string MUSICS_PATH = ASSETS_PATH + "/musics"; // Background musics
     const std::string SKIN1_PATH = ASSETS_PATH + "/textures/skin1"; // On-board elements (need to modified one)
     const std::string SKIN2_PATH = ASSETS_PATH + "/textures/skin2"; // On-board elements (need to modified one)
     const std::string SKIN3_PATH = ASSETS_PATH + "/textures/skin3"; // On-board elements (need to modified one)
@@ -108,7 +110,9 @@ namespace Properties { // game properties
         // Initial values
         isMusicsMute = false;
         musicsVolume = 1.0f;
+        musicName = "titleMusic";
     }
+
     inline void LoadTextures() {
         for (const auto & entry : std::filesystem::directory_iterator(SKIN1_PATH)) {
             // Load and resize image.
@@ -236,7 +240,7 @@ namespace Properties { // game properties
 
     inline void SetMusicsVolume(float volume) {
         musicsVolume = volume;
-        if(isMusicsMute) {
+        if(!isMusicsMute) {
             for(auto v : musics) {
                 SetMusicVolume(v.second, volume);
             }
@@ -256,6 +260,16 @@ namespace Properties { // game properties
                 SetMusicVolume(v.second, musicsVolume);
             }
         }
+    }
+
+    inline void UpdateMusics() {
+        UpdateMusicStream(musics[musicName]);
+    }
+
+    inline void ChangeMusic(std::string name) {
+        StopMusicStream(musics[musicName]);
+        musicName = name;
+        PlayMusicStream(musics[musicName]);
     }
 
     // Chess' custom

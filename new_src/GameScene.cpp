@@ -151,6 +151,7 @@ void GameScene::MainGame() {
 
     if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
         SetMouseCursor(0);
+        Properties::ChangeMusic("pauseMusic");
         state = PAUSE;
         return;
     }
@@ -189,6 +190,7 @@ void GameScene::PauseGame() {
 
     // Button detectings
     if (continueButton.Check()) {
+        Properties::ChangeMusic("gameMusic");
         state = MAIN;
     }
     if (saveButton.Check()) {
@@ -201,6 +203,7 @@ void GameScene::PauseGame() {
         state = OPTIONS;
     }
     if(exitButton.Check()) {
+        Properties::ChangeMusic("titleMusic");
         Scene::ChangeScene(Scene::TITLE_SCENE);
     }
 }

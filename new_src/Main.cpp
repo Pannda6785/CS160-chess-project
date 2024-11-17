@@ -13,6 +13,7 @@ int main() {
 
     // Load assets
     Properties::LoadSounds();
+    Properties::LoadMusics();
     Properties::LoadTextures();
     Properties::LoadElements();
     Properties::LoadFonts();
@@ -20,9 +21,11 @@ int main() {
     // Variables initialization
     titleScene.InitButtons();
     gameScene.InitButtons();
+    PlayMusicStream(Properties::musics["titleMusic"]);
 
     // Main game loop
     while (!WindowShouldClose() && Scene::scene != Scene::EXIT) {
+        Properties::UpdateMusics();
         BeginDrawing(); {
             switch(Scene::scene) {
                 case Scene::TITLE_SCENE: {

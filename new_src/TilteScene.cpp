@@ -168,6 +168,7 @@ void TitleScene::MainTitle() {
         title = OPTIONS;
     }
     if (exitButton.Check()) {
+        Properties::ChangeMusic("gameMusic");
         Scene::ChangeScene(Scene::EXIT);
     }
 }
