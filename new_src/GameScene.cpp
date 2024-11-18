@@ -564,6 +564,15 @@ void GameScene::EndGame() {
         case STALEMENT: {
             DrawTextCenEx(Properties::fonts["Mondwild_80"], "Stalemate!", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
         } break;
+        case INSUFFICIENT: {
+            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Insufficient Material!", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
+        } break;
+        case FIFTYMOVE: {
+            DrawTextCenEx(Properties::fonts["Mondwild_80"], "50 Move Rule!", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);     
+        } break;
+        case THREEFOLD: {
+            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Threefold Repetition!", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);     
+        } break;
     }
 
     if(!game.IsGameEnded()) {

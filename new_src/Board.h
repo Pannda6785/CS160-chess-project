@@ -16,6 +16,7 @@ public:
     // Deep clone
     Board(const Board& other);
     Board& operator=(const Board& other);
+    bool operator==(const Board& other);
 
     void Clear(); // wipe all pieces out of the board
     void Init(); // make the board the default configuration (2 kings, 2 queens, 16 pawns,... that kind of meaning)
@@ -32,6 +33,7 @@ public:
 
     std::optional<Move> GetLastMove() const;
     std::vector<Move> GetPossibleMoves(const Piece* piece) const;
+    int GetCounter() const;
 
     bool IsPositionInsideBoard(const Position position) const;
     bool IsMoveValid(const Move move) const;
@@ -44,6 +46,7 @@ public:
 private:
     std::vector<std::unique_ptr<Piece>> pieces;
     std::optional<Move> lastMove;
+    int counter; // Counter for 50 moves
 
 };
 

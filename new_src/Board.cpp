@@ -27,6 +27,11 @@ Board& Board::operator=(const Board& other) {
     }
     return *this;
 }
+bool Board::operator==(const Board& other) {
+    // TODO : when 2 boards are exactlly the same as each other
+    // included: all piece position and all available moves.
+    return false;
+}
 
 void Board::Clear() {
     pieces.clear();
@@ -66,6 +71,8 @@ void Board::Init() {
     Add(std::make_unique<Rook>(CHESS_WHITE, Position{7, 7}));
     Add(std::make_unique<Rook>(CHESS_BLACK, Position{0, 0}));
     Add(std::make_unique<Rook>(CHESS_BLACK, Position{0, 7}));
+
+    counter = 0;
 }
 
 bool Board::Add(std::string tag, CHESS_COLOR color, Position position, bool hasMoved = false) {
@@ -100,22 +107,26 @@ bool Board::Destroy(const Position position) {
 }
 bool Board::ExecuteMove(const Move move) {
     CHESS_COLOR color = GetPieceByPosition(move.fromPosition)->GetColor(); // color of the moving piece
+    ++counter;
 
     // Kill the attacked piece
     if (move.type == ATTACK || move.type == ATTACK_AND_PROMOTION) {
         Destroy(move.toPosition);
+        counter = 0;
     } else if (move.type == EN_PASSANT) {
         if (move.toPosition.i == 2) { // white did the en passant
             Destroy(Position{ 3, move.toPosition.j });
         } else { // i should be 5, black did it
             Destroy(Position{ 4, move.toPosition.j });
         }
+        counter = 0;
     }
 
     // Move the actively moved piece (including the King in a castling)
     for (size_t i = 0; i < pieces.size(); i++) {
         if (pieces[i]->GetPosition() == move.fromPosition) {
             pieces[i]->MoveToPosition(move.toPosition);
+            if(pieces[i]->GetType() == PAWN) counter = 0;
             break;
         }
     }
@@ -140,6 +151,7 @@ bool Board::ExecuteMove(const Move move) {
         if (move.promotionPiece == KNIGHT) Add(std::make_unique<Knight>(color, move.toPosition));
         if (move.promotionPiece == BISHOP) Add(std::make_unique<Bishop>(color, move.toPosition));
         if (move.promotionPiece == ROOK) Add(std::make_unique<Rook>(color, move.toPosition));
+        counter = 0;
     }
 
     SetLastMove(move);
@@ -181,6 +193,10 @@ std::vector<Move> Board::GetPossibleMoves(const Piece* piece) const {
     std::vector<Move> moves = piece->GetPossibleMoves(*this);
     moves = FilterSelfCheckMoves(moves);
     return moves;
+}
+
+int Board::GetCounter() const {
+    return counter;
 }
 
 bool Board::IsPositionInsideBoard(const Position position) const {
