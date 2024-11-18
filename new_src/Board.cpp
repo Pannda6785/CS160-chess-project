@@ -150,18 +150,18 @@ void Board::SetLastMove(const std::optional<Move> move) {
 }
 
 const Piece* Board::GetPieceByPosition(const Position position) const {
-    for (size_t i = 0; i < pieces.size(); i++) {
-        if (pieces[i]->GetPosition() == position) {
-            return pieces[i].get();
+    for (const std::unique_ptr<Piece> &piece : pieces) {
+        if (piece->GetPosition() == position) {
+            return piece.get();
         }
     }
     return nullptr;
 }
 std::vector<const Piece*> Board::GetPiecesByColor(const CHESS_COLOR color) const {
     std::vector<const Piece*> ret;
-    for (size_t i = 0; i < pieces.size(); i++) {
-        if (pieces[i]->GetColor() == color) {
-            ret.push_back(pieces[i].get());
+    for (const std::unique_ptr<Piece> &piece : pieces) {
+        if (piece->GetColor() == color) {
+            ret.push_back(piece.get());
         }
     }
     return ret;
@@ -206,9 +206,14 @@ bool Board::IsPositionAttacked(const CHESS_COLOR color, const Position position)
             int i = piece->GetPosition().i + (color == CHESS_WHITE ? +1 : -1);
             int j = piece->GetPosition().j;
             if (position == Position{i, j - 1} || position == Position{i, j + 1}) return true; 
-        } else { // Non-pawn (King, Queen, Knight, Bishop, Rooks) attacks the same way they move (except for castling)
+        } else if (piece->GetType() == KING) { // since king castles
+            int i = piece->GetPosition().i;
+            int j = piece->GetPosition().j;
+            if (std::abs(i - position.i) <= 1 && std::abs(j - position.j) <= 1) {
+                return true;
+            }
+        } else { // Non-special pieces (Queen, Knight, Bishop, Rooks) attack the same way they move
             for (Move move : piece->GetPossibleMoves(*this)) {
-                if (move.type == SHORT_CASTLING || move.type == LONG_CASTLING) continue;
                 // just to clarify, by now move.type can only be either WALK or ATTACK
                 if (move.toPosition == position) return true;
             }
