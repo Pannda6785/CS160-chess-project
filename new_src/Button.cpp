@@ -38,6 +38,13 @@ void Button::SetText(std::string text, int fontSize = 0, Color textColor = GRAY,
     this->font = font;
 }
 
+void Button::SetHoveringText(std::string hoveringText, int fontSize = 0, Color textColor = GRAY, Font font = {}) {
+    this->hoveringText = hoveringText;
+    this->fontSize = fontSize;
+    this->textColor = textColor;
+    this->font = font;
+}
+
 void Button::SetSound(Sound sound) {
     this->sound = sound;
 }
@@ -62,11 +69,17 @@ void Button::Render() {
     }
 
     // Render text in the box
+    if(state == HOVERING && hoveringText != "") {
+        if(font.texture.id == 0) {
+            DrawTextCursor(hoveringText.c_str(), fontSize, textColor);
+        }
+        else DrawTextCursorEx(font, hoveringText.c_str(), fontSize, 2, textColor);
+    }
     if(text != "") {
         if(font.texture.id == 0) {
             DrawTextRec(text.c_str(), rec, fontSize, textColor);
         }
-        else DrawTextRecEx(font, text.c_str(), rec, fontSize, 2, LIME);
+        else DrawTextRecEx(font, text.c_str(), rec, fontSize, 2, textColor);
     }
 }
 

@@ -28,7 +28,7 @@ namespace Properties { // game properties
     inline std::string musicName;
     inline bool isMusicsMute, isSoundsMute;
     inline float musicsVolume, soundsVolume;
-    inline int fontSizes[] = {20, 45, 80};
+    inline int fontSizes[] = {20, 25, 45, 80};
     
     // Assets paths
     const std::string ASSETS_PATH = "../assets";

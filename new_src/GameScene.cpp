@@ -23,9 +23,13 @@ void GameScene::InitButtons() {
     backLoadSaveButton.SetSound(Properties::sounds["buttonClick"]);
 
     // mainGame
+    newGameButton.SetHoveringText("New Game", 25, LIME, Properties::fonts["Rubik-Regular_25"]);
     newGameButton.SetSound(Properties::sounds["buttonClick"]);
+    moveBackButton.SetHoveringText("Move back", 25, LIME, Properties::fonts["Rubik-Regular_25"]);
     moveBackButton.SetSound(Properties::sounds["buttonClick"]);
+    moveForwardButton.SetHoveringText("Move forward", 25, LIME, Properties::fonts["Rubik-Regular_25"]);
     moveForwardButton.SetSound(Properties::sounds["buttonClick"]);
+    settingsButton.SetHoveringText("Settings", 25, LIME, Properties::fonts["Rubik-Regular_25"]);
     settingsButton.SetSound(Properties::sounds["buttonClick"]);
 
     // pauseGame
@@ -95,11 +99,19 @@ void GameScene::InitButtons() {
     skin3Button.SetText("Theme 3", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     skin3Button.SetSound(Properties::sounds["buttonClick"]);
 
+    muteMusicsButton.SetHoveringText("Music", 25, LIME, Properties::fonts["Rubik-Regular_25"]);
     muteMusicsButton.SetSound(Properties::sounds["buttonClick"]);
+    muteSoundsButton.SetHoveringText("Sfx", 25, LIME, Properties::fonts["Rubik-Regular_25"]);
     muteSoundsButton.SetSound(Properties::sounds["buttonClick"]);
     
+    leftButton.SetHoveringText("Previous theme", 25, LIME, Properties::fonts["Rubik-Regular_25"]);
     leftButton.SetSound(Properties::sounds["buttonClick"]);
+    rightButton.SetHoveringText("Next theme", 25, LIME, Properties::fonts["Rubik-Regular_25"]);
     rightButton.SetSound(Properties::sounds["buttonClick"]);
+
+    backOptionsButton.SetRatio(0.5, -90, 19.0 / 20.0, -30, 0, 180, 0, 60, BLANK,  {255, 255, 255, 100}); 
+    backOptionsButton.SetText("Back", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    backOptionsButton.SetSound(Properties::sounds["buttonClick"]);
 
     backOptionsButton.SetRatio(0.5, -90, 19.0 / 20.0, -30, 0, 180, 0, 60, BLANK,  {255, 255, 255, 100}); 
     backOptionsButton.SetText("Back", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
@@ -131,7 +143,6 @@ void GameScene::Run() {
         default: break;
     }
 }
-
 void GameScene::BaseGame() {
     // Background
     DrawTexturePro(Properties::skins["backGround"], Rectangle{0, 0, (float)Properties::skins["backGround"].width, (float)Properties::skins["backGround"].height},
@@ -139,6 +150,7 @@ void GameScene::BaseGame() {
 
     // Side panel
     DrawRectangle(GetScreenHeight(), Properties::GetBorderSize(), GetScreenWidth() - GetScreenHeight() - Properties::GetBorderSize(), GetScreenHeight() - Properties::GetBorderSize() * 2, Color{0, 0, 0, 100});
+    DrawRectangle(GetScreenHeight() + Properties::GetBorderSize(), Properties::GetBorderSize() * 2, GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(), Properties::GetBorderSize() * 3, Color{255, 255, 255, 100});
     newGameButton.SetRec(Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(), (float) GetScreenHeight() - 2 * Properties::GetBorderSize() - 70,
         (float) GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4, 70},
             {0, 158, 47, 100}, {255, 255, 255, 100});
@@ -157,17 +169,25 @@ void GameScene::BaseGame() {
     settingsButton.SetTexture("settings", "hoveringSettings");
 
     // Text box
-    DrawText("This is the game, enjoy!", GetScreenHeight() + 30, 100, 25, RED);
-    DrawText("Some information here for you nerds.", GetScreenHeight() + 30, 160, 15, LIGHTGRAY);
+    // DrawText("This is the game, enjoy!", GetScreenHeight() + 30, 100, 25, RED);
+    DrawTextRecEx(Properties::fonts["Rubik-Regular_45"], "GAY CHESS!", 
+        Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 5 / 2,(float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 1}, 45, 2, PINK);
+    // DrawText("Some information here for you nerds.", GetScreenHeight() + 30, 160, 15, LIGHTGRAY);
+    DrawTextRecEx(Properties::fonts["Rubik-Regular_25"], "This is the game, enjoy!", 
+        Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 7 / 2,(float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 1}, 25, 2, LIME);
+
+    // Scroll box for notations
+    // Define the scrollable text box area
+    Rectangle textBox = {100, 100, 300, 200};
 
     // chess game
     game.Render();
 
     // Render buttons
-    newGameButton.Render();
-    moveBackButton.Render();
-    moveForwardButton.Render();
     settingsButton.Render();
+    moveForwardButton.Render();
+    moveBackButton.Render();
+    newGameButton.Render();
 }
 
 void GameScene::MainGame() {
@@ -462,19 +482,6 @@ void GameScene::OptionsGame() {
     rightButton.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 4 - Properties::GetBorderSize() / 2 + 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 70, 70},
                         BLANK, {255, 255, 255, 100});
     rightButton.SetTexture("right", "hoveringRight");
-    
-    // Render buttons
-    resolution1Button.Render();
-    resolution2Button.Render();
-    resolution3Button.Render();
-    resolution4Button.Render();
-    muteMusicsButton.Render();
-    musicsVolume.Render();
-    muteSoundsButton.Render();
-    soundsVolume.Render();
-    leftButton.Render();
-    rightButton.Render();
-    backOptionsButton.Render();
 
     // skin's skin
     if(leftButton.Check()) {
@@ -519,6 +526,19 @@ void GameScene::OptionsGame() {
             }
         } break;
     }
+
+    // Render buttons
+    resolution1Button.Render();
+    resolution2Button.Render();
+    resolution3Button.Render();
+    resolution4Button.Render();
+    musicsVolume.Render();
+    soundsVolume.Render();
+    leftButton.Render();
+    rightButton.Render();
+    backOptionsButton.Render();
+    muteMusicsButton.Render();
+    muteSoundsButton.Render();
 
     // Button detectings
     if(resolution1Button.Check()) {

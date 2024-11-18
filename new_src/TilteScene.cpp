@@ -108,10 +108,14 @@ void TitleScene::InitButtons() {
     skin3Button.SetText("Theme 3", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     skin3Button.SetSound(Properties::sounds["buttonClick"]);
 
+    muteMusicsButton.SetHoveringText("Music", 25, LIME, Properties::fonts["Rubik-Regular_25"]);
     muteMusicsButton.SetSound(Properties::sounds["buttonClick"]);
+    muteSoundsButton.SetHoveringText("Sfx", 25, LIME, Properties::fonts["Rubik-Regular_25"]);
     muteSoundsButton.SetSound(Properties::sounds["buttonClick"]);
     
+    leftButton.SetHoveringText("Previous theme", 25, LIME, Properties::fonts["Rubik-Regular_25"]);
     leftButton.SetSound(Properties::sounds["buttonClick"]);
+    rightButton.SetHoveringText("Next theme", 25, LIME, Properties::fonts["Rubik-Regular_25"]);
     rightButton.SetSound(Properties::sounds["buttonClick"]);
 
     backOptionsButton.SetRatio(0.5, -90, 19.0 / 20.0, -30, 0, 180, 0, 60, BLANK,  {255, 255, 255, 100}); 
@@ -400,19 +404,6 @@ void TitleScene::OptionsTitle() {
     rightButton.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 4 - Properties::GetBorderSize() / 2 + 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 70, 70},
                         BLANK, {255, 255, 255, 100});
     rightButton.SetTexture("right", "hoveringRight");
-    
-    // Render buttons
-    resolution1Button.Render();
-    resolution2Button.Render();
-    resolution3Button.Render();
-    resolution4Button.Render();
-    muteMusicsButton.Render();
-    musicsVolume.Render();
-    muteSoundsButton.Render();
-    soundsVolume.Render();
-    leftButton.Render();
-    rightButton.Render();
-    backOptionsButton.Render();
 
     // skin's skin
     if(leftButton.Check()) {
@@ -457,6 +448,19 @@ void TitleScene::OptionsTitle() {
             }
         } break;
     }
+
+    // Render buttons
+    resolution1Button.Render();
+    resolution2Button.Render();
+    resolution3Button.Render();
+    resolution4Button.Render();
+    musicsVolume.Render();
+    soundsVolume.Render();
+    leftButton.Render();
+    rightButton.Render();
+    backOptionsButton.Render();
+    muteMusicsButton.Render();
+    muteSoundsButton.Render();
 
     // Button detectings
     if(resolution1Button.Check()) {
