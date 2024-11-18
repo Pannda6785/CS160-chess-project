@@ -124,22 +124,22 @@ void TitleScene::Run() {
     switch(title) {
         case MAIN: {
             MainTitle();
-        }; break;
+        } break;
         case MODE: {
             ModeTitle();
-        }; break;
+        } break;
         case ONEPLAYER: {
             OnePlayerTitle();
-        }; break;
+        } break;
         case DIFFICULTY: {
             DifficultyTitle();
-        }; break;
+        } break;
         case LOAD: {
             LoadTitle();
-        }; break;
+        } break;
         case OPTIONS: {
             OptionsTitle();
-        }; break;
+        } break;
         default: break;
     }
 }
@@ -361,7 +361,7 @@ void TitleScene::OptionsTitle() {
     DrawTextCenEx(Properties::fonts["Mondwild_45"], "Chess themes", int(GetScreenWidth() * 3 / 4 - Properties::GetBorderSize() / 2), int(GetScreenHeight() / 6 + 2 * Properties::GetBorderSize()), 45, 2, PINK);    
 
     // Resize slider and button
-    // TODO: change to screen ratio
+    // TODO: convert to screen ratio
     resolution1Button.SetRec(Rectangle{(float) Properties::GetBorderSize() * 5 / 4 + GetScreenWidth() / 8 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 200, 70},
                         BLANK, {255, 255, 255, 100});
     resolution2Button.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 8 - Properties::GetBorderSize() / 4 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 200, 70},
@@ -400,6 +400,7 @@ void TitleScene::OptionsTitle() {
     rightButton.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 4 - Properties::GetBorderSize() / 2 + 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 70, 70},
                         BLANK, {255, 255, 255, 100});
     rightButton.SetTexture("right", "hoveringRight");
+    
     // Render buttons
     resolution1Button.Render();
     resolution2Button.Render();

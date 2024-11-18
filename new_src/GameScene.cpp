@@ -23,14 +23,10 @@ void GameScene::InitButtons() {
     backLoadSaveButton.SetSound(Properties::sounds["buttonClick"]);
 
     // mainGame
-    undoButton.SetRatio(0.75, -70, 0.6, -35, 0, 140, 0, 60, BLANK,  {255, 255, 255, 100});
-    undoButton.SetText("Undo", 30, LIME, Properties::fonts["Rubik-Regular_45"]);
-    undoButton.SetSound(Properties::sounds["buttonClick"]);
-    
-    redoButton.SetRatio(0.88, -70, 0.6, -35, 0, 140, 0, 60, BLANK,  {255, 255, 255, 100});
-    redoButton.SetText("Redo", 30, LIME, Properties::fonts["Rubik-Regular_45"]);
-    redoButton.SetSound(Properties::sounds["buttonClick"]);
-
+    newGameButton.SetSound(Properties::sounds["buttonClick"]);
+    moveBackButton.SetSound(Properties::sounds["buttonClick"]);
+    moveForwardButton.SetSound(Properties::sounds["buttonClick"]);
+    settingsButton.SetSound(Properties::sounds["buttonClick"]);
 
     // pauseGame
     continueButton.SetRatio(0.5, -130, 3.0 / 8.0, -35, 0, 260, 0, 70, BLANK,  {255, 255, 255, 100});
@@ -116,66 +112,93 @@ void GameScene::Run() {
     switch(state) {
         case MAIN: {
             MainGame();
-        }; break;
+        } break;
         case PAUSE: {
             PauseGame();
-        }; break;
+        } break;
         case SAVE: {
             SaveGame();
-        }; break;
+        } break;
         case LOAD: {
             LoadGame();
-        }; break;
+        } break;
         case OPTIONS: {
             OptionsGame();
-        }; break;
+        } break;
+        case ENDED: {
+            EndGame();
+        } break;
         default: break;
     }
 }
 
-
-void GameScene::MainGame() {
+void GameScene::BaseGame() {
     // Background
-    DrawLine(GetScreenHeight(), 0, GetScreenHeight(), GetScreenHeight(), BLACK);
     DrawTexturePro(Properties::skins["backGround"], Rectangle{0, 0, (float)Properties::skins["backGround"].width, (float)Properties::skins["backGround"].height},
                     Rectangle{0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()}, Vector2{0, 0}, 0, WHITE);
+
+    // Side panel
+    DrawRectangle(GetScreenHeight(), Properties::GetBorderSize(), GetScreenWidth() - GetScreenHeight() - Properties::GetBorderSize(), GetScreenHeight() - Properties::GetBorderSize() * 2, Color{0, 0, 0, 100});
+    newGameButton.SetRec(Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(), (float) GetScreenHeight() - 2 * Properties::GetBorderSize() - 70,
+        (float) GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4, 70},
+            {0, 158, 47, 100}, {255, 255, 255, 100});
+    newGameButton.SetTexture("newGame", "hoveringNewGame");
+    moveBackButton.SetRec(Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize() + 1 * (GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4), (float) GetScreenHeight() - 2 * Properties::GetBorderSize() - 70,
+        (float) GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4, 70},
+            {0, 158, 47, 100}, {255, 255, 255, 100});
+    moveBackButton.SetTexture("moveBack", "hoveringMoveBack");
+    moveForwardButton.SetRec(Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize() + 2 * (GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4), (float) GetScreenHeight() - 2 * Properties::GetBorderSize() - 70,
+        (float) GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4, 70},
+            {0, 158, 47, 100}, {255, 255, 255, 100});
+    moveForwardButton.SetTexture("moveForward", "hoveringMoveForward");
+    settingsButton.SetRec(Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize() + 3 * (GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4), (float) GetScreenHeight() - 2 * Properties::GetBorderSize() - 70,
+        (float) GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4, 70},
+            {0, 158, 47, 100}, {255, 255, 255, 100});
+    settingsButton.SetTexture("settings", "hoveringSettings");
 
     // Text box
     DrawText("This is the game, enjoy!", GetScreenHeight() + 30, 100, 25, RED);
     DrawText("Some information here for you nerds.", GetScreenHeight() + 30, 160, 15, LIGHTGRAY);
 
+    // chess game
     game.Render();
-    game.Run();
-    undoButton.Render();
-    redoButton.Render();
 
-    if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+    // Render buttons
+    newGameButton.Render();
+    moveBackButton.Render();
+    moveForwardButton.Render();
+    settingsButton.Render();
+}
+
+void GameScene::MainGame() {
+    BaseGame();
+
+    // chess game
+    game.Run();
+
+    if(game.IsGameEnded()) {
+        PlaySound(Properties::sounds["buttonClick"]);
+        state = ENDED;
+    }
+    if(newGameButton.Check()) {
+        game.Init();
+    }
+    if(moveBackButton.Check()) {
+        game.Undo();
+    }
+    if(moveForwardButton.Check()) {
+        game.Redo();
+    }
+    if(settingsButton.Check()) {
         SetMouseCursor(0);
         Properties::ChangeMusic("pauseMusic");
         state = PAUSE;
-        return;
-    }
-
-    if (undoButton.Check()) {
-        game.Undo();
-    }
-    if (redoButton.Check()) {
-        game.Redo();
     }
 }
 
 void GameScene::PauseGame() {
-    // Render the game in background and the overlaying tint. THIS IS THE SAME AS THAT IN MainGame()
-    DrawLine(GetScreenHeight(), 0, GetScreenHeight(), GetScreenHeight(), BLACK);
-    DrawTexturePro(Properties::skins["backGround"], Rectangle{0, 0, (float)Properties::skins["backGround"].width, (float)Properties::skins["backGround"].height},
-                    Rectangle{0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()}, Vector2{0, 0}, 0, WHITE);
-    DrawText("This is the game, enjoy!", GetScreenHeight() + 30, 100, 25, RED);
-    DrawText("Some information here for you nerds.", GetScreenHeight() + 30, 160, 15, LIGHTGRAY);
-    game.Render();
+    BaseGame();
 
-    // Tinting the screen
-    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){0, 0, 0, 150}); // Dark overlay
-    
     // Render the pause menu
     DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is pause title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
     
@@ -184,9 +207,22 @@ void GameScene::PauseGame() {
     saveButton.Render();
     loadButton.Render();
     optionsButton.Render();
-    undoButton.Render();
-    redoButton.Render();
     exitButton.Render();
+
+    // End game
+    if(game.IsGameEnded()) {
+        switch (game.GetVerdict()) {
+            case WHITE_WINS: {
+
+            } break;
+            case BLACK_WINS: {
+
+            } break;
+            case STALEMENT: {
+
+            } break;
+        }
+    }
 
     // Button detectings
     if (continueButton.Check()) {
@@ -426,6 +462,7 @@ void GameScene::OptionsGame() {
     rightButton.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 4 - Properties::GetBorderSize() / 2 + 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 70, 70},
                         BLANK, {255, 255, 255, 100});
     rightButton.SetTexture("right", "hoveringRight");
+    
     // Render buttons
     resolution1Button.Render();
     resolution2Button.Render();
@@ -509,6 +546,41 @@ void GameScene::OptionsGame() {
         Properties::SetSoundsVolume(soundsVolume.Get());
     }
     if(backOptionsButton.Check()) {
+        state = PAUSE;
+    }
+}
+
+void GameScene::EndGame() {
+    BaseGame();
+
+    // End game state
+    switch (game.GetVerdict()) {
+        case WHITE_WINS: {
+            DrawTextCenEx(Properties::fonts["Mondwild_80"], "White wins!", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
+        } break;
+        case BLACK_WINS: {
+            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Black wins!", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);     
+        } break;
+        case STALEMENT: {
+            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Stalemate!", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
+        } break;
+    }
+
+    if(!game.IsGameEnded()) {
+        state = MAIN;
+    }
+    if(newGameButton.Check()) {
+        game.Init();
+    }
+    if(moveBackButton.Check()) {
+        game.Undo();
+    }
+    if(moveForwardButton.Check()) {
+        game.Redo();
+    }
+    if(settingsButton.Check()) {
+        SetMouseCursor(0);
+        Properties::ChangeMusic("pauseMusic");
         state = PAUSE;
     }
 }

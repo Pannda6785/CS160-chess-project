@@ -53,12 +53,12 @@ void Button::Render() {
     Rectangle rec = !useRatio ? this->rec : Rectangle{GetScreenWidth() * rx + dx, GetScreenHeight() * ry + dy, GetScreenWidth() * rw + dw, GetScreenHeight() * rh + dh};
 
     // Render the box
-    if(texture.id == 0) {
-        if(state == HOVERING) DrawRectangleRec(rec, hoveringColor);
-        else DrawRectangleRec(rec, recColor);
-    } else {
-        if(state == HOVERING) DrawTexturePro(hoveringTexture, (Rectangle) {0.0, 0.0, (float) texture.width, (float) texture.height}, rec, (Vector2) {0.0, 0.0}, 0.0, WHITE);
-        else DrawTexturePro(texture, (Rectangle) {0.0, 0.0, (float) texture.width, (float) texture.height}, rec, (Vector2) {0.0, 0.0}, 0.0, WHITE);
+    if(state == HOVERING) DrawRectangleRec(rec, hoveringColor);
+    else DrawRectangleRec(rec, recColor);
+    if(texture.id != 0) {
+        Rectangle textureRec = Rectangle{rec.x + rec.width / 2 - rec.height / 2, rec.y, rec.height, rec.height};
+        if(state == HOVERING) DrawTexturePro(hoveringTexture, (Rectangle) {0.0, 0.0, (float) texture.width, (float) texture.height}, textureRec, (Vector2) {0.0, 0.0}, 0.0, WHITE);
+        else DrawTexturePro(texture, (Rectangle) {0.0, 0.0, (float) texture.width, (float) texture.height}, textureRec, (Vector2) {0.0, 0.0}, 0.0, WHITE);
     }
 
     // Render text in the box

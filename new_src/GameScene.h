@@ -24,13 +24,16 @@ private:
     // List of buttons
     Button backButton;
     Button backLoadSaveButton;
+    // mainGame
+    Button newGameButton;
+    Button moveBackButton;
+    Button moveForwardButton;
+    Button settingsButton;
     // pauseGame
     Button continueButton;
     Button saveButton;
     Button loadButton;
     Button optionsButton;
-    Button undoButton;
-    Button redoButton;
     Button exitButton;
     // saveGame
     Button save1Button;
@@ -56,12 +59,16 @@ private:
     Slider soundsVolume;
     Button backOptionsButton;
     
+    // base Game
+    void BaseGame();
+
     // List of gameScene
     void MainGame();
     void PauseGame();
     void SaveGame();
     void LoadGame();
     void OptionsGame();
+    void EndGame();
 };
 
 extern GameScene gameScene;
