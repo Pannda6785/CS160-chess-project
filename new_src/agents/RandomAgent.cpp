@@ -4,7 +4,7 @@
 #include <chrono>
 #include <raylib.h>
 
-RandomAgent::RandomAgent(CHESS_COLOR agentColor, double moveDelay) : Agent(agentColor, "Bot1"), moveDelay(moveDelay) {}
+RandomAgent::RandomAgent(CHESS_COLOR agentColor, float moveDelay) : Agent(agentColor, "Bot1"), moveDelay(moveDelay) {}
 
 void RandomAgent::Init() {
     timeDelayed = 0;
@@ -30,6 +30,7 @@ std::optional<Move> RandomAgent::GetMove(const Board &board) {
         }
 
         if (pool.empty()) return std::nullopt; // shouldn't happen though
-        return pool[rand(pool.size())];
+        Move move = pool[rand(pool.size())];
+        return move;
     }        
 }

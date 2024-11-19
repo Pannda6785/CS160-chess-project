@@ -2,6 +2,8 @@
 
 #include "agents/RandomAgent.h"
 #include "agents/ManualAgent.h"
+#include "agents/SearchTreeAgent.h"
+#include "agents/AlphaBetaAgent.h"
 
 #include "Renderer.h"
 #include "Properties.h"
@@ -14,8 +16,9 @@ Game game;
 void Game::SetAgent(CHESS_COLOR agentColor, std::string agentTag) {
         // TO DO: set the right agent
     if (agentTag == "Human") SetAgent(std::make_unique<ManualAgent>(agentColor));
+  
     if (agentTag == "Easy") SetAgent(std::make_unique<RandomAgent>(agentColor));
-    if (agentTag == "Medium") SetAgent(std::make_unique<RandomAgent>(agentColor));
+    if (agentTag == "Medium") SetAgent(std::make_unique<SearchTreeAgent>(agentColor));
     if (agentTag == "Hard") SetAgent(std::make_unique<RandomAgent>(agentColor));
 }
 void Game::SetAgent(std::unique_ptr<Agent> agent) {
@@ -29,7 +32,7 @@ void Game::SetAgent(std::unique_ptr<Agent> agent) {
 void Game::Init() {
     // TO DO: properly have the right kind of agent set (decided from the 1P, 2P choosing title and the Difficulty title)
     if (whiteAgent == nullptr) whiteAgent = std::make_unique<ManualAgent>(CHESS_WHITE);
-    if (blackAgent == nullptr) blackAgent = std::make_unique<ManualAgent>(CHESS_BLACK);
+    if (blackAgent == nullptr) blackAgent = std::make_unique<AlphaBetaAgent>(CHESS_BLACK, 0.1);
     whiteAgent->Init();
     blackAgent->Init();
 

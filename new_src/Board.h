@@ -40,11 +40,11 @@ public:
     bool IsPositionAttacked(const CHESS_COLOR color, const Position position) const; // Is the position attacked by the other color?
     bool IsInCheck(const CHESS_COLOR color) const; // Is color's king attacked?
 
-    std::vector<Move> FilterSelfCheckMoves(std::vector<Move> moves) const; // filter the moves that doesn't help allied king out of check, or put allied king in check
-
 private:
     std::vector<std::unique_ptr<Piece>> pieces;
     std::optional<Move> lastMove;
+    
+    std::vector<Move> FilterSelfCheckMoves(std::vector<Move> moves) const; // filter the moves that doesn't help allied king out of check, or put allied king in check
 };
 
 #endif // BOARD_H
