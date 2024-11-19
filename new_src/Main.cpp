@@ -7,12 +7,13 @@
 int main() {
     // Init game window
     SetConfigFlags(FLAG_WINDOW_RESIZABLE); // temporary disable
-    InitWindow(Properties::GetInitialScreenWidth(), Properties::GetInitialScreenHeight(), "CS160-chess-project");
+    InitWindow(Properties::screenWidth[1], Properties::screenHeight[1], "CS160-chess-project");
     InitAudioDevice();
     SetTargetFPS(60);
 
     // Load assets
     Properties::LoadSounds();
+    Properties::LoadMusics();
     Properties::LoadTextures();
     Properties::LoadElements();
     Properties::LoadFonts();
@@ -20,14 +21,11 @@ int main() {
     // Variables initialization
     titleScene.InitButtons();
     gameScene.InitButtons();
+    PlayMusicStream(Properties::musics["titleMusic"]);
 
     // Main game loop
     while (!WindowShouldClose() && Scene::scene != Scene::EXIT) {
-        // Alt + Enter for Fullscreen
-        if ((IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)) && IsKeyPressed(KEY_ENTER)) {
-            Properties::ToggleFullscreen();
-        }
-
+        Properties::UpdateMusics();
         BeginDrawing(); {
             switch(Scene::scene) {
                 case Scene::TITLE_SCENE: {

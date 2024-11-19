@@ -1,4 +1,5 @@
 #include "Button.h"
+#include "Slider.h"
 
 class GameScene {
 public:
@@ -22,25 +23,52 @@ private:
 
     // List of buttons
     Button backButton;
+    Button backLoadSaveButton;
+    // mainGame
+    Button newGameButton;
+    Button moveBackButton;
+    Button moveForwardButton;
+    Button settingsButton;
     // pauseGame
     Button continueButton;
     Button saveButton;
     Button loadButton;
     Button optionsButton;
-    Button undoButton;
-    Button redoButton;
-    
-    // TESTING
-    Button testSaveButton;
-    Button testLoadButton;
     Button exitButton;
+    // saveGame
+    Button save1Button;
+    Button save2Button;
+    Button save3Button;
+    // loadGame
+    Button load1Button;
+    Button load2Button;
+    Button load3Button;
+    // Option title buttons
+    Button resolution1Button;
+    Button resolution2Button;
+    Button resolution3Button;
+    Button resolution4Button;
+    Button skin1Button;
+    Button skin2Button;
+    Button skin3Button;
+    Button leftButton;
+    Button rightButton;
+    Button muteMusicsButton;
+    Button muteSoundsButton;
+    Slider musicsVolume;
+    Slider soundsVolume;
+    Button backOptionsButton;
     
+    // base Game
+    void BaseGame();
+
     // List of gameScene
     void MainGame();
     void PauseGame();
     void SaveGame();
     void LoadGame();
     void OptionsGame();
+    void EndGame();
 };
 
 extern GameScene gameScene;

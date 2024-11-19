@@ -7,6 +7,8 @@
 
 #include "Renderer.h"
 #include "Properties.h"
+#include <map>
+#include <iostream>
 #include <fstream>
 
 Game game;
@@ -14,9 +16,10 @@ Game game;
 void Game::SetAgent(CHESS_COLOR agentColor, std::string agentTag) {
         // TO DO: set the right agent
     if (agentTag == "Human") SetAgent(std::make_unique<ManualAgent>(agentColor));
-    if (agentTag == "Bot1") SetAgent(std::make_unique<RandomAgent>(agentColor));
-    if (agentTag == "Bot2") SetAgent(std::make_unique<SearchTreeAgent>(agentColor));
-    if (agentTag == "Bot3") SetAgent(std::make_unique<RandomAgent>(agentColor));
+  
+    if (agentTag == "Easy") SetAgent(std::make_unique<RandomAgent>(agentColor));
+    if (agentTag == "Medium") SetAgent(std::make_unique<SearchTreeAgent>(agentColor));
+    if (agentTag == "Hard") SetAgent(std::make_unique<RandomAgent>(agentColor));
 }
 void Game::SetAgent(std::unique_ptr<Agent> agent) {
     if (agent->GetColor() == CHESS_WHITE) {
@@ -141,7 +144,7 @@ void Game::SaveGame(int slot) const {
     for (const Board &board : redoHistory) {
         saveBoard(board);
     }
-
+    
     savefile << verdict << '\n';
 
     savefile.close();
@@ -274,18 +277,80 @@ void Game::ExecuteMove(const Move move) {
     UpdateGameStatus();
 }
 void Game::UpdateGameStatus() {
+    // Checking preparation
     bool isAnyMovePossible = false;
+    bool is50Moves = false;
+    int countPieces = 0;
+    std::map<PIECE_TYPE, int> countWhite, countBlack;
+    bool isThreefoldRepetition = false;
+
+    // Counting
     for (const Piece* piece : board.GetPiecesByColor(WhoseTurn())) {
         if (!board.GetPossibleMoves(piece).empty()) {
             isAnyMovePossible = true;
             break;
         }
     }
+    for (const Piece* piece : board.GetPieces()) {
+        if(piece->GetColor() == CHESS_WHITE) {
+            ++countWhite[piece->GetType()];
+        }
+        else ++countBlack[piece->GetType()];
+        ++countPieces;
+    }
+    for(Board board1 : undoHistory) {
+        int countBoard = 0;
+        for(const Board board2 : undoHistory) {
+            if(board1 == board2) ++countBoard;
+        }
+        if(countBoard == 3) isThreefoldRepetition = true;
+        std::cout << countBoard << "\n";
+    }
+    if(board.GetLastMove()->type == ATTACK || board.GetPieceByPosition(board.GetLastMove()->fromPosition)->GetType() == PAWN) is50Moves = true;
+    for(int i = undoHistory.size() - 1; !is50Moves && i >= 0 && i > (board.GetPieceByPosition(board.GetLastMove()->fromPosition)->GetColor() == CHESS_WHITE ? undoHistory.size() - 99 : undoHistory.size() - 100); --i) {
+        if(board.GetLastMove()->type == ATTACK || board.GetPieceByPosition(board.GetLastMove()->fromPosition)->GetType() == PAWN) is50Moves = true;
+    }
+
+    // Insufficent Rule
+    auto IsKingvsKing = [&]() -> bool {
+        return countPieces == 2;
+    };
+    auto IsKingBishopvsKing = [&]() -> bool {
+        return countPieces == 3 && (countWhite[BISHOP] == 1 || countBlack[BISHOP] == 1);
+    };
+    auto IsKingKnightvsKing = [&]() -> bool {
+        return countPieces == 3 && (countWhite[KNIGHT] == 1 || countBlack[KNIGHT] == 1);
+    };
+    auto IsKingBishopvsKingBishop = [&]() -> bool {
+        // base condition
+        if(countPieces != 4) return false;
+        if(countWhite[BISHOP] != 1 || countWhite[BISHOP] != 1) return false;
+        
+        Position whiteBishop, blackBishop;
+        for (const Piece* piece : board.GetPieces()) {
+            if(piece->GetColor() == CHESS_WHITE && piece->GetType() == BISHOP) whiteBishop = piece->GetPosition();
+            if(piece->GetColor() == CHESS_BLACK && piece->GetType() == BISHOP) whiteBishop = piece->GetPosition();
+        }
+
+        return ((whiteBishop.i + whiteBishop.j) - (blackBishop.i + blackBishop.j)) % 2 == 0;
+    };
+
+    // Conditions
     if (!isAnyMovePossible) {
         if (board.IsInCheck(CHESS_WHITE)) verdict = BLACK_WINS;
         else if (board.IsInCheck(CHESS_BLACK)) verdict = WHITE_WINS;
         else verdict = STALEMENT;
-    } else {
+    } 
+    else if(IsKingvsKing() || IsKingBishopvsKing() || IsKingKnightvsKing() || IsKingBishopvsKingBishop()) {
+        verdict = INSUFFICIENT;
+    }
+    else if(is50Moves) {
+        verdict = FIFTYMOVE;
+    }
+    else if(isThreefoldRepetition) {
+        verdict = THREEFOLD;
+    }
+    else {
         verdict = CHESS_RUNNING;
     }
 }
