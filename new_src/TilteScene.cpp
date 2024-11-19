@@ -194,6 +194,8 @@ void TitleScene::ModeTitle() {
         title = ONEPLAYER;
     }
     if (twoPlayerButton.Check()) {
+        game.SetAgent(CHESS_WHITE, "Human");
+        game.SetAgent(CHESS_BLACK, "Human");
         game.Init();
         Scene::ChangeScene(Scene::GAME_SCENE);
     }
@@ -218,15 +220,15 @@ void TitleScene::DifficultyTitle() {
 
     // Button detectings
     if (easyDiffButton.Check()) {  
-        game.SetAgent(color, "Easy");
+        game.SetAgent(color, "Bot1");
         Scene::ChangeScene(Scene::GAME_SCENE);
     }
     if (mediumDiffButton.Check()) {
-        game.SetAgent(color, "Medium");
+        game.SetAgent(color, "Bot2");
         Scene::ChangeScene(Scene::GAME_SCENE);
     }
     if (hardDiffButton.Check()) {
-        game.SetAgent(color, "Hard");
+        game.SetAgent(color, "Bot3");
         Scene::ChangeScene(Scene::GAME_SCENE);
     }
     if(backDiffButton.Check()) {

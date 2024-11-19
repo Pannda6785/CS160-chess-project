@@ -8,7 +8,6 @@
 #include "Renderer.h"
 #include "Properties.h"
 #include <map>
-#include <iostream>
 #include <fstream>
 
 Game game;
@@ -17,9 +16,9 @@ void Game::SetAgent(CHESS_COLOR agentColor, std::string agentTag) {
         // TO DO: set the right agent
     if (agentTag == "Human") SetAgent(std::make_unique<ManualAgent>(agentColor));
   
-    if (agentTag == "Easy") SetAgent(std::make_unique<RandomAgent>(agentColor));
-    if (agentTag == "Medium") SetAgent(std::make_unique<SearchTreeAgent>(agentColor));
-    if (agentTag == "Hard") SetAgent(std::make_unique<RandomAgent>(agentColor));
+    if (agentTag == "Bot1") SetAgent(std::make_unique<RandomAgent>(agentColor));
+    if (agentTag == "Bot2") SetAgent(std::make_unique<SearchTreeAgent>(agentColor));
+    if (agentTag == "Bot3") SetAgent(std::make_unique<RandomAgent>(agentColor));
 }
 void Game::SetAgent(std::unique_ptr<Agent> agent) {
     if (agent->GetColor() == CHESS_WHITE) {
@@ -162,7 +161,49 @@ void Game::Render() {
     // Then render the highlight of the selected position
     std::optional<Position> selectedPosition = GetCurrentAgent()->GetSelectedPosition();
     if (selectedPosition != std::nullopt) {
-        renderer.RenderSelectedPosition(selectedPosition.value());
+        renderer.RenderSelectedPosition(selectedPosition.value(), Color{144, 238, 144, 150});
+    }
+
+    // Then if king being checked, render checking piece(s)
+    if(board.IsInCheck(GetCurrentAgent()->GetColor())) {
+        CHESS_COLOR color = GetCurrentAgent()->GetColor();
+        for (const Piece* king : board.GetPieces()) {
+            if (king->GetType() == KING && king->GetColor() == color) {
+                Position position = king->GetPosition();
+
+                for (const Piece* piece : board.GetPieces()) {
+                    if (piece->GetColor() == color) continue;
+                    if (piece->GetType() == PAWN) { // since pawn's attack pattern is a bit weird
+                        int i = piece->GetPosition().i + (color == CHESS_WHITE ? +1 : -1);
+                        int j = piece->GetPosition().j;
+                        if (position == Position{i, j - 1} || position == Position{i, j + 1}) {
+                            if(verdict == CHESS_RUNNING) {
+                                renderer.RenderSelectedPosition(piece->GetPosition(), Color{253, 249, 0, 150});
+                                renderer.RenderSelectedPosition(position, Color{253, 249, 0, 150});
+                            }
+                            else {
+                                renderer.RenderSelectedPosition(piece->GetPosition(), Color{230, 41, 55, 150});
+                                renderer.RenderSelectedPosition(position, Color{230, 41, 55, 150});
+                            }
+                        }
+                    }
+                    else { // Non-special pieces (Queen, Knight, Bishop, Rooks) attack the same way they move
+                        for (Move move : piece->GetPossibleMoves(board)) {
+                            // just to clarify, by now move.type can only be either WALK or ATTACK
+                            if (move.toPosition != position) continue;
+                            if(verdict == CHESS_RUNNING) {
+                                renderer.RenderSelectedPosition(piece->GetPosition(), Color{253, 249, 0, 150});
+                                renderer.RenderSelectedPosition(position, Color{253, 249, 0, 150});
+                            }
+                            else {
+                                renderer.RenderSelectedPosition(piece->GetPosition(), Color{230, 41, 55, 150});
+                                renderer.RenderSelectedPosition(position, Color{230, 41, 55, 150});
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // Then render the non-selected pieces
@@ -279,36 +320,41 @@ void Game::ExecuteMove(const Move move) {
 void Game::UpdateGameStatus() {
     // Checking preparation
     bool isAnyMovePossible = false;
-    bool is50Moves = false;
+    bool is50Moves = true;
     int countPieces = 0;
     std::map<PIECE_TYPE, int> countWhite, countBlack;
     bool isThreefoldRepetition = false;
 
     // Counting
-    for (const Piece* piece : board.GetPiecesByColor(WhoseTurn())) {
+    for (const Piece* piece : board.GetPiecesByColor(WhoseTurn())) { // For no possible move
         if (!board.GetPossibleMoves(piece).empty()) {
             isAnyMovePossible = true;
             break;
         }
     }
-    for (const Piece* piece : board.GetPieces()) {
+    for (const Piece* piece : board.GetPieces()) { // For insufficent move
         if(piece->GetColor() == CHESS_WHITE) {
             ++countWhite[piece->GetType()];
         }
         else ++countBlack[piece->GetType()];
         ++countPieces;
     }
-    for(Board board1 : undoHistory) {
+    for(Board board1 : undoHistory) { // For ThreeFold Repetition
         int countBoard = 0;
         for(const Board board2 : undoHistory) {
             if(board1 == board2) ++countBoard;
         }
         if(countBoard == 3) isThreefoldRepetition = true;
-        std::cout << countBoard << "\n";
     }
-    if(board.GetLastMove()->type == ATTACK || board.GetPieceByPosition(board.GetLastMove()->fromPosition)->GetType() == PAWN) is50Moves = true;
-    for(int i = undoHistory.size() - 1; !is50Moves && i >= 0 && i > (board.GetPieceByPosition(board.GetLastMove()->fromPosition)->GetColor() == CHESS_WHITE ? undoHistory.size() - 99 : undoHistory.size() - 100); --i) {
-        if(board.GetLastMove()->type == ATTACK || board.GetPieceByPosition(board.GetLastMove()->fromPosition)->GetType() == PAWN) is50Moves = true;
+    /*
+    */
+    // For 50 moves
+    if(undoHistory.size() < 98) {
+        is50Moves = false;
+    }
+    else if(board.GetLastMove()->type == ATTACK || board.GetPieceByPosition(board.GetLastMove()->toPosition)->GetType() == PAWN) is50Moves = false;
+    else for(int i = undoHistory.size() - 1; i > (board.GetPieceByPosition(board.GetLastMove()->toPosition)->GetColor() == CHESS_WHITE ? undoHistory.size() - 99 : undoHistory.size() - 100); --i) {
+        if(board.GetLastMove()->type == ATTACK || board.GetPieceByPosition(board.GetLastMove()->toPosition)->GetType() == PAWN) is50Moves = false;
     }
 
     // Insufficent Rule
