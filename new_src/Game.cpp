@@ -276,7 +276,7 @@ void Game::ExecuteMove(const Move move) {
 void Game::UpdateGameStatus() {
     // Checking preparation
     bool isAnyMovePossible = false;
-    bool InsufficientMaterial = false;
+    bool is50Moves = false;
     int countPieces = 0;
     std::map<PIECE_TYPE, int> countWhite, countBlack;
     bool isThreefoldRepetition = false;
@@ -302,6 +302,10 @@ void Game::UpdateGameStatus() {
         }
         if(countBoard == 3) isThreefoldRepetition = true;
         std::cout << countBoard << "\n";
+    }
+    if(board.GetLastMove()->type == ATTACK || board.GetPieceByPosition(board.GetLastMove()->fromPosition)->GetType() == PAWN) is50Moves = true;
+    for(int i = undoHistory.size() - 1; !is50Moves && i >= 0 && i > (board.GetPieceByPosition(board.GetLastMove()->fromPosition)->GetColor() == CHESS_WHITE ? undoHistory.size() - 99 : undoHistory.size() - 100); --i) {
+        if(board.GetLastMove()->type == ATTACK || board.GetPieceByPosition(board.GetLastMove()->fromPosition)->GetType() == PAWN) is50Moves = true;
     }
 
     // Insufficent Rule
@@ -337,7 +341,7 @@ void Game::UpdateGameStatus() {
     else if(IsKingvsKing() || IsKingBishopvsKing() || IsKingKnightvsKing() || IsKingBishopvsKingBishop()) {
         verdict = INSUFFICIENT;
     }
-    else if(board.GetCounter() / 2 == 50) {
+    else if(is50Moves) {
         verdict = FIFTYMOVE;
     }
     else if(isThreefoldRepetition) {

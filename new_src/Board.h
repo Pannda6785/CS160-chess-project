@@ -33,7 +33,6 @@ public:
 
     std::optional<Move> GetLastMove() const;
     std::vector<Move> GetPossibleMoves(const Piece* piece) const;
-    int GetCounter() const;
 
     bool IsPositionInsideBoard(const Position position) const;
     bool IsMoveValid(const Move move) const;
@@ -46,8 +45,6 @@ public:
 private:
     std::vector<std::unique_ptr<Piece>> pieces;
     std::optional<Move> lastMove;
-    int counter; // Counter for 50 moves
-
 };
 
 #endif // BOARD_H
