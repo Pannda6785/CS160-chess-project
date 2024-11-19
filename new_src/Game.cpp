@@ -315,6 +315,8 @@ void Game::ExecuteMove(const Move move) {
     std::vector<Board>().swap(redoHistory); // clear the redo history
     turn++;
 
+    if(move.type == ATTACK || move.type == ATTACK_AND_PROMOTION) PlaySound(Properties::sounds["capture"]);
+    else PlaySound(Properties::sounds["move"]);
     UpdateGameStatus();
 }
 void Game::UpdateGameStatus() {

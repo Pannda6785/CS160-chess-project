@@ -197,7 +197,7 @@ void GameScene::MainGame() {
     game.Run();
 
     if(game.IsGameEnded()) {
-        PlaySound(Properties::sounds["buttonClick"]);
+        PlaySound(Properties::sounds["notify"]);
         state = ENDED;
     }
     if(newGameButton.Check()) {
