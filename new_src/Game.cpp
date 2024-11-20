@@ -30,9 +30,6 @@ void Game::SetAgent(std::unique_ptr<Agent> agent) {
 }
 
 void Game::Init() {
-    // TO DO: properly have the right kind of agent set (decided from the 1P, 2P choosing title and the Difficulty title)
-    if (whiteAgent == nullptr) whiteAgent = std::make_unique<ManualAgent>(CHESS_WHITE);
-    if (blackAgent == nullptr) blackAgent = std::make_unique<AlphaBetaAgent>(CHESS_BLACK, 0.1);
     whiteAgent->Init();
     blackAgent->Init();
 

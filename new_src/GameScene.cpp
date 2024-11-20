@@ -209,6 +209,7 @@ void GameScene::BaseGame() {
     
     // Draw scroll bar
     float scrollbarHeight = textBox.height * ((float)linesInView / (float)notations.size() < 1 ? (float)linesInView / (float)notations.size() : 1);
+    if(scrollbarHeight == 0) scrollbarHeight = textBox.height;
     float scrollbarY = textBox.y + ((float)scrollOffSet / (notations.size() * lineHeight)) * textBox.height;
 
     DrawRectangle(textBox.x + textBox.width - 10, textBox.y, 10, textBox.height, box);
@@ -263,6 +264,7 @@ void GameScene::PauseGame() {
     BaseGame();
 
     // Render the pause menu
+    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), {0, 0, 0, 200});
     DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is pause title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
     
     // Render buttons
