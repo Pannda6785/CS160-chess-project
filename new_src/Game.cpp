@@ -9,6 +9,7 @@
 #include "Properties.h"
 #include <map>
 #include <fstream>
+#include <algorithm>
 
 Game game;
 
@@ -272,6 +273,186 @@ bool Game::Redo() {
     UpdateGameStatus();
 
     return true;
+}
+
+std::vector<std::string> Game::GetNotations() {
+    std::vector<std::string> ret;
+
+    Board currentBoard = this->board;
+    int idx = undoHistory.size();
+
+    while(currentBoard.GetLastMove() != std::nullopt) {   
+        std::string s;
+
+        switch(currentBoard.GetLastMove()->type) {
+            case WALK: {
+                if(currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == PAWN) {
+                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                }
+                else if(currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == QUEEN
+                || currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == KING) {
+                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                }
+                else {
+                    CHESS_COLOR color = GetCurrentAgent()->GetColor();
+                    bool yes = true;
+
+                    for (const Piece* piece : board.GetPieces()) {
+                        if(piece->GetType() == currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType()
+                        && piece->GetColor() == color && piece->GetPosition() != currentBoard.GetLastMove()->toPosition) {
+                            Position position = piece->GetPosition();
+                            
+                            for (Move move : piece->GetPossibleMoves(board)) {
+                                // just to clarify, by now move.type can only be either WALK or ATTACK
+                                if(move.toPosition != position) continue;
+                                if(move.fromPosition.j != currentBoard.GetLastMove()->fromPosition.j) {
+                                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                                    s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
+                                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+
+                                    yes = false;
+                                }
+                                else {
+                                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                                    s += char('8' - currentBoard.GetLastMove()->fromPosition.i);
+                                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+
+                                    yes = false;
+                                }
+                            }
+                        }
+                    }
+
+                    if(yes) {
+                        s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                        s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                        s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+
+                        yes = false;
+                    }
+                }
+            } break;
+            case DOUBLE_WALK: {
+                s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+            } break;
+            case ATTACK: {
+                if(currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == PAWN) {
+                    s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
+                    s += 'x';
+                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                }
+                else if(currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == QUEEN
+                || currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == KING) {
+                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                    s += 'x';
+                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                }
+                else {
+                    CHESS_COLOR color = GetCurrentAgent()->GetColor();
+                    bool yes = true;
+
+                    for (const Piece* piece : board.GetPieces()) {
+                        if(piece->GetType() == currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType()
+                        && piece->GetColor() == color && piece->GetPosition() != currentBoard.GetLastMove()->toPosition) {
+                            Position position = piece->GetPosition();
+                            
+                            for (Move move : piece->GetPossibleMoves(board)) {
+                                // just to clarify, by now move.type can only be either WALK or ATTACK
+                                if(move.toPosition != position) continue;
+                                if(move.fromPosition.j != currentBoard.GetLastMove()->fromPosition.j) {
+                                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                                    s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
+                                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+
+                                    yes = false;
+                                }
+                                else {
+                                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                                    s += char('8' - currentBoard.GetLastMove()->fromPosition.i);
+                                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+
+                                    yes = false;
+                                }
+                            }
+                        }
+                    }
+
+                    if(yes) {
+                        s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                        s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                        s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+
+                        yes = false;
+                    }
+                }
+            } break;
+            case SHORT_CASTLING: {
+                s = "O-O";
+            } break;
+            case LONG_CASTLING: {
+                s = "O-O-O";
+            } break;
+            case EN_PASSANT: {
+                s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
+                s += 'x';
+                s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                s += " e.p";
+            } break;
+            case PROMOTION: {
+                s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                s += "=";
+                
+                switch(currentBoard.GetLastMove()->promotionPiece) {
+                    case QUEEN: s += "Q"; break;
+                    case ROOK: s += "R"; break;
+                    case BISHOP: s += "B"; break;
+                    case KNIGHT: s += "N"; break;
+                }
+            } break;
+            case ATTACK_AND_PROMOTION: {
+                s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
+                s += 'x';
+                s += char('a' + currentBoard.GetLastMove()->toPosition.i);
+                s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                s += "=";
+                
+                switch(currentBoard.GetLastMove()->promotionPiece) {
+                    case QUEEN: s += "Q"; break;
+                    case ROOK: s += "R"; break;
+                    case BISHOP: s += "B"; break;
+                    case KNIGHT: s += "N"; break;
+                }
+            } break;
+        }
+
+        if(idx == undoHistory.size() && verdict != CHESS_RUNNING) {
+            s += '#';
+        }
+        else if(currentBoard.IsInCheck(currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetColor() == CHESS_WHITE ? CHESS_BLACK : CHESS_WHITE)) {
+            s += '+';
+        }
+
+        ret.push_back(s);
+
+        if(idx == 0) break; 
+        else --idx;
+        currentBoard = undoHistory[idx];
+    }
+
+    std::reverse(ret.begin(), ret.end());
+    return ret;
 }
 
 CHESS_COLOR Game::WhoseTurn() const {
