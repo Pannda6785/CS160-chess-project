@@ -75,10 +75,10 @@ void Renderer::RenderDraggingPiece(const Piece* piece) {
         Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize() * Properties::skins[pieceName].height / Properties::skins[pieceName].width}, Vector2{0, 0}, 0, WHITE);              
 }
 
-void Renderer::RenderSelectedPosition(Position position) {
+void Renderer::RenderSelectedPosition(Position position, Color color) {
     int x = Properties::GetBorderSize() + position.j * Properties::GetCellSize();
     int y = Properties::GetBorderSize() + position.i * Properties::GetCellSize();
-    DrawRectangle(x, y, Properties::GetCellSize(), Properties::GetCellSize(), Color{144, 238, 144, 150});
+    DrawRectangle(x, y, Properties::GetCellSize(), Properties::GetCellSize(), color);
 }
 
 void Renderer::RenderPossibleMoves(std::vector<Move> possibleMoves) {
@@ -127,3 +127,4 @@ void Renderer::RenderPromotion(CHESS_COLOR color, int promotingFile) {
         DrawTextCen("x", x + c / 2, b + c * 3.75, 20, GRAY);
     }
 }
+

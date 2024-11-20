@@ -91,6 +91,9 @@ inline std::ostream& operator<<(std::ostream& os, const CHESS_VERDICT& verdict) 
         case BLACK_WINS: os << "BLACK_WINS"; break;
         case WHITE_WINS: os << "WHITE_WINS"; break;
         case STALEMENT: os << "STALEMENT"; break;
+        case INSUFFICIENT: os << "INSUFFICIENT"; break;
+        case FIFTYMOVE: os << "FIFTYMOVE"; break;
+        case THREEFOLD: os << "THREEFOLD"; break;
     }
     return os;
 }
@@ -102,6 +105,9 @@ inline std::istream& operator>>(std::istream& is, CHESS_VERDICT& verdict) {
     else if (input == "BLACK_WINS") verdict = BLACK_WINS;
     else if (input == "WHITE_WINS") verdict = WHITE_WINS;
     else if (input == "STALEMENT") verdict = STALEMENT;
+    else if (input == "INSUFFICIENT") verdict = INSUFFICIENT;
+    else if (input == "FIFTYMOVE") verdict = FIFTYMOVE;
+    else if (input == "THREEFOLD") verdict = THREEFOLD;
     return is;
 }
 

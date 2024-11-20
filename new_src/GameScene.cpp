@@ -6,6 +6,10 @@
 #include "Scene.h"
 #include "SaveLoadUtilities.h"
 
+// for notations debuging and working
+#include <vector>
+#include <string>
+
 GameScene gameScene;
 
 // INIT
@@ -169,16 +173,56 @@ void GameScene::BaseGame() {
     settingsButton.SetTexture("settings", "hoveringSettings");
 
     // Text box
-    // DrawText("This is the game, enjoy!", GetScreenHeight() + 30, 100, 25, RED);
     DrawTextRecEx(Properties::fonts["Rubik-Regular_45"], "GAY CHESS!", 
         Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 5 / 2,(float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 1}, 45, 2, PINK);
-    // DrawText("Some information here for you nerds.", GetScreenHeight() + 30, 160, 15, LIGHTGRAY);
     DrawTextRecEx(Properties::fonts["Rubik-Regular_25"], "This is the game, enjoy!", 
         Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 7 / 2,(float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 1}, 25, 2, LIME);
 
     // Scroll box for notations
+    // ***Customable variable***
     // Define the scrollable text box area
-    Rectangle textBox = {100, 100, 300, 200};
+    Rectangle textBox = {(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 6,
+        (float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) GetScreenHeight() - Properties::GetBorderSize() * 9 - 70};
+    std::vector<std::string> notations = game.GetNotations();
+    
+    // Scrolling speed
+    if (IsKeyDown(KEY_DOWN)) scrollOffSet += 4;
+    if (IsKeyDown(KEY_UP)) scrollOffSet -= 4;
+    scrollOffSet -= GetMouseWheelMove() * 4;
+
+    Color box = {200, 200, 200, 200}, bar = {80, 80, 80, 200};
+    Font font = Properties::fonts["Rubik-Regular_20"];
+    int fontSize = 20;
+    int lineHeight = 25;
+    // *************************
+
+    // limit for better visual
+    if(scrollOffSet > (int)notations.size() * lineHeight + lineHeight - (int)textBox.height) 
+        scrollOffSet = (int)notations.size() * lineHeight + lineHeight - (int)textBox.height; // plus extra lineHeight to show the last line
+    if(scrollOffSet < 0) scrollOffSet = 0;
+
+    DrawRectangleRec(textBox, box);
+    DrawRectangleLinesEx(textBox, 1, bar);
+
+    int linesInView = (int)textBox.height / lineHeight;
+    int firstLine = scrollOffSet / lineHeight;
+    
+    // Draw scroll bar
+    float scrollbarHeight = textBox.height * ((float)linesInView / (float)notations.size() < 1 ? (float)linesInView / (float)notations.size() : 1);
+    if(scrollbarHeight == 0) scrollbarHeight = textBox.height;
+    float scrollbarY = textBox.y + ((float)scrollOffSet / (notations.size() * lineHeight)) * textBox.height;
+
+    DrawRectangle(textBox.x + textBox.width - 10, textBox.y, 10, textBox.height, box);
+    DrawRectangle(textBox.x + textBox.width - 10, scrollbarY, 10, scrollbarHeight, bar);
+
+    // start a local painting in textBox
+    BeginScissorMode(textBox.x, textBox.y, textBox.width, textBox.height);
+    for (int i = 0; i < linesInView && firstLine + i < notations.size(); i++) {
+        float yPos = textBox.y + (i / 2) * lineHeight - (scrollOffSet % lineHeight);
+        if(i%2 == 0) DrawTextEx(font, notations[firstLine + i].c_str(), {textBox.x + 5, yPos}, fontSize, 2, BLACK);
+        else DrawTextEx(font, notations[firstLine + i].c_str(), {textBox.x + 5 + textBox.width / 2, yPos}, fontSize, 2, BLACK);
+    }
+    EndScissorMode();
 
     // chess game
     game.Render();
@@ -197,7 +241,7 @@ void GameScene::MainGame() {
     game.Run();
 
     if(game.IsGameEnded()) {
-        PlaySound(Properties::sounds["buttonClick"]);
+        PlaySound(Properties::sounds["notify"]);
         state = ENDED;
     }
     if(newGameButton.Check()) {
@@ -220,6 +264,7 @@ void GameScene::PauseGame() {
     BaseGame();
 
     // Render the pause menu
+    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), {0, 0, 0, 200});
     DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is pause title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
     
     // Render buttons
@@ -579,19 +624,19 @@ void GameScene::EndGame() {
             DrawTextCenEx(Properties::fonts["Mondwild_80"], "White wins!", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
         } break;
         case BLACK_WINS: {
-            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Black wins!", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);     
+            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Black wins", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);     
         } break;
         case STALEMENT: {
-            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Stalemate!", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
+            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Stalemate", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
         } break;
         case INSUFFICIENT: {
-            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Insufficient Material!", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
+            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Insufficient Material", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
         } break;
         case FIFTYMOVE: {
-            DrawTextCenEx(Properties::fonts["Mondwild_80"], "50 Move Rule!", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);     
+            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Fifty Move Rule", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);     
         } break;
         case THREEFOLD: {
-            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Threefold Repetition!", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);     
+            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Threefold Repetition", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);     
         } break;
     }
 

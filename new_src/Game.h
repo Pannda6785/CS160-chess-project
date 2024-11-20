@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <vector>
+#include <string>
 #include <memory>
 #include <optional>
 
@@ -24,6 +25,7 @@ public:
 
     bool Undo();
     bool Redo();
+    std::vector<std::string> GetNotations();
 
     CHESS_COLOR WhoseTurn() const;
     const Agent* GetCurrentAgent() const;
@@ -39,6 +41,7 @@ private:
     Board board;
     std::vector<Board> undoHistory;
     std::vector<Board> redoHistory;
+    std::vector<std::string> notations;
 
     CHESS_VERDICT verdict;
     
