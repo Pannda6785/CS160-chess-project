@@ -85,9 +85,34 @@ void Renderer::RenderPossibleMoves(std::vector<Move> possibleMoves) {
     for (Move move : possibleMoves) {
         int i = move.toPosition.i;
         int j = move.toPosition.j;
-        int x = Properties::GetBorderSize() + j * Properties::GetCellSize() + Properties::GetCellSize() / 2;
-        int y = Properties::GetBorderSize() + i * Properties::GetCellSize() + Properties::GetCellSize() / 2;
-        DrawCircle(x, y, 10, GRAY);                 
+        int x = Properties::GetBorderSize() + j * Properties::GetCellSize();
+        int y = Properties::GetBorderSize() + i * Properties::GetCellSize();
+
+        switch(move.type) {
+            // 'capture'
+            case ATTACK: {
+                DrawTexturePro(Properties::skins["capture"], Rectangle{0, 0, (float) Properties::skins["capture"].width, (float) Properties::skins["capture"].height},
+                    Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+            } break;
+            // 'promotion'
+            case PROMOTION: {
+                DrawTexturePro(Properties::skins["promotion"], Rectangle{0, 0, (float) Properties::skins["promotion"].width, (float) Properties::skins["promotion"].height},
+                    Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+            } break;
+            case ATTACK_AND_PROMOTION: {
+                DrawTexturePro(Properties::skins["promotion"], Rectangle{0, 0, (float) Properties::skins["promotion"].width, (float) Properties::skins["promotion"].height},
+                    Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+            } break;
+            // 'enpassant'
+            case EN_PASSANT: {
+                DrawTexturePro(Properties::skins["enpassant"], Rectangle{0, 0, (float) Properties::skins["enpassant"].width, (float) Properties::skins["enpassant"].height},
+                    Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+            } break;
+            // 'move' but using dot now
+            default: {
+                DrawCircle(x + Properties::GetCellSize() / 2, y + Properties::GetCellSize() / 2, 10, GRAY);                 
+            } break;
+        }            
     }
 }
 

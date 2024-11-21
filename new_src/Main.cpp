@@ -10,6 +10,7 @@ int main() {
     InitWindow(Properties::screenWidth[1], Properties::screenHeight[1], "CS160-chess-project");
     InitAudioDevice();
     SetTargetFPS(60);
+    SetExitKey(0);
 
     // Load assets
     Properties::LoadSounds();

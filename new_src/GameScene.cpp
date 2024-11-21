@@ -157,19 +157,19 @@ void GameScene::BaseGame() {
     DrawRectangle(GetScreenHeight() + Properties::GetBorderSize(), Properties::GetBorderSize() * 2, GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(), Properties::GetBorderSize() * 3, Color{255, 255, 255, 100});
     newGameButton.SetRec(Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(), (float) GetScreenHeight() - 2 * Properties::GetBorderSize() - 70,
         (float) GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4, 70},
-            {0, 158, 47, 100}, {255, 255, 255, 100});
+            {200, 200, 200, 100}, {255, 255, 255, 100});
     newGameButton.SetTexture("newGame", "hoveringNewGame");
     moveBackButton.SetRec(Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize() + 1 * (GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4), (float) GetScreenHeight() - 2 * Properties::GetBorderSize() - 70,
         (float) GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4, 70},
-            {0, 158, 47, 100}, {255, 255, 255, 100});
+            {200, 200, 200, 100}, {255, 255, 255, 100});
     moveBackButton.SetTexture("moveBack", "hoveringMoveBack");
     moveForwardButton.SetRec(Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize() + 2 * (GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4), (float) GetScreenHeight() - 2 * Properties::GetBorderSize() - 70,
         (float) GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4, 70},
-            {0, 158, 47, 100}, {255, 255, 255, 100});
+            {200, 200, 200, 100}, {255, 255, 255, 100});
     moveForwardButton.SetTexture("moveForward", "hoveringMoveForward");
     settingsButton.SetRec(Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize() + 3 * (GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4), (float) GetScreenHeight() - 2 * Properties::GetBorderSize() - 70,
         (float) GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4, 70},
-            {0, 158, 47, 100}, {255, 255, 255, 100});
+            {200, 200, 200, 100}, {255, 255, 255, 100});
     settingsButton.SetTexture("settings", "hoveringSettings");
 
     // Text box
@@ -184,10 +184,9 @@ void GameScene::BaseGame() {
     Rectangle textBox = {(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 6,
         (float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) GetScreenHeight() - Properties::GetBorderSize() * 9 - 70};
     std::vector<std::string> notations = game.GetNotations();
+    int notationsSize = (notations.size() + 1) / 2;
     
     // Scrolling speed
-    if (IsKeyDown(KEY_DOWN)) scrollOffSet += 4;
-    if (IsKeyDown(KEY_UP)) scrollOffSet -= 4;
     scrollOffSet -= GetMouseWheelMove() * 4;
 
     Color box = {200, 200, 200, 200}, bar = {80, 80, 80, 200};
@@ -197,9 +196,15 @@ void GameScene::BaseGame() {
     // *************************
 
     // limit for better visual
-    if(scrollOffSet > (int)notations.size() * lineHeight + lineHeight - (int)textBox.height) 
-        scrollOffSet = (int)notations.size() * lineHeight + lineHeight - (int)textBox.height; // plus extra lineHeight to show the last line
+    if(scrollOffSet > (int)notationsSize * lineHeight - (int)textBox.height) 
+        scrollOffSet = (int)notationsSize * lineHeight - (int)textBox.height; // plus extra lineHeight to show the last line
     if(scrollOffSet < 0) scrollOffSet = 0;
+    // Auto format when making moves
+    if(game.GetTurn() != turn) {
+        turn = game.GetTurn();
+        scrollOffSet = (int)notationsSize * lineHeight - (int)textBox.height;
+        if(scrollOffSet < 0) scrollOffSet = 0;
+    }
 
     DrawRectangleRec(textBox, box);
     DrawRectangleLinesEx(textBox, 1, bar);
@@ -208,19 +213,22 @@ void GameScene::BaseGame() {
     int firstLine = scrollOffSet / lineHeight;
     
     // Draw scroll bar
-    float scrollbarHeight = textBox.height * ((float)linesInView / (float)notations.size() < 1 ? (float)linesInView / (float)notations.size() : 1);
-    if(scrollbarHeight == 0) scrollbarHeight = textBox.height;
-    float scrollbarY = textBox.y + ((float)scrollOffSet / (notations.size() * lineHeight)) * textBox.height;
-
+    float scrollbarHeight;
+    if(notationsSize != 0) scrollbarHeight = textBox.height * ((float)linesInView / (float)notationsSize < 1 ? (float)linesInView / (float)notationsSize : 1);
+    else scrollbarHeight = textBox.height;
+    float scrollbarY;
+    if(notationsSize != 0) scrollbarY = textBox.y + ((float)scrollOffSet / (notationsSize * lineHeight)) * textBox.height;
+    else scrollbarY = textBox.y;
+    
     DrawRectangle(textBox.x + textBox.width - 10, textBox.y, 10, textBox.height, box);
     DrawRectangle(textBox.x + textBox.width - 10, scrollbarY, 10, scrollbarHeight, bar);
 
     // start a local painting in textBox
     BeginScissorMode(textBox.x, textBox.y, textBox.width, textBox.height);
-    for (int i = 0; i < linesInView && firstLine + i < notations.size(); i++) {
+    for (int i = 0; i <= linesInView * 2 && firstLine * 2 + i < notations.size(); i += 2) {
         float yPos = textBox.y + (i / 2) * lineHeight - (scrollOffSet % lineHeight);
-        if(i%2 == 0) DrawTextEx(font, notations[firstLine + i].c_str(), {textBox.x + 5, yPos}, fontSize, 2, BLACK);
-        else DrawTextEx(font, notations[firstLine + i].c_str(), {textBox.x + 5 + textBox.width / 2, yPos}, fontSize, 2, BLACK);
+        DrawTextEx(font, notations[firstLine * 2 + i].c_str(), {textBox.x + 5, yPos}, fontSize, 2, BLACK);
+        if(firstLine * 2 + i + 1 < notations.size()) DrawTextEx(font, notations[firstLine * 2 + i + 1].c_str(), {textBox.x + 5 + textBox.width / 2, yPos}, fontSize, 2, BLACK);
     }
     EndScissorMode();
 
@@ -253,7 +261,7 @@ void GameScene::MainGame() {
     if(moveForwardButton.Check()) {
         game.Redo();
     }
-    if(settingsButton.Check()) {
+    if(settingsButton.Check() || IsKeyPressed(KEY_ESCAPE)) {
         SetMouseCursor(0);
         Properties::ChangeMusic("pauseMusic");
         state = PAUSE;
@@ -265,8 +273,7 @@ void GameScene::PauseGame() {
 
     // Render the pause menu
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), {0, 0, 0, 200});
-    DrawTextCenEx(Properties::fonts["Rubik-Regular_80"], "There is pause title. Sorry", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);
-    
+
     // Render buttons
     continueButton.Render();
     saveButton.Render();
@@ -652,7 +659,7 @@ void GameScene::EndGame() {
     if(moveForwardButton.Check()) {
         game.Redo();
     }
-    if(settingsButton.Check()) {
+    if(settingsButton.Check() || IsKeyPressed(KEY_ESCAPE)) {
         SetMouseCursor(0);
         Properties::ChangeMusic("pauseMusic");
         state = PAUSE;
