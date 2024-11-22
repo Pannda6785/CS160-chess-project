@@ -15,6 +15,7 @@ GameScene gameScene;
 // INIT
 void GameScene::Init() {
     state = MAIN;
+    Properties::isMusicPaused = false;
     Properties::ChangeMusic("gameMusic");
 }
 void GameScene::InitButtons() {
@@ -273,7 +274,7 @@ void GameScene::MainGame() {
     }
     if(settingsButton.Check() || IsKeyPressed(KEY_ESCAPE)) {
         SetMouseCursor(0);
-        Properties::ChangeMusic("pauseMusic");
+        Properties::ChangeMusicBegin("pauseMusic");
         state = PAUSE;
     }
 }
@@ -308,7 +309,7 @@ void GameScene::PauseGame() {
 
     // Button detectings
     if (continueButton.Check()) {
-        Properties::ChangeMusic("gameMusic");
+        Properties::ChangeMusicEnd("gameMusic");
         state = MAIN;
     }
     if (saveButton.Check()) {
@@ -670,7 +671,7 @@ void GameScene::EndGame() {
     }
     if(settingsButton.Check() || IsKeyPressed(KEY_ESCAPE)) {
         SetMouseCursor(0);
-        Properties::ChangeMusic("pauseMusic");
+        Properties::ChangeMusicBegin("pauseMusic");
         state = PAUSE;
     }
 }

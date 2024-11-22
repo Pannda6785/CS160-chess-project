@@ -536,12 +536,12 @@ void Game::UpdateGameStatus() {
     /*
     */
     // For 50 moves
-    if(undoHistory.size() < 98) {
+    if(undoHistory.size() < 99) {
         is50Moves = false;
     }
     else if(board.GetLastMove()->type == ATTACK || board.GetPieceByPosition(board.GetLastMove()->toPosition)->GetType() == PAWN) is50Moves = false;
     else for(int i = undoHistory.size() - 1; i > (board.GetPieceByPosition(board.GetLastMove()->toPosition)->GetColor() == CHESS_WHITE ? undoHistory.size() - 99 : undoHistory.size() - 100); --i) {
-        if(board.GetLastMove()->type == ATTACK || board.GetPieceByPosition(board.GetLastMove()->toPosition)->GetType() == PAWN) is50Moves = false;
+        if(undoHistory[i].GetLastMove()->type == ATTACK || undoHistory[i].GetPieceByPosition(undoHistory[i].GetLastMove()->toPosition)->GetType() == PAWN) is50Moves = false;
     }
 
     // Insufficent Rule
