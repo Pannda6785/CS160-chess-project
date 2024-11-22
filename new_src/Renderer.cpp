@@ -108,9 +108,10 @@ void Renderer::RenderPossibleMoves(std::vector<Move> possibleMoves) {
                 DrawTexturePro(Properties::skins["enpassant"], Rectangle{0, 0, (float) Properties::skins["enpassant"].width, (float) Properties::skins["enpassant"].height},
                     Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
             } break;
-            // 'move' but using dot now
+            // 'move'
             default: {
-                DrawCircle(x + Properties::GetCellSize() / 2, y + Properties::GetCellSize() / 2, 10, GRAY);                 
+                DrawTexturePro(Properties::skins["move"], Rectangle{0, 0, (float) Properties::skins["move"].width, (float) Properties::skins["move"].height},
+                    Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
             } break;
         }            
     }

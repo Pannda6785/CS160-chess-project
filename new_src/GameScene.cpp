@@ -173,9 +173,15 @@ void GameScene::BaseGame() {
     settingsButton.SetTexture("settings", "hoveringSettings");
 
     // Text box
-    DrawTextRecEx(Properties::fonts["Rubik-Regular_45"], "GAY CHESS!", 
+    std::string turnCount = "Turn: " + std::to_string(game.GetTurn());
+    DrawTextRecEx(Properties::fonts["Rubik-Regular_45"], turnCount.c_str(), 
         Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 5 / 2,(float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 1}, 45, 2, PINK);
-    DrawTextRecEx(Properties::fonts["Rubik-Regular_25"], "This is the game, enjoy!", 
+    std::string currentTurn = "Current turn: ";
+    if(game.GetTurn() % 2) {
+        currentTurn += "Black";
+    }
+    else currentTurn += "White";
+    DrawTextRecEx(Properties::fonts["Rubik-Regular_25"], currentTurn.c_str(), 
         Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 7 / 2,(float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 1}, 25, 2, LIME);
 
     // Scroll box for notations
@@ -190,9 +196,9 @@ void GameScene::BaseGame() {
     scrollOffSet -= GetMouseWheelMove() * 4;
 
     Color box = {200, 200, 200, 200}, bar = {80, 80, 80, 200};
-    Font font = Properties::fonts["Rubik-Regular_20"];
-    int fontSize = 20;
-    int lineHeight = 25;
+    Font font = Properties::fonts["Rubik-Regular_25"];
+    int fontSize = 25;
+    int lineHeight = 30;
     // *************************
 
     // limit for better visual

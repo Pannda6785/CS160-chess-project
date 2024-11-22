@@ -447,8 +447,14 @@ std::vector<std::string> Game::GetNotations() {
         else --idx;
         currentBoard = undoHistory[idx];
     }
+    
 
     std::reverse(ret.begin(), ret.end());
+    for(int i=0;i<ret.size();++i) {
+        if(i%2 == 0) {
+            ret[i] = std::to_string(i/2 + 1) + ". " + ret[i];
+        }
+    }
     return ret;
 }
 
