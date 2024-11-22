@@ -21,6 +21,8 @@ int main() {
     titleScene.InitButtons();
     gameScene.InitButtons();
 
+    SetExitKey(0);
+
     // Main game loop
     while (!WindowShouldClose() && Scene::scene != Scene::EXIT) {
         // Alt + Enter for Fullscreen

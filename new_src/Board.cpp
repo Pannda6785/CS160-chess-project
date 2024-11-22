@@ -12,7 +12,7 @@
 
 Board::Board() {}
 Board::Board(const Board& other) {
-    for (const auto& piece : other.pieces) {
+    for (const std::unique_ptr<Piece> &piece : other.pieces) {
         pieces.push_back(piece->Clone());
     }
     lastMove = other.lastMove;
@@ -20,7 +20,7 @@ Board::Board(const Board& other) {
 Board& Board::operator=(const Board& other) {
     if (this != &other) {
         pieces.clear();
-        for (const auto& piece : other.pieces) {
+        for (const std::unique_ptr<Piece> &piece : other.pieces) {
             pieces.push_back(piece->Clone());
         }
         lastMove = other.lastMove;
@@ -113,9 +113,9 @@ bool Board::ExecuteMove(const Move move) {
     }
 
     // Move the actively moved piece (including the King in a castling)
-    for (size_t i = 0; i < pieces.size(); i++) {
-        if (pieces[i]->GetPosition() == move.fromPosition) {
-            pieces[i]->MoveToPosition(move.toPosition);
+    for (std::unique_ptr<Piece> &piece : pieces) {
+        if (piece->GetPosition() == move.fromPosition) {
+            piece->MoveToPosition(move.toPosition);
             break;
         }
     }
@@ -125,9 +125,9 @@ bool Board::ExecuteMove(const Move move) {
         int rank = move.fromPosition.i;
         Position rookPosition = move.type == SHORT_CASTLING ? Position{rank, 7} : Position{rank, 0};
         Position newRookPosition = move.type == SHORT_CASTLING ? Position{rank, 5} : Position{rank, 3};
-        for (size_t i = 0; i < pieces.size(); i++) {
-            if (pieces[i]->GetPosition() == rookPosition) {
-                pieces[i]->MoveToPosition(newRookPosition);
+            for (std::unique_ptr<Piece> &piece : pieces) {
+            if (piece->GetPosition() == rookPosition) {
+                piece->MoveToPosition(newRookPosition);
                 break;
             }
         }   
@@ -199,9 +199,8 @@ bool Board::IsMoveValid(const Move move) const {
 }
 
 bool Board::IsPositionAttacked(const CHESS_COLOR color, const Position position) const {
-    for (size_t i = 0; i < pieces.size(); i++) {
-        if (pieces[i]->GetColor() == color) continue;
-        const Piece* piece = pieces[i].get();
+    for (const std::unique_ptr<Piece> &piece : pieces) {
+        if (piece->GetColor() == color) continue;
         if (piece->GetType() == PAWN) { // since pawn's attack pattern is a bit weird
             int i = piece->GetPosition().i + (color == CHESS_WHITE ? +1 : -1);
             int j = piece->GetPosition().j;
@@ -222,9 +221,9 @@ bool Board::IsPositionAttacked(const CHESS_COLOR color, const Position position)
     return false;
 }
 bool Board::IsInCheck(const CHESS_COLOR color) const {
-    for (size_t i = 0; i < pieces.size(); i++) {
-        if (pieces[i]->GetType() == KING && pieces[i]->GetColor() == color) {
-            return IsPositionAttacked(color, pieces[i]->GetPosition());
+    for (const std::unique_ptr<Piece> &piece : pieces) {
+        if (piece->GetType() == KING && piece->GetColor() == color) {
+            return IsPositionAttacked(color, piece->GetPosition());
         }
     }
     return false; // should never reach this line
