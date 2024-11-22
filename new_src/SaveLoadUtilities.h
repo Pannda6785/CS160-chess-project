@@ -3,7 +3,7 @@
 
 #include <fstream>
 #include <string>
-#include <Properties.h>
+#include "Properties.h"
 
 namespace SaveLoadUtilities {
     inline bool IsSlotEmpty(int slot) {
@@ -15,17 +15,6 @@ namespace SaveLoadUtilities {
         }
 
         return false;  // The file exists and is not empty
-    }
-
-    inline std::string GetMode(int slot) { // {"1 Player", "2 Player"} 
-        std::ifstream savefile(Properties::GetSavefilePath(slot));
-
-        std::string agent1, agent2;
-        int turn; 
-        savefile >> agent1 >> agent2 >> turn;
-
-        if (agent1 == "Human" && agent2 == "Human") return "2 Player";
-        return "1 Player";
     }
 
     inline std::string GetDifficulty(int slot) { // only when is 1 Player. {"Easy", "Normal", "Hard"}
@@ -41,6 +30,17 @@ namespace SaveLoadUtilities {
         return "What";
     }
 
+    inline std::string GetMode(int slot) { // {"1 Player", "2 Player"} 
+        std::ifstream savefile(Properties::GetSavefilePath(slot));
+
+        std::string agent1, agent2;
+        int turn; 
+        savefile >> agent1 >> agent2 >> turn;
+
+        if (agent1 == "Human" && agent2 == "Human") return "2 Player";
+        return "1 Player " + GetDifficulty(slot);
+    }
+
     inline std::string GetPlayerColor(int slot) { // only when is 1 PLayer, {"White", "Black"}
         std::ifstream savefile(Properties::GetSavefilePath(slot));
 
@@ -52,14 +52,14 @@ namespace SaveLoadUtilities {
         return "Black";
     }
 
-    inline int GetTurn(int slot) { // number of turn passed
+    inline std::string GetTurn(int slot) { // number of turn passed
         std::ifstream savefile(Properties::GetSavefilePath(slot));
 
         std::string agent1, agent2;
         int turn; 
         savefile >> agent1 >> agent2 >> turn;
 
-        return turn;
+        return std::to_string(turn);
     }
 
     inline std::string GetWhoseTurn(int slot) { // "White" or "Black"

@@ -7,13 +7,16 @@
 
 #include "Renderer.h"
 #include "Properties.h"
+#include <map>
 #include <fstream>
+#include <algorithm>
 
 Game game;
 
 void Game::SetAgent(CHESS_COLOR agentColor, std::string agentTag) {
         // TO DO: set the right agent
     if (agentTag == "Human") SetAgent(std::make_unique<ManualAgent>(agentColor));
+  
     if (agentTag == "Bot1") SetAgent(std::make_unique<RandomAgent>(agentColor));
     if (agentTag == "Bot2") SetAgent(std::make_unique<SearchTreeAgent>(agentColor));
     if (agentTag == "Bot3") SetAgent(std::make_unique<RandomAgent>(agentColor));
@@ -27,9 +30,6 @@ void Game::SetAgent(std::unique_ptr<Agent> agent) {
 }
 
 void Game::Init() {
-    // TO DO: properly have the right kind of agent set (decided from the 1P, 2P choosing title and the Difficulty title)
-    if (whiteAgent == nullptr) whiteAgent = std::make_unique<ManualAgent>(CHESS_WHITE);
-    if (blackAgent == nullptr) blackAgent = std::make_unique<AlphaBetaAgent>(CHESS_BLACK, 0.1);
     whiteAgent->Init();
     blackAgent->Init();
 
@@ -141,7 +141,7 @@ void Game::SaveGame(int slot) const {
     for (const Board &board : redoHistory) {
         saveBoard(board);
     }
-
+    
     savefile << verdict << '\n';
 
     savefile.close();
@@ -159,7 +159,49 @@ void Game::Render() {
     // Then render the highlight of the selected position
     std::optional<Position> selectedPosition = GetCurrentAgent()->GetSelectedPosition();
     if (selectedPosition != std::nullopt) {
-        renderer.RenderSelectedPosition(selectedPosition.value());
+        renderer.RenderSelectedPosition(selectedPosition.value(), Color{144, 238, 144, 150});
+    }
+
+    // Then if king being checked, render checking piece(s)
+    if(board.IsInCheck(GetCurrentAgent()->GetColor())) {
+        CHESS_COLOR color = GetCurrentAgent()->GetColor();
+        for (const Piece* king : board.GetPieces()) {
+            if (king->GetType() == KING && king->GetColor() == color) {
+                Position position = king->GetPosition();
+
+                for (const Piece* piece : board.GetPieces()) {
+                    if (piece->GetColor() == color) continue;
+                    if (piece->GetType() == PAWN) { // since pawn's attack pattern is a bit weird
+                        int i = piece->GetPosition().i + (color == CHESS_WHITE ? +1 : -1);
+                        int j = piece->GetPosition().j;
+                        if (position == Position{i, j - 1} || position == Position{i, j + 1}) {
+                            if(verdict == CHESS_RUNNING) {
+                                renderer.RenderSelectedPosition(piece->GetPosition(), Color{253, 249, 0, 150});
+                                renderer.RenderSelectedPosition(position, Color{253, 249, 0, 150});
+                            }
+                            else {
+                                renderer.RenderSelectedPosition(piece->GetPosition(), Color{230, 41, 55, 150});
+                                renderer.RenderSelectedPosition(position, Color{230, 41, 55, 150});
+                            }
+                        }
+                    }
+                    else { // Non-special pieces (Queen, Knight, Bishop, Rooks) attack the same way they move
+                        for (Move move : piece->GetPossibleMoves(board)) {
+                            // just to clarify, by now move.type can only be either WALK or ATTACK
+                            if (move.toPosition != position) continue;
+                            if(verdict == CHESS_RUNNING) {
+                                renderer.RenderSelectedPosition(piece->GetPosition(), Color{253, 249, 0, 150});
+                                renderer.RenderSelectedPosition(position, Color{253, 249, 0, 150});
+                            }
+                            else {
+                                renderer.RenderSelectedPosition(piece->GetPosition(), Color{230, 41, 55, 150});
+                                renderer.RenderSelectedPosition(position, Color{230, 41, 55, 150});
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // Then render the non-selected pieces
@@ -212,6 +254,10 @@ bool Game::Undo() {
 
     UpdateGameStatus();
 
+    if(!(whiteAgent->GetTag() == "Human" && blackAgent->GetTag() == "Human") && turn%2 == 1) {
+        Undo();
+    }
+
     return true;
 }
 bool Game::Redo() {
@@ -228,6 +274,192 @@ bool Game::Redo() {
     UpdateGameStatus();
 
     return true;
+}
+
+std::vector<std::string> Game::GetNotations() {
+    std::vector<std::string> ret;
+
+    Board currentBoard = this->board;
+    int idx = undoHistory.size();
+
+    while(currentBoard.GetLastMove() != std::nullopt) {   
+        std::string s;
+
+        switch(currentBoard.GetLastMove()->type) {
+            case WALK: {
+                if(currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == PAWN) {
+                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                }
+                else if(currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == QUEEN
+                || currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == KING) {
+                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                }
+                else {
+                    CHESS_COLOR color = GetCurrentAgent()->GetColor();
+                    bool yes = true;
+
+                    for (const Piece* piece : board.GetPieces()) {
+                        if(piece->GetType() == currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType()
+                        && piece->GetColor() == color && piece->GetPosition() != currentBoard.GetLastMove()->toPosition) {
+                            Position position = piece->GetPosition();
+                            
+                            for (Move move : piece->GetPossibleMoves(board)) {
+                                // just to clarify, by now move.type can only be either WALK or ATTACK
+                                if(move.toPosition != position) continue;
+                                if(move.fromPosition.j != currentBoard.GetLastMove()->fromPosition.j) {
+                                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                                    s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
+                                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+
+                                    yes = false;
+                                }
+                                else {
+                                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                                    s += char('8' - currentBoard.GetLastMove()->fromPosition.i);
+                                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+
+                                    yes = false;
+                                }
+                            }
+                        }
+                    }
+
+                    if(yes) {
+                        s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                        s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                        s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+
+                        yes = false;
+                    }
+                }
+            } break;
+            case DOUBLE_WALK: {
+                s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+            } break;
+            case ATTACK: {
+                if(currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == PAWN) {
+                    s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
+                    s += 'x';
+                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                }
+                else if(currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == QUEEN
+                || currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == KING) {
+                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                    s += 'x';
+                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                }
+                else {
+                    CHESS_COLOR color = GetCurrentAgent()->GetColor();
+                    bool yes = true;
+
+                    for (const Piece* piece : board.GetPieces()) {
+                        if(piece->GetType() == currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType()
+                        && piece->GetColor() == color && piece->GetPosition() != currentBoard.GetLastMove()->toPosition) {
+                            Position position = piece->GetPosition();
+                            
+                            for (Move move : piece->GetPossibleMoves(board)) {
+                                // just to clarify, by now move.type can only be either WALK or ATTACK
+                                if(move.toPosition != position) continue;
+                                if(move.fromPosition.j != currentBoard.GetLastMove()->fromPosition.j) {
+                                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                                    s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
+                                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+
+                                    yes = false;
+                                }
+                                else {
+                                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                                    s += char('8' - currentBoard.GetLastMove()->fromPosition.i);
+                                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+
+                                    yes = false;
+                                }
+                            }
+                        }
+                    }
+
+                    if(yes) {
+                        s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                        s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                        s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+
+                        yes = false;
+                    }
+                }
+            } break;
+            case SHORT_CASTLING: {
+                s = "O-O";
+            } break;
+            case LONG_CASTLING: {
+                s = "O-O-O";
+            } break;
+            case EN_PASSANT: {
+                s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
+                s += 'x';
+                s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                s += " e.p";
+            } break;
+            case PROMOTION: {
+                s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                s += "=";
+                
+                switch(currentBoard.GetLastMove()->promotionPiece) {
+                    case QUEEN: s += "Q"; break;
+                    case ROOK: s += "R"; break;
+                    case BISHOP: s += "B"; break;
+                    case KNIGHT: s += "N"; break;
+                }
+            } break;
+            case ATTACK_AND_PROMOTION: {
+                s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
+                s += 'x';
+                s += char('a' + currentBoard.GetLastMove()->toPosition.i);
+                s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                s += "=";
+                
+                switch(currentBoard.GetLastMove()->promotionPiece) {
+                    case QUEEN: s += "Q"; break;
+                    case ROOK: s += "R"; break;
+                    case BISHOP: s += "B"; break;
+                    case KNIGHT: s += "N"; break;
+                }
+            } break;
+        }
+
+        if(idx == undoHistory.size() && verdict != CHESS_RUNNING) {
+            s += '#';
+        }
+        else if(currentBoard.IsInCheck(currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetColor() == CHESS_WHITE ? CHESS_BLACK : CHESS_WHITE)) {
+            s += '+';
+        }
+
+        ret.push_back(s);
+
+        if(idx == 0) break; 
+        else --idx;
+        currentBoard = undoHistory[idx];
+    }
+    
+
+    std::reverse(ret.begin(), ret.end());
+    for(int i=0;i<ret.size();++i) {
+        if(i%2 == 0) {
+            ret[i] = std::to_string(i/2 + 1) + ". " + ret[i];
+        }
+    }
+    return ret;
 }
 
 CHESS_COLOR Game::WhoseTurn() const {
@@ -271,21 +503,90 @@ void Game::ExecuteMove(const Move move) {
     std::vector<Board>().swap(redoHistory); // clear the redo history
     turn++;
 
+    if(move.type == ATTACK || move.type == ATTACK_AND_PROMOTION) PlaySound(Properties::sounds["capture"]);
+    else PlaySound(Properties::sounds["move"]);
     UpdateGameStatus();
 }
 void Game::UpdateGameStatus() {
+    // Checking preparation
     bool isAnyMovePossible = false;
-    for (const Piece* piece : board.GetPiecesByColor(WhoseTurn())) {
+    bool is50Moves = true;
+    int countPieces = 0;
+    std::map<PIECE_TYPE, int> countWhite, countBlack;
+    bool isThreefoldRepetition = false;
+
+    // Counting
+    for (const Piece* piece : board.GetPiecesByColor(WhoseTurn())) { // For no possible move
         if (!board.GetPossibleMoves(piece).empty()) {
             isAnyMovePossible = true;
             break;
         }
     }
+    for (const Piece* piece : board.GetPieces()) { // For insufficent move
+        if(piece->GetColor() == CHESS_WHITE) {
+            ++countWhite[piece->GetType()];
+        }
+        else ++countBlack[piece->GetType()];
+        ++countPieces;
+    }
+    for(Board board1 : undoHistory) { // For ThreeFold Repetition
+        int countBoard = 0;
+        for(const Board board2 : undoHistory) {
+            if(board1 == board2) ++countBoard;
+        }
+        if(countBoard == 3) isThreefoldRepetition = true;
+    }
+    /*
+    */
+    // For 50 moves
+    if(undoHistory.size() < 98) {
+        is50Moves = false;
+    }
+    else if(board.GetLastMove()->type == ATTACK || board.GetPieceByPosition(board.GetLastMove()->toPosition)->GetType() == PAWN) is50Moves = false;
+    else for(int i = undoHistory.size() - 1; i > (board.GetPieceByPosition(board.GetLastMove()->toPosition)->GetColor() == CHESS_WHITE ? undoHistory.size() - 99 : undoHistory.size() - 100); --i) {
+        if(board.GetLastMove()->type == ATTACK || board.GetPieceByPosition(board.GetLastMove()->toPosition)->GetType() == PAWN) is50Moves = false;
+    }
+
+    // Insufficent Rule
+    auto IsKingvsKing = [&]() -> bool {
+        return countPieces == 2;
+    };
+    auto IsKingBishopvsKing = [&]() -> bool {
+        return countPieces == 3 && (countWhite[BISHOP] == 1 || countBlack[BISHOP] == 1);
+    };
+    auto IsKingKnightvsKing = [&]() -> bool {
+        return countPieces == 3 && (countWhite[KNIGHT] == 1 || countBlack[KNIGHT] == 1);
+    };
+    auto IsKingBishopvsKingBishop = [&]() -> bool {
+        // base condition
+        if(countPieces != 4) return false;
+        if(countWhite[BISHOP] != 1 || countWhite[BISHOP] != 1) return false;
+        
+        Position whiteBishop, blackBishop;
+        for (const Piece* piece : board.GetPieces()) {
+            if(piece->GetColor() == CHESS_WHITE && piece->GetType() == BISHOP) whiteBishop = piece->GetPosition();
+            if(piece->GetColor() == CHESS_BLACK && piece->GetType() == BISHOP) whiteBishop = piece->GetPosition();
+        }
+
+        return ((whiteBishop.i + whiteBishop.j) - (blackBishop.i + blackBishop.j)) % 2 == 0;
+    };
+
+    // Conditions
     if (!isAnyMovePossible) {
         if (board.IsInCheck(CHESS_WHITE)) verdict = BLACK_WINS;
         else if (board.IsInCheck(CHESS_BLACK)) verdict = WHITE_WINS;
         else verdict = STALEMENT;
-    } else {
+    } 
+    else if(IsKingvsKing() || IsKingBishopvsKing() || IsKingKnightvsKing() || IsKingBishopvsKingBishop()) {
+        verdict = INSUFFICIENT;
+    }
+    else if(is50Moves) {
+        verdict = FIFTYMOVE;
+    }
+    else if(isThreefoldRepetition) {
+        verdict = THREEFOLD;
+    }
+    else {
         verdict = CHESS_RUNNING;
     }
 }

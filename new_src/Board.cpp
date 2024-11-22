@@ -27,6 +27,11 @@ Board& Board::operator=(const Board& other) {
     }
     return *this;
 }
+bool Board::operator==(const Board& other) {
+    // TODO : when 2 boards are exactlly the same as each other
+    // included: all piece position and all available moves.
+    return false;
+}
 
 void Board::Clear() {
     pieces.clear();
@@ -66,6 +71,7 @@ void Board::Init() {
     Add(std::make_unique<Rook>(CHESS_WHITE, Position{7, 7}));
     Add(std::make_unique<Rook>(CHESS_BLACK, Position{0, 0}));
     Add(std::make_unique<Rook>(CHESS_BLACK, Position{0, 7}));
+
 }
 
 bool Board::Add(std::string tag, CHESS_COLOR color, Position position, bool hasMoved = false) {

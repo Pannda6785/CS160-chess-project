@@ -9,40 +9,42 @@
 
 namespace Properties { // game properties
     // Window variables
-    const int initialScreenWidth = 1280;
-    const int initialScreenHeight = 850;
+    const int screenWidth[] = {1280, 1366, 1440};
+    const int screenHeight[] = {800, 768, 900};
     inline bool isFullscreen = false;
 
     // Assets holders.
     inline std::map<std::string, Sound> sounds;
+    inline std::map<std::string, Music> musics;
+    inline std::map<std::string, Texture> skins;
     inline std::map<std::string, Texture> skin1;
     inline std::map<std::string, Texture> skin2;
     inline std::map<std::string, Texture> skin3;
     inline std::map<std::string, Texture> textures;
     inline std::map<std::string, Texture> elements;
     inline std::map<std::string, Font> fonts;
-    inline int fontSizes[] = {45, 80};
+    inline int skin;
+    inline int music;
+    inline std::string musicName;
+    inline bool isMusicsMute, isSoundsMute;
+    inline float musicsVolume, soundsVolume;
+    inline int fontSizes[] = {20, 25, 45, 80};
     
     // Assets paths
     const std::string ASSETS_PATH = "../assets";
-    const std::string SOUNDS_PATH = ASSETS_PATH + "/sounds"; // Sounds
+    const std::string SOUNDS_PATH = ASSETS_PATH + "/sounds"; // Sounds effects
+    const std::string MUSICS_PATH = ASSETS_PATH + "/musics"; // Background musics
     const std::string SKIN1_PATH = ASSETS_PATH + "/textures/skin1"; // On-board elements (need to modified one)
     const std::string SKIN2_PATH = ASSETS_PATH + "/textures/skin2"; // On-board elements (need to modified one)
     const std::string SKIN3_PATH = ASSETS_PATH + "/textures/skin3"; // On-board elements (need to modified one)
     const std::string ELEMENTS_PATH = ASSETS_PATH + "/elements"; // titles element
-    const std::string FONTS_PATH = ASSETS_PATH + "/fonts"; // fonts element
+    const std::string FONTS_PATH = ASSETS_PATH + "/fonts"; 
     const std::string SAVEFILES_PATH = "../savefiles";
     const std::string SAVEFILES_SLOT1 = SAVEFILES_PATH + "/slot1.txt";
     const std::string SAVEFILES_SLOT2 = SAVEFILES_PATH + "/slot2.txt";
     const std::string SAVEFILES_SLOT3 = SAVEFILES_PATH + "/slot3.txt";
 
     // Windows Info
-    inline int GetInitialScreenWidth() {
-        return initialScreenWidth;
-    }
-    inline int GetInitialScreenHeight() {
-        return initialScreenHeight;
-    }
     inline int GetBorderSize() {
         return GetScreenHeight() / 20;
     }
@@ -50,21 +52,21 @@ namespace Properties { // game properties
         return GetScreenHeight() * 9 / 80;
     }
 
-    inline void ToggleFullscreen() {
-        if (!isFullscreen) {
+    inline void ToggleFullscreen(int screen) {
+        if (screen == 3 && !isFullscreen) { // Toggle to fullscreen borderless mode
             isFullscreen = true;
             SetWindowState(FLAG_WINDOW_UNDECORATED);
             SetWindowPosition(0, 0);
             int monitor = GetCurrentMonitor();
             SetWindowSize(GetMonitorWidth(monitor), GetMonitorHeight(monitor));
-        } else {
+        } else { // Toggle to fixed resolution
             isFullscreen = false;
             ClearWindowState(FLAG_WINDOW_UNDECORATED);
             int monitor = GetCurrentMonitor();
-            int x = GetMonitorWidth(monitor) / 2 - GetInitialScreenWidth() / 2;
-            int y = GetMonitorHeight(monitor) / 2 - GetInitialScreenHeight() / 2;
+            int x = GetMonitorWidth(monitor) / 2 - screenWidth[screen] / 2;
+            int y = GetMonitorHeight(monitor) / 2 - screenHeight[screen] / 2;
             SetWindowPosition(x, y);
-            SetWindowSize(Properties::GetInitialScreenWidth(), Properties::GetInitialScreenHeight());
+            SetWindowSize(screenWidth[screen], screenHeight[screen]);
         }
     }
 
@@ -84,12 +86,38 @@ namespace Properties { // game properties
             // Free sound data.
             // UnloadSound(sound);
         }
+
+        // Initial values
+        isSoundsMute = false;
+        soundsVolume = 1.0f;
     }
+    inline void LoadMusics() {
+        for (const auto & entry : std::filesystem::directory_iterator(MUSICS_PATH)) {
+            // Load sound.
+            Music music = LoadMusicStream(entry.path().string().c_str());
+
+            // Add sound to map of sounds.
+            std::string fileName = entry.path().filename().string();
+            size_t dotIndex = fileName.find('.');
+
+            std::string fileNameWithoutExtension = entry.path().filename().string().substr(0, dotIndex);
+            musics[fileNameWithoutExtension] = music;
+
+            // Free sound data.
+            // UnloadSound(sound);
+        }
+
+        // Initial values
+        isMusicsMute = false;
+        musicsVolume = 1.0f;
+        musicName = "titleMusic";
+    }
+
     inline void LoadTextures() {
         for (const auto & entry : std::filesystem::directory_iterator(SKIN1_PATH)) {
             // Load and resize image.
             Image image = LoadImage(entry.path().string().c_str());
-            ImageResize(&image, GetCellSize(), GetCellSize());
+            // ImageResize(&image, GetCellSize(), GetCellSize()); // No need now
 
             Texture texture = LoadTextureFromImage(image);
 
@@ -106,7 +134,8 @@ namespace Properties { // game properties
         for (const auto & entry : std::filesystem::directory_iterator(SKIN2_PATH)) {
             // Load and resize image.
             Image image = LoadImage(entry.path().string().c_str());
-            ImageResize(&image, GetCellSize(), GetCellSize());
+            // ImageResize(&image, GetCellSize(), GetCellSize());
+            
 
             Texture texture = LoadTextureFromImage(image);
 
@@ -123,7 +152,7 @@ namespace Properties { // game properties
         for (const auto & entry : std::filesystem::directory_iterator(SKIN3_PATH)) {
             // Load and resize image.
             Image image = LoadImage(entry.path().string().c_str());
-            ImageResize(&image, GetCellSize(), GetCellSize());
+            // ImageResize(&image, GetCellSize(), GetCellSize());
 
             Texture texture = LoadTextureFromImage(image);
 
@@ -137,6 +166,10 @@ namespace Properties { // game properties
             // Free image data.
             UnloadImage(image);
         }
+
+        // default skin
+        skin = 0;
+        skins = skin1;
     }
     inline void LoadElements() {
         for (const auto & entry : std::filesystem::directory_iterator(ELEMENTS_PATH)) {
@@ -178,6 +211,83 @@ namespace Properties { // game properties
         if (slot == 2) return SAVEFILES_SLOT2;
         if (slot == 3) return SAVEFILES_SLOT3;
         return ""; // shoud not reach this
+    }
+    
+    // Sound settings
+    inline void SetSoundsVolume(float volume) {
+        soundsVolume = volume;
+        if(!isSoundsMute) {
+            for(auto v : sounds) {
+                SetSoundVolume(v.second, volume);
+            }
+        }
+    }
+
+    inline void MuteSounds() {
+        if(!isSoundsMute) {
+            isSoundsMute = true;
+            for(auto v : sounds) {
+                SetSoundVolume(v.second, 0.0f);
+            }
+        }
+        else {
+            isSoundsMute = false;
+            for(auto v : sounds) {
+                SetSoundVolume(v.second, soundsVolume);
+            }
+        }
+    }
+
+    inline void SetMusicsVolume(float volume) {
+        musicsVolume = volume;
+        if(!isMusicsMute) {
+            for(auto v : musics) {
+                SetMusicVolume(v.second, volume);
+            }
+        }
+    }
+    
+    inline void MuteMusics() {
+        if(!isMusicsMute) {
+            isMusicsMute = true;
+            for(auto v : musics) {
+                SetMusicVolume(v.second, 0.0f);
+            }
+        }
+        else {
+            isMusicsMute = false;
+            for(auto v : musics) {
+                SetMusicVolume(v.second, musicsVolume);
+            }
+        }
+    }
+
+    inline void UpdateMusics() {
+        UpdateMusicStream(musics[musicName]);
+    }
+
+    inline void ChangeMusic(std::string name) {
+        StopMusicStream(musics[musicName]);
+        musicName = name;
+        PlayMusicStream(musics[musicName]);
+    }
+
+    // Chess' custom
+    inline void changeSkin(int newSkin) {
+        switch (newSkin) {
+            case 0: {
+                skins = skin1;
+                skin = 0;
+            } break;
+            case 1: {
+                skins = skin2;
+                skin = 1;
+            } break;
+            case 2: {
+                skins = skin3;
+                skin = 2;
+            }
+        }
     }
 };
 

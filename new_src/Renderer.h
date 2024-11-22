@@ -18,7 +18,7 @@ public:
     void RenderLastMove(Move lastMove);
     void RenderPieces(std::vector<const Piece*> pieces);
     void RenderDraggingPiece(const Piece* piece);
-    void RenderSelectedPosition(Position position);
+    void RenderSelectedPosition(Position position, Color color);
     void RenderPossibleMoves(std::vector<Move> possibleMoves);
     void RenderPromotion(CHESS_COLOR color, int promotingFile);
 
