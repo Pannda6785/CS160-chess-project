@@ -173,19 +173,22 @@ void GameScene::BaseGame() {
     settingsButton.SetTexture("settings", "hoveringSettings");
 
     // Text box
-    std::string turnCount = "Turn: " + std::to_string(game.GetTurn());
-    DrawTextRecEx(Properties::fonts["Rubik-Regular_45"], turnCount.c_str(), 
-        Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 5 / 2,(float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 1}, 45, 2, PINK);
-    std::string currentTurn = "Current turn: ";
-    if(game.GetTurn() % 2) {
-        currentTurn += "Black";
+    if(game.GetVerdict() == CHESS_RUNNING) {
+        std::string turnCount = "Turn: " + std::to_string(game.GetTurn());
+        DrawTextRecEx(Properties::fonts["Rubik-Regular_45"], turnCount.c_str(), 
+            Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 5 / 2,(float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 1}, 45, 2, PINK);
+        std::string currentTurn = "Current turn: ";
+        
+        if(game.GetTurn() % 2) {
+            currentTurn += "Black";
+        }
+        else currentTurn += "White";
+        DrawTextRecEx(Properties::fonts["Rubik-Regular_25"], currentTurn.c_str(), 
+            Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 7 / 2,(float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 1}, 25, 2, LIME);
     }
-    else currentTurn += "White";
-    DrawTextRecEx(Properties::fonts["Rubik-Regular_25"], currentTurn.c_str(), 
-        Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 7 / 2,(float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 1}, 25, 2, LIME);
 
     // Scroll box for notations
-    // ***Customable variable***
+    // ********Customable variable********
     // Define the scrollable text box area
     Rectangle textBox = {(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 6,
         (float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) GetScreenHeight() - Properties::GetBorderSize() * 9 - 70};
@@ -199,7 +202,7 @@ void GameScene::BaseGame() {
     Font font = Properties::fonts["Rubik-Regular_25"];
     int fontSize = 25;
     int lineHeight = 30;
-    // *************************
+    // ***********************************
 
     // limit for better visual
     if(scrollOffSet > (int)notationsSize * lineHeight - (int)textBox.height) 
@@ -544,9 +547,11 @@ void GameScene::OptionsGame() {
     // skin's skin
     if(leftButton.Check()) {
         Properties::skin = (Properties::skin - 1 + 3) % 3;
+        Properties::changeSkin(Properties::skin);
     }
     if(rightButton.Check()) {
         Properties::skin = (Properties::skin + 1) % 3;
+        Properties::changeSkin(Properties::skin);
     }
     switch(Properties::skin) {
         case 0: {
@@ -555,10 +560,6 @@ void GameScene::OptionsGame() {
             DrawTexturePro(Properties::skin1["preview"], (Rectangle) {0.0, 0.0, (float) Properties::skin1["preview"].width, (float) Properties::skin1["preview"].height},
                 (Rectangle) {(float) GetScreenWidth() / 2 + 2 * Properties::GetBorderSize(), (float) GetScreenHeight() / 2,
                     (float) GetScreenWidth() / 2 - 5 * Properties::GetBorderSize(), (float) (GetScreenWidth() / 2 - 5 * Properties::GetBorderSize()) * Properties::skin1["preview"].height / Properties::skin1["preview"].width}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
-
-            if(skin1Button.Check()) {
-                Properties::changeSkin(0);
-            }
         } break;
         case 1: {
             skin2Button.Render();
@@ -566,11 +567,6 @@ void GameScene::OptionsGame() {
             DrawTexturePro(Properties::skin2["preview"], (Rectangle) {0.0, 0.0, (float) Properties::skin2["preview"].width, (float) Properties::skin2["preview"].height},
                 (Rectangle) {(float) GetScreenWidth() / 2 + 2 * Properties::GetBorderSize(), (float) GetScreenHeight() / 2,
                     (float) GetScreenWidth() / 2 - 5 * Properties::GetBorderSize(), (float) (GetScreenWidth() / 2 - 5 * Properties::GetBorderSize()) * Properties::skin2["preview"].height / Properties::skin2["preview"].width}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
-
-
-            if(skin2Button.Check()) {
-                Properties::changeSkin(1);
-            }
         } break;
         case 2: {
             skin3Button.Render();
@@ -578,10 +574,6 @@ void GameScene::OptionsGame() {
             DrawTexturePro(Properties::skin3["preview"], (Rectangle) {0.0, 0.0, (float) Properties::skin3["preview"].width, (float) Properties::skin3["preview"].height},
                 (Rectangle) {(float) GetScreenWidth() / 2 + 2 * Properties::GetBorderSize(), (float) GetScreenHeight() / 2,
                     (float) GetScreenWidth() / 2 - 5 * Properties::GetBorderSize(), (float) (GetScreenWidth() / 2 - 5 * Properties::GetBorderSize()) * Properties::skin3["preview"].height / Properties::skin3["preview"].width}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
-
-            if(skin3Button.Check()) {
-                Properties::changeSkin(2);
-            }
         } break;
     }
 
@@ -631,28 +623,36 @@ void GameScene::OptionsGame() {
 void GameScene::EndGame() {
     BaseGame();
 
+    std::string endCondition = "Turn: " + std::to_string(game.GetTurn());
+    std::string currentTurn = "Game at turn: " + std::to_string(game.GetTurn());
+
     // End game state
     switch (game.GetVerdict()) {
         case WHITE_WINS: {
-            DrawTextCenEx(Properties::fonts["Mondwild_80"], "White wins!", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
+            endCondition = "WHITE WINS!";
         } break;
         case BLACK_WINS: {
-            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Black wins", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);     
+            endCondition = "BLACK WINS!";
         } break;
         case STALEMENT: {
-            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Stalemate", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
+            endCondition = "STALEMATE!";
         } break;
         case INSUFFICIENT: {
-            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Insufficient Material", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
+            endCondition = "INSUFFICIENT MATERIAL!";
         } break;
         case FIFTYMOVE: {
-            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Fifty Move Rule", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);     
+            endCondition = "FIFTY MOVE RULE!";
         } break;
         case THREEFOLD: {
-            DrawTextCenEx(Properties::fonts["Mondwild_80"], "Threefold Repetition", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);     
+            endCondition = "THREEFOLD REPITITION!";
         } break;
     }
 
+    DrawTextRecEx(Properties::fonts["Rubik-Regular_45"], endCondition.c_str(), 
+        Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 5 / 2,(float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 1}, 45, 2, PINK);
+    DrawTextRecEx(Properties::fonts["Rubik-Regular_25"], currentTurn.c_str(), 
+        Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 7 / 2,(float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 1}, 25, 2, LIME);
+    
     if(!game.IsGameEnded()) {
         state = MAIN;
     }

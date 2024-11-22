@@ -6,7 +6,6 @@
 
 int main() {
     // Init game window
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE); // temporary disable
     InitWindow(Properties::screenWidth[1], Properties::screenHeight[1], "CS160-chess-project");
     InitAudioDevice();
     SetTargetFPS(60);

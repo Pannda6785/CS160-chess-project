@@ -412,9 +412,11 @@ void TitleScene::OptionsTitle() {
     // skin's skin
     if(leftButton.Check()) {
         Properties::skin = (Properties::skin - 1 + 3) % 3;
+        Properties::changeSkin(Properties::skin);
     }
     if(rightButton.Check()) {
         Properties::skin = (Properties::skin + 1) % 3;
+        Properties::changeSkin(Properties::skin);
     }
     switch(Properties::skin) {
         case 0: {
@@ -423,10 +425,6 @@ void TitleScene::OptionsTitle() {
             DrawTexturePro(Properties::skin1["preview"], (Rectangle) {0.0, 0.0, (float) Properties::skin1["preview"].width, (float) Properties::skin1["preview"].height},
                 (Rectangle) {(float) GetScreenWidth() / 2 + 2 * Properties::GetBorderSize(), (float) GetScreenHeight() / 2,
                     (float) GetScreenWidth() / 2 - 5 * Properties::GetBorderSize(), (float) (GetScreenWidth() / 2 - 5 * Properties::GetBorderSize()) * Properties::skin1["preview"].height / Properties::skin1["preview"].width}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
-
-            if(skin1Button.Check()) {
-                Properties::changeSkin(0);
-            }
         } break;
         case 1: {
             skin2Button.Render();
@@ -434,11 +432,6 @@ void TitleScene::OptionsTitle() {
             DrawTexturePro(Properties::skin2["preview"], (Rectangle) {0.0, 0.0, (float) Properties::skin2["preview"].width, (float) Properties::skin2["preview"].height},
                 (Rectangle) {(float) GetScreenWidth() / 2 + 2 * Properties::GetBorderSize(), (float) GetScreenHeight() / 2,
                     (float) GetScreenWidth() / 2 - 5 * Properties::GetBorderSize(), (float) (GetScreenWidth() / 2 - 5 * Properties::GetBorderSize()) * Properties::skin2["preview"].height / Properties::skin2["preview"].width}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
-
-
-            if(skin2Button.Check()) {
-                Properties::changeSkin(1);
-            }
         } break;
         case 2: {
             skin3Button.Render();
@@ -446,10 +439,6 @@ void TitleScene::OptionsTitle() {
             DrawTexturePro(Properties::skin3["preview"], (Rectangle) {0.0, 0.0, (float) Properties::skin3["preview"].width, (float) Properties::skin3["preview"].height},
                 (Rectangle) {(float) GetScreenWidth() / 2 + 2 * Properties::GetBorderSize(), (float) GetScreenHeight() / 2,
                     (float) GetScreenWidth() / 2 - 5 * Properties::GetBorderSize(), (float) (GetScreenWidth() / 2 - 5 * Properties::GetBorderSize()) * Properties::skin3["preview"].height / Properties::skin3["preview"].width}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
-
-            if(skin3Button.Check()) {
-                Properties::changeSkin(2);
-            }
         } break;
     }
 
