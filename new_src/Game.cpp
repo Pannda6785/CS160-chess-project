@@ -254,6 +254,10 @@ bool Game::Undo() {
 
     UpdateGameStatus();
 
+    if(!(whiteAgent->GetTag() == "Human" && blackAgent->GetTag() == "Human") && turn%2 == 1) {
+        Undo();
+    }
+
     return true;
 }
 bool Game::Redo() {

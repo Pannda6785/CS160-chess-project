@@ -53,7 +53,7 @@ void GameScene::InitButtons() {
     optionsButton.SetText("Options", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     optionsButton.SetSound(Properties::sounds["buttonClick"]);
       
-    exitButton.SetRatio(0.5, -130, 7.0 / 8.0, -35, 0, 260, 0, 70, BLANK,  {255, 255, 255, 0});
+    exitButton.SetRatio(0.5, -130, 7.0 / 8.0, -35, 0, 260, 0, 70, BLANK,  {255, 255, 255, 100});
     exitButton.SetText("Exit", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
     exitButton.SetSound(Properties::sounds["buttonClick"]);
 
