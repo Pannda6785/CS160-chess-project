@@ -6,8 +6,6 @@
 
 Renderer renderer;
 
-// TO DO: render the right stuffs in the end
-
 void Renderer::SetBackgroundTexture(const Texture &texture) {
     backgroundTexture = texture;
 }
@@ -85,9 +83,35 @@ void Renderer::RenderPossibleMoves(std::vector<Move> possibleMoves) {
     for (Move move : possibleMoves) {
         int i = move.toPosition.i;
         int j = move.toPosition.j;
-        int x = Properties::GetBorderSize() + j * Properties::GetCellSize() + Properties::GetCellSize() / 2;
-        int y = Properties::GetBorderSize() + i * Properties::GetCellSize() + Properties::GetCellSize() / 2;
-        DrawCircle(x, y, 10, GRAY);                 
+        int x = Properties::GetBorderSize() + j * Properties::GetCellSize();
+        int y = Properties::GetBorderSize() + i * Properties::GetCellSize();
+
+        switch(move.type) {
+            // 'capture'
+            case ATTACK: {
+                DrawTexturePro(Properties::skins["capture"], Rectangle{0, 0, (float) Properties::skins["capture"].width, (float) Properties::skins["capture"].height},
+                    Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+            } break;
+            // 'promotion'
+            case PROMOTION: {
+                DrawTexturePro(Properties::skins["promotion"], Rectangle{0, 0, (float) Properties::skins["promotion"].width, (float) Properties::skins["promotion"].height},
+                    Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+            } break;
+            case ATTACK_AND_PROMOTION: {
+                DrawTexturePro(Properties::skins["promotion"], Rectangle{0, 0, (float) Properties::skins["promotion"].width, (float) Properties::skins["promotion"].height},
+                    Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+            } break;
+            // 'enpassant'
+            case EN_PASSANT: {
+                DrawTexturePro(Properties::skins["enpassant"], Rectangle{0, 0, (float) Properties::skins["enpassant"].width, (float) Properties::skins["enpassant"].height},
+                    Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+            } break;
+            // 'move'
+            default: {
+                DrawTexturePro(Properties::skins["move"], Rectangle{0, 0, (float) Properties::skins["move"].width, (float) Properties::skins["move"].height},
+                    Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize()}, Vector2{0, 0}, 0, WHITE);              
+            } break;
+        }            
     }
 }
 
@@ -100,27 +124,27 @@ void Renderer::RenderPromotion(CHESS_COLOR color, int promotingFile) {
         DrawTexturePro(Properties::skins["wQ"], Rectangle{0, 0, (float) Properties::skins["wQ"].width, (float) Properties::skins["wQ"].height},
             Rectangle{(float) x, (float) b + 1 * c - c * Properties::skins["wQ"].height / Properties::skins["wQ"].width, (float) Properties::GetCellSize(),
             (float) c * Properties::skins["wQ"].height / Properties::skins["wQ"].width}, Vector2{0, 0}, 0, WHITE);              
+        DrawTexturePro(Properties::skins["wN"], Rectangle{0, 0, (float) Properties::skins["wN"].width, (float) Properties::skins["wN"].height},
+            Rectangle{(float) x, (float) b + 2 * c - c * Properties::skins["wN"].height / Properties::skins["wN"].width, (float) Properties::GetCellSize(),
+            (float) c * Properties::skins["wN"].height / Properties::skins["wN"].width}, Vector2{0, 0}, 0, WHITE);              
         DrawTexturePro(Properties::skins["wR"], Rectangle{0, 0, (float) Properties::skins["wR"].width, (float) Properties::skins["wR"].height},
-            Rectangle{(float) x, (float) b + 2 * c - c * Properties::skins["wR"].height / Properties::skins["wR"].width, (float) Properties::GetCellSize(),
+            Rectangle{(float) x, (float) b + 3 * c - c * Properties::skins["wR"].height / Properties::skins["wR"].width, (float) Properties::GetCellSize(),
             (float) c * Properties::skins["wR"].height / Properties::skins["wR"].width}, Vector2{0, 0}, 0, WHITE);              
         DrawTexturePro(Properties::skins["wB"], Rectangle{0, 0, (float) Properties::skins["wB"].width, (float) Properties::skins["wB"].height},
-            Rectangle{(float) x, (float) b + 3 * c - c * Properties::skins["wB"].height / Properties::skins["wB"].width, (float) Properties::GetCellSize(),
-            (float) c * Properties::skins["wB"].height / Properties::skins["wB"].width}, Vector2{0, 0}, 0, WHITE);              
-        DrawTexturePro(Properties::skins["wN"], Rectangle{0, 0, (float) Properties::skins["wN"].width, (float) Properties::skins["wN"].height},
-            Rectangle{(float) x, (float) b + 4 * c - c * Properties::skins["wN"].height / Properties::skins["wN"].width, (float) Properties::GetCellSize(),
-            (float) c * Properties::skins["wN"].height / Properties::skins["wN"].width}, Vector2{0, 0}, 0, WHITE);
+            Rectangle{(float) x, (float) b + 4 * c - c * Properties::skins["wB"].height / Properties::skins["wB"].width, (float) Properties::GetCellSize(),
+            (float) c * Properties::skins["wB"].height / Properties::skins["wB"].width}, Vector2{0, 0}, 0, WHITE);
         DrawTextCen("x", x + c / 2, b + c * 4.25, 20, GRAY);         
     } else {
         DrawRectangle(x, b + c * 3.5, c, 4.5 * c, GOLD);
-        DrawTexturePro(Properties::skins["bN"], Rectangle{0, 0, (float) Properties::skins["bN"].width, (float) Properties::skins["bN"].height},
-            Rectangle{(float) x, (float) b + 5 * c - c * Properties::skins["bN"].height / Properties::skins["bN"].width, (float) Properties::GetCellSize(),
-            (float) c * Properties::skins["bN"].height / Properties::skins["bN"].width}, Vector2{0, 0}, 0, WHITE);              
         DrawTexturePro(Properties::skins["bB"], Rectangle{0, 0, (float) Properties::skins["bB"].width, (float) Properties::skins["bB"].height},
-            Rectangle{(float) x, (float) b + 6 * c - c * Properties::skins["bB"].height / Properties::skins["bB"].width, (float) Properties::GetCellSize(),
+            Rectangle{(float) x, (float) b + 5 * c - c * Properties::skins["bB"].height / Properties::skins["bB"].width, (float) Properties::GetCellSize(),
             (float) c * Properties::skins["bB"].height / Properties::skins["bB"].width}, Vector2{0, 0}, 0, WHITE);              
         DrawTexturePro(Properties::skins["bR"], Rectangle{0, 0, (float) Properties::skins["bR"].width, (float) Properties::skins["bR"].height},
-            Rectangle{(float) x, (float) b + 7 * c - c * Properties::skins["bR"].height / Properties::skins["bR"].width, (float) Properties::GetCellSize(),
+            Rectangle{(float) x, (float) b + 6 * c - c * Properties::skins["bR"].height / Properties::skins["bR"].width, (float) Properties::GetCellSize(),
             (float) c * Properties::skins["bR"].height / Properties::skins["bR"].width}, Vector2{0, 0}, 0, WHITE);              
+        DrawTexturePro(Properties::skins["bN"], Rectangle{0, 0, (float) Properties::skins["bN"].width, (float) Properties::skins["bN"].height},
+            Rectangle{(float) x, (float) b + 7 * c - c * Properties::skins["bN"].height / Properties::skins["bN"].width, (float) Properties::GetCellSize(),
+            (float) c * Properties::skins["bN"].height / Properties::skins["bN"].width}, Vector2{0, 0}, 0, WHITE);              
         DrawTexturePro(Properties::skins["bQ"], Rectangle{0, 0, (float) Properties::skins["bQ"].width, (float) Properties::skins["bQ"].height},
             Rectangle{(float) x, (float) b + 8 * c - c * Properties::skins["bQ"].height / Properties::skins["bQ"].width, (float) Properties::GetCellSize(),
             (float) c * Properties::skins["bQ"].height / Properties::skins["bQ"].width}, Vector2{0, 0}, 0, WHITE);              

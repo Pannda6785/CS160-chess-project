@@ -6,10 +6,10 @@
 
 int main() {
     // Init game window
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE); // temporary disable
     InitWindow(Properties::screenWidth[1], Properties::screenHeight[1], "CS160-chess-project");
     InitAudioDevice();
     SetTargetFPS(60);
+    SetExitKey(0);
 
     // Load assets
     Properties::LoadSounds();
@@ -22,6 +22,8 @@ int main() {
     titleScene.InitButtons();
     gameScene.InitButtons();
     PlayMusicStream(Properties::musics["titleMusic"]);
+
+    SetExitKey(0);
 
     // Main game loop
     while (!WindowShouldClose() && Scene::scene != Scene::EXIT) {

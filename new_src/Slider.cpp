@@ -35,8 +35,6 @@ void Slider::SetSound(Sound sound) {
 }
 
 void Slider::Render() {
-    // TO DO: should do some switching of state here, as well as handling the texture if applicable
-
     Rectangle rec = !useRatio ? this->rec : Rectangle{GetScreenWidth() * rx + dx, GetScreenHeight() * ry + dy, GetScreenWidth() * rw + dw, GetScreenHeight() * rh + dh};
     Rectangle progressRec = !useRatio ? Rectangle{this->rec.x, this->rec.y, this->rec.width * this->progress, this->rec.height} : Rectangle{GetScreenWidth() * rx + dx, GetScreenHeight() * ry + dy, (GetScreenWidth() * rw + dw) * this->progress, GetScreenHeight() * rh + dh};
     Rectangle subRec = !useRatio ? Rectangle{this->rec.x - sub, this->rec.y - sub, this->rec.width + 2 * sub, this->rec.height + 2 * sub} 

@@ -26,6 +26,7 @@ private:
     Button backLoadSaveButton;
     // baseGame
     int scrollOffSet = 0;
+    int turn;
     // mainGame
     Button newGameButton;
     Button moveBackButton;
