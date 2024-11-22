@@ -25,13 +25,13 @@ public:
 
     bool Undo();
     bool Redo();
-    std::vector<std::string> GetNotations();
 
     CHESS_COLOR WhoseTurn() const;
     const Agent* GetCurrentAgent() const;
     int GetTurn() const; // The number of turns passed
     bool IsGameEnded() const;
     CHESS_VERDICT GetVerdict() const;
+    std::vector<std::string> GetNotations();
 
 private:
     std::unique_ptr<Agent> whiteAgent;

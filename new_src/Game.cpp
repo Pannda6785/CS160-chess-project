@@ -14,12 +14,10 @@
 Game game;
 
 void Game::SetAgent(CHESS_COLOR agentColor, std::string agentTag) {
-        // TO DO: set the right agent
     if (agentTag == "Human") SetAgent(std::make_unique<ManualAgent>(agentColor));
-  
     if (agentTag == "Bot1") SetAgent(std::make_unique<RandomAgent>(agentColor));
     if (agentTag == "Bot2") SetAgent(std::make_unique<SearchTreeAgent>(agentColor));
-    if (agentTag == "Bot3") SetAgent(std::make_unique<RandomAgent>(agentColor));
+    if (agentTag == "Bot3") SetAgent(std::make_unique<AlphaBetaAgent>(agentColor));
 }
 void Game::SetAgent(std::unique_ptr<Agent> agent) {
     if (agent->GetColor() == CHESS_WHITE) {
@@ -243,9 +241,10 @@ void Game::Run() {
 
 bool Game::Undo() {
     if (undoHistory.empty()) return false;
-
+    bool isPromoting = GetCurrentAgent()->IsPromoting();
     whiteAgent->Init();
     blackAgent->Init();
+    if (isPromoting) return false; // if undo during promotion choosing, then cancel the promotion only
 
     turn--;
     redoHistory.push_back(board);
@@ -253,10 +252,6 @@ bool Game::Undo() {
     undoHistory.pop_back();
 
     UpdateGameStatus();
-
-    if(!(whiteAgent->GetTag() == "Human" && blackAgent->GetTag() == "Human") && turn%2 == 1) {
-        Undo();
-    }
 
     return true;
 }
@@ -276,6 +271,23 @@ bool Game::Redo() {
     return true;
 }
 
+CHESS_COLOR Game::WhoseTurn() const {
+    if (turn % 2 == 0) return CHESS_WHITE;
+    else return CHESS_BLACK;
+}
+const Agent* Game::GetCurrentAgent() const {
+    if (WhoseTurn() == CHESS_WHITE) return whiteAgent.get();
+    else return blackAgent.get();
+}
+int Game::GetTurn() const {
+    return turn;
+}
+bool Game::IsGameEnded() const {
+    return verdict != CHESS_RUNNING;
+}
+CHESS_VERDICT Game::GetVerdict() const {
+    return verdict;
+}
 std::vector<std::string> Game::GetNotations() {
     std::vector<std::string> ret;
 
@@ -462,25 +474,10 @@ std::vector<std::string> Game::GetNotations() {
     return ret;
 }
 
-CHESS_COLOR Game::WhoseTurn() const {
-    if (turn % 2 == 0) return CHESS_WHITE;
-    else return CHESS_BLACK;
-}
-const Agent* Game::GetCurrentAgent() const {
-    if (WhoseTurn() == CHESS_WHITE) return whiteAgent.get();
-    else return blackAgent.get();
-}
-int Game::GetTurn() const {
-    return turn;
-}
-bool Game::IsGameEnded() const {
-    return verdict != CHESS_RUNNING;
-}
-CHESS_VERDICT Game::GetVerdict() const {
-    return verdict;
-}
-
 void Game::Running() {
+    if (!redoHistory.empty() && GetCurrentAgent()->GetTag() != "Human") { // if reviewing history (through undos), then AI agents are to be frozen
+        return;
+    }
     std::optional<Move> move;
     if (WhoseTurn() == CHESS_WHITE) {
         move = whiteAgent->GetMove(board);

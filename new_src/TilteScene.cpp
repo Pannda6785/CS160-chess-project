@@ -11,7 +11,8 @@ TitleScene titleScene;
 
 // Init
 void TitleScene::Init() {
-    title = MAIN;    
+    title = MAIN;  
+    Properties::ChangeMusic("titleMusic");  
 }
 void TitleScene::InitButtons() {
     // Duplicated buttons
@@ -172,7 +173,6 @@ void TitleScene::MainTitle() {
         title = OPTIONS;
     }
     if (exitButton.Check()) {
-        Properties::ChangeMusic("gameMusic");
         Scene::ChangeScene(Scene::EXIT);
     }
 }

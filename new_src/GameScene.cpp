@@ -15,6 +15,7 @@ GameScene gameScene;
 // INIT
 void GameScene::Init() {
     state = MAIN;
+    Properties::ChangeMusic("gameMusic");
 }
 void GameScene::InitButtons() {
     // Duplicated buttons
@@ -320,7 +321,6 @@ void GameScene::PauseGame() {
         state = OPTIONS;
     }
     if(exitButton.Check()) {
-        Properties::ChangeMusic("titleMusic");
         Scene::ChangeScene(Scene::TITLE_SCENE);
     }
 }

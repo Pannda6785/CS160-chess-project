@@ -6,8 +6,6 @@
 
 Renderer renderer;
 
-// TO DO: render the right stuffs in the end
-
 void Renderer::SetBackgroundTexture(const Texture &texture) {
     backgroundTexture = texture;
 }

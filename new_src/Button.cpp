@@ -55,8 +55,6 @@ void Button::SetTexture(std::string name, std::string hoveringName){
 }
 
 void Button::Render() {
-    // TO DO: should do some switching of state here, as well as handling the texture if applicable
-
     Rectangle rec = !useRatio ? this->rec : Rectangle{GetScreenWidth() * rx + dx, GetScreenHeight() * ry + dy, GetScreenWidth() * rw + dw, GetScreenHeight() * rh + dh};
 
     // Render the box
