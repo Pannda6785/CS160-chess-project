@@ -2,11 +2,6 @@
 
 #include "InputUtilities.h"
 
-// hoveringTag
-#include "../RenderUtilities.h"
-#include "../Properties.h"
-#include <string>
-
 ManualAgent::ManualAgent(CHESS_COLOR agentColor) : Agent(agentColor, "Human") {}
 
 void ManualAgent::Init() {
@@ -64,25 +59,6 @@ void ManualAgent::RenderCursor(const Board &board) {
     // Check hovering over an allied piece (trying to select a piece)
     const Piece* hoveringPiece = board.GetPieceByPosition(hoveringPosition);
     if (hoveringPiece != nullptr && hoveringPiece->GetColor() == agentColor) {
-        // showing pieceName
-        Font font = Properties::fonts["Rubik-Regular_25"];
-        int fontSize = 25;
-        Color textColor = PINK;
-        std::string hoveringText;
-        switch(board.GetPieceByPosition(hoveringPosition)->GetType()) {
-            case KING: hoveringText = "King"; break;
-            case QUEEN: hoveringText = "Queen"; break;
-            case BISHOP: hoveringText = "Bishop"; break;
-            case KNIGHT: hoveringText = "Knight"; break;
-            case ROOK: hoveringText = "Rook"; break;
-            case PAWN: hoveringText = "Pawn"; break;
-        }
-
-        if(font.texture.id == 0) {
-            DrawTextCursor(hoveringText.c_str(), fontSize, textColor);
-        }
-        else DrawTextCursorEx(font, hoveringText.c_str(), fontSize, 2, textColor);
-
         SetMouseCursor(4);
         return;
     }

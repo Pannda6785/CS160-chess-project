@@ -1,5 +1,6 @@
 #include "Game.h"
 
+#include "agents/InputUtilities.h"
 #include "agents/RandomAgent.h"
 #include "agents/ManualAgent.h"
 #include "agents/SearchTreeAgent.h"
@@ -227,6 +228,11 @@ void Game::Render() {
         } else if (selectedPosition != std::nullopt) {
             renderer.RenderPieces(std::vector<const Piece*>{board.GetPieceByPosition(selectedPosition.value())});
         }
+    }
+
+    // Render hovering pieceName
+    if(board.GetPieceByPosition(InputUtilities::GetMouseChessPosition()) != nullptr) {
+        renderer.RenderHoveringPieceName(board.GetPieceByPosition(InputUtilities::GetMouseChessPosition()));
     }
 }
 void Game::Run() {
