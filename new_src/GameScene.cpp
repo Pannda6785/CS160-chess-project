@@ -237,11 +237,13 @@ void GameScene::BaseGame() {
         float yPos = textBox.y + (i / 2) * lineHeight - (scrollOffSet % lineHeight);
         if(firstLine * 2 + i == game.GetTurn() - 1) {
             DrawRectangle(textBox.x, yPos, textBox.width / 2 - 5, lineHeight, highlight);
+            DrawRectangleLinesEx(Rectangle{textBox.x, yPos, textBox.width / 2 - 5,(float) lineHeight}, 1, bar);
         }
         DrawTextEx(font, notations[firstLine * 2 + i].c_str(), {textBox.x + 5, yPos}, fontSize, 2, BLACK);
         if(firstLine * 2 + i + 1 < notations.size()) {
             if(firstLine * 2 + i + 1 == game.GetTurn() - 1) {
                 DrawRectangle(textBox.x + textBox.width / 2 - 5, yPos, textBox.width / 2 - 10, lineHeight, highlight);
+                DrawRectangleLinesEx(Rectangle{textBox.x + textBox.width / 2 - 5, yPos, textBox.width / 2 - 5,(float) lineHeight}, 1, bar);
             }
             DrawTextEx(font, notations[firstLine * 2 + i + 1].c_str(), {textBox.x + 5 + textBox.width / 2, yPos}, fontSize, 2, BLACK);
         }
