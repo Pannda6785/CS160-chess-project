@@ -102,6 +102,7 @@ void ManualAgent::RegisterPressing(const Board &board) {
     const Piece* clickedPiece = board.GetPieceByPosition(clickedPosition);
     if (clickedPiece != nullptr && clickedPiece->GetColor() == agentColor) { // valid allied piece selected
         // TO DO: chessAudio.PlayPieceSelectSound();
+        PlaySound(Properties::sounds["move"]);
         selectedPosition = clickedPosition;
         isDragging = true;
         return;

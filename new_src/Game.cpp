@@ -35,6 +35,7 @@ void Game::Init() {
     board.Init();
     std::vector<Board>().swap(undoHistory);
     std::vector<Board>().swap(redoHistory);
+    notations.clear();
     verdict = CHESS_RUNNING;
 }
 void Game::LoadGame(int slot) {
@@ -288,7 +289,8 @@ bool Game::IsGameEnded() const {
 CHESS_VERDICT Game::GetVerdict() const {
     return verdict;
 }
-std::vector<std::string> Game::GetNotations() {
+
+void Game::UpdateNotations() {
     std::vector<std::string> ret;
 
     Board currentBoard = this->board;
@@ -463,7 +465,6 @@ std::vector<std::string> Game::GetNotations() {
         else --idx;
         currentBoard = undoHistory[idx];
     }
-    
 
     std::reverse(ret.begin(), ret.end());
     for(int i=0;i<ret.size();++i) {
@@ -471,7 +472,10 @@ std::vector<std::string> Game::GetNotations() {
             ret[i] = std::to_string(i/2 + 1) + ". " + ret[i];
         }
     }
-    return ret;
+    notations = ret;
+}
+std::vector<std::string> Game::GetNotations() {
+    return notations;
 }
 
 void Game::Running() {
@@ -500,9 +504,15 @@ void Game::ExecuteMove(const Move move) {
     std::vector<Board>().swap(redoHistory); // clear the redo history
     turn++;
 
-    if(move.type == ATTACK || move.type == ATTACK_AND_PROMOTION) PlaySound(Properties::sounds["capture"]);
-    else PlaySound(Properties::sounds["move"]);
     UpdateGameStatus();
+    UpdateNotations();
+    if(IsGameEnded() || board.IsInCheck(CHESS_WHITE) || board.IsInCheck(CHESS_BLACK)) {
+        PlaySound(Properties::sounds["notify"]);
+    }
+    else if(move.type == ATTACK || move.type == ATTACK_AND_PROMOTION || move.type == EN_PASSANT) {
+        PlaySound(Properties::sounds["capture"]);
+    }
+    else PlaySound(Properties::sounds["move"]);
 }
 void Game::UpdateGameStatus() {
     // Checking preparation
