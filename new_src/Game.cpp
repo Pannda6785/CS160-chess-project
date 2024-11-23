@@ -544,10 +544,14 @@ void Game::UpdateGameStatus() {
     }
     for(Board board1 : undoHistory) { // For ThreeFold Repetition
         int countBoard = 0;
+        if(board1 == board) ++countBoard;
         for(const Board board2 : undoHistory) {
             if(board1 == board2) ++countBoard;
         }
-        if(countBoard == 3) isThreefoldRepetition = true;
+        if(countBoard == 3) {
+            isThreefoldRepetition = true;
+            break;
+        }
     }
     /*
     */
