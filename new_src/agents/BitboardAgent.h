@@ -1,26 +1,27 @@
 /*
 Alphabeta-pruning minimax search tree, with move ordering for first few depths.
+Instead of using the native board implementation, this uses bitboard instead.
 */
 
-#ifndef ALPHA_BETA_AGENT_H
-#define ALPHA_BETA_AGENT_H
+#ifndef BITBOARD_AGENT_H
+#define BITBOARD_AGENT_H
 
 #include "Agent.h"
 
-class AlphaBetaAgent : public Agent {
+class BitboardAgent : public Agent {
 public:
-    AlphaBetaAgent(CHESS_COLOR agentColor, float moveDelay = 0.12);
+    BitboardAgent(CHESS_COLOR agentColor, float moveDelay = 0.12);
     void Init() override;
     std::optional<Move> GetMove(const Board &board) override;
     
 private:
     const float moveDelay; // how long should the bot wait to move (0 for instant play)
     float timeDelayed; // time passed since beginning of the move making
-    const int depth = 4;
+    const int depth = 6;
     const int sortDepth = 2;
 
     Move _GetMove(const Board &board);
 
 };
 
-#endif //ALPHA_BETA_AGENT_H
+#endif //BITBOARD_AGENT_H
