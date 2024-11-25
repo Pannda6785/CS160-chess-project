@@ -28,7 +28,21 @@ void Renderer::RenderBackground() {
 
             DrawRectangle(x, y, Properties::GetCellSize(), Properties::GetCellSize(), cellColor);
         }
-    }   
+    } 
+
+    // Adding marking on board
+    for (int i = 0; i < 8; i++) {
+        std::string s = std::to_string(8-i);
+        DrawTextRecEx(Properties::fonts["Rubik-Regular_25"], s.c_str(), Rectangle{0,(float) Properties::GetBorderSize() + i * Properties::GetCellSize(),
+            (float) Properties::GetBorderSize(), (float) Properties::GetCellSize()}, 25, 2, {255, 109, 194, 200});
+    }
+
+    for (int i = 0; i < 8; i++) {
+        std::string s;
+        s += char('a' + i);
+        DrawTextRecEx(Properties::fonts["Rubik-Regular_25"], s.c_str(), Rectangle{(float) Properties::GetBorderSize() + i * Properties::GetCellSize(),(float) Properties::GetBorderSize() + 8 * Properties::GetCellSize(),
+            (float) Properties::GetCellSize(), (float) Properties::GetBorderSize()}, 25, 2, {255, 109, 194, 200});
+    }
 }
 
 void Renderer::RenderLastMove(Move lastMove) {

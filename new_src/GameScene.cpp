@@ -152,7 +152,7 @@ void GameScene::BaseGame() {
 
     // Side panel
     DrawRectangle(GetScreenHeight(), Properties::GetBorderSize(), GetScreenWidth() - GetScreenHeight() - Properties::GetBorderSize(), GetScreenHeight() - Properties::GetBorderSize() * 2, Color{0, 0, 0, 100});
-    DrawRectangle(GetScreenHeight() + Properties::GetBorderSize(), Properties::GetBorderSize() * 2, GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(), Properties::GetBorderSize() * 3, Color{255, 255, 255, 100});
+    DrawRectangle(GetScreenHeight() + Properties::GetBorderSize(), Properties::GetBorderSize() * 2, GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(), Properties::GetBorderSize() * 3, Color{255, 255, 255, 150});
     newGameButton.SetRec(Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(), (float) GetScreenHeight() - 2 * Properties::GetBorderSize() - 70,
         (float) GetScreenWidth() / 4 - GetScreenHeight() / 4 - Properties::GetBorderSize() * 3 / 4, 70},
             {200, 200, 200, 100}, {255, 255, 255, 100});
@@ -191,7 +191,7 @@ void GameScene::BaseGame() {
     Rectangle textBox = {(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 6,
         (float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) GetScreenHeight() - Properties::GetBorderSize() * 9 - 70};
     std::vector<std::string> notations;
-    // notations = game.GetNotations();
+    notations = game.GetNotations();
     int notationsSize = (notations.size() + 1) / 2;
     
     // Scrolling speed
