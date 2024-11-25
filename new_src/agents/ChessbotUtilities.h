@@ -5,6 +5,8 @@
 #include "../Board.h"
 #include "../pieces/Piece.h"
 
+#include <string>
+
 namespace ChessbotUtilities {
 
     // Hashing
@@ -149,28 +151,28 @@ namespace ChessbotUtilities {
                     materialScore += sgn * queenValue;
                     positionalScoreWithoutKings += sgn * queenPositionalValue[cell];
 
-                    if (piece->GetColor() == CHESS_WHITE) whiteMaterialScoreWithoutPawns += queenValue;
+                    if (isWhite) whiteMaterialScoreWithoutPawns += queenValue;
                     else blackMaterialScoreWithoutPawns += queenValue;
                     break;
                 case ROOK: 
                     materialScore += sgn * rookValue;
                     positionalScoreWithoutKings += sgn * rookPositionalValue[cell];
 
-                    if (piece->GetColor() == CHESS_WHITE) whiteMaterialScoreWithoutPawns += rookValue;
+                    if (isWhite) whiteMaterialScoreWithoutPawns += rookValue;
                     else blackMaterialScoreWithoutPawns += rookValue;
                     break;
                 case BISHOP:
                     materialScore += sgn * bishopValue;
                     positionalScoreWithoutKings += sgn * bishopPositionalValue[cell];
 
-                    if (piece->GetColor() == CHESS_WHITE) whiteMaterialScoreWithoutPawns += bishopValue;
+                    if (isWhite) whiteMaterialScoreWithoutPawns += bishopValue;
                     else blackMaterialScoreWithoutPawns += bishopValue;
                     break;
                 case KNIGHT:
                     materialScore += sgn * knightValue;
                     positionalScoreWithoutKings += sgn * knightPositionalValue[cell];
 
-                    if (piece->GetColor() == CHESS_WHITE) whiteMaterialScoreWithoutPawns += knightValue;
+                    if (isWhite) whiteMaterialScoreWithoutPawns += knightValue;
                     else blackMaterialScoreWithoutPawns += knightValue;
                     break;
                 case PAWN: 
@@ -189,6 +191,88 @@ namespace ChessbotUtilities {
         positionalScore -= blackKingPositionalEarly * (1 - blackEndgameWeight) + blackKingPositionalEnd * blackEndgameWeight;
 
         return materialScore + positionalScore;
+    }
+
+    inline std::string GetFEN(const Board &board, CHESS_COLOR color) {
+        std::string fen;
+
+        // the first field: board description
+        for (int i = 0; i < 8; i++) {
+            int blankCount = 0;
+            for (int j = 0; j < 8; j++) {
+                const Piece* piece = board.GetPieceByPosition(Position{i, j});
+                if (piece == nullptr) {
+                    blankCount++;
+                    continue;
+                }
+                if (blankCount > 0) {
+                    fen.push_back('0' + blankCount);
+                    blankCount = 0;
+                }
+                std::string p = piece->GetTag(); // an uppercase
+                if (piece->GetColor() == CHESS_BLACK) p[0] = p[0] - 'A' + 'a';
+                fen += p;
+            }
+            if (blankCount > 0) {
+                fen.push_back('0' + blankCount);
+                blankCount = 0;
+            }
+            if (i < 7) fen.push_back('/');
+        }
+
+        fen.push_back(' ');
+
+        // second field: whose turn
+        if (color == CHESS_WHITE) fen.push_back('w');
+        else fen.push_back('b');
+
+        fen.push_back(' ');
+
+        // third field: castling rights
+        bool whiteLong = false, whiteShort = false, blackLong = false, blackShort = false;
+        for (const Piece* piece : board.GetPieces()) {
+            if (piece->GetType() != KING) continue;
+            for (Move move : board.GetPossibleMoves(piece)) {
+                if (move.type == LONG_CASTLING) {
+                    if (piece->GetColor() == CHESS_WHITE) whiteLong = true;
+                    else blackLong = true; 
+                }
+                if (move.type == SHORT_CASTLING) {
+                    if (piece->GetColor() == CHESS_WHITE) whiteShort = true;
+                    else blackShort = true;
+                }
+            }
+        }
+        if (!whiteLong && !whiteShort && !blackLong && !blackShort) fen.push_back('-');
+        if (whiteShort) fen.push_back('K');
+        if (whiteLong) fen.push_back('Q');
+        if (blackShort) fen.push_back('k');
+        if (blackLong) fen.push_back('q');
+
+        fen.push_back(' ');
+        
+        // fourth field: en passant
+        if (board.GetLastMove() != std::nullopt && board.GetLastMove().value().type == DOUBLE_WALK) {
+            Position pos = board.GetLastMove().value().toPosition;
+            if (board.GetPieceByPosition(pos)->GetColor() == CHESS_WHITE) pos.i++;
+            else pos.i--;
+            fen.push_back('a' + pos.j);
+            fen.push_back('8' - pos.i);
+        } else {
+            fen.push_back('-');
+        }
+
+        fen.push_back(' ');
+
+        // fifth field: half move since pawn or capture
+        fen.push_back('0');
+
+        fen.push_back(' ');
+
+        // sixth field: number of full moves
+        fen.push_back('1');
+
+        return fen;
     }
 
 }
