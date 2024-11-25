@@ -190,7 +190,8 @@ void GameScene::BaseGame() {
     // Define the scrollable text box area
     Rectangle textBox = {(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 6,
         (float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) GetScreenHeight() - Properties::GetBorderSize() * 9 - 70};
-    std::vector<std::string> notations = game.GetNotations();
+    std::vector<std::string> notations;
+    // notations = game.GetNotations();
     int notationsSize = (notations.size() + 1) / 2;
     
     // Scrolling speed

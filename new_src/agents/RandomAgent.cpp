@@ -1,4 +1,5 @@
 #include "RandomAgent.h"
+#include "ChessbotUtilities.h"
 
 #include <random>
 #include <chrono>
@@ -16,21 +17,46 @@ std::optional<Move> RandomAgent::GetMove(const Board &board) {
         return std::nullopt;
     } else {
         timeDelayed = 0;
-        
-        std::mt19937 rng(std::chrono::steady_clock().now().time_since_epoch().count());
-        auto rand = [&](int n) -> int {
-            return std::uniform_int_distribution<int>(0, n - 1)(rng);
-        };
-        
-        std::vector<Move> pool;
-        for (const Piece* piece : board.GetPiecesByColor(agentColor)) {
-            for (Move move : board.GetPossibleMoves(piece)) {
-                pool.push_back(move);
-            }
-        }
+        return _GetMove(board);
+    } 
+}
 
-        if (pool.empty()) return std::nullopt; // shouldn't happen though
-        Move move = pool[rand(pool.size())];
-        return move;
-    }        
+Move RandomAgent::_GetMove(const Board &board) {
+    std::mt19937 rng(std::chrono::steady_clock().now().time_since_epoch().count());
+    auto rand = [&](float r) -> float {
+        return std::uniform_real_distribution<float>(0, r)(rng);
+    };
+    
+    std::vector<std::pair<Move, float>> pool;
+    float mn = 1e18;
+    float mx = -1e18;
+    for (const Piece* piece : board.GetPiecesByColor(agentColor)) {
+        for (Move move : board.GetPossibleMoves(piece)) {
+            Board newBoard = board;
+            newBoard.ExecuteMove(move);
+            float score = ChessbotUtilities::Evaluate(newBoard);
+            mn = std::min(mn, score);
+            mx = std::max(mx, score);
+            pool.push_back({move, score});
+        }
+    }
+
+    float sum = 0;
+    for (std::pair<Move, float> &pair : pool) {
+        if (agentColor == CHESS_WHITE) {
+            pair.second = pair.second - mn + 1;
+        } else {
+            pair.second = mx - pair.second + 1; 
+        }
+        sum += pair.second;
+    }
+    float popopo = rand(sum);
+
+    float s = 0;
+    for (std::pair<Move, float> pair : pool) {
+        s += pair.second;
+        if (s >= popopo) return pair.first;
+    }
+
+    return pool.back().first;
 }

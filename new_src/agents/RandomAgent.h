@@ -17,6 +17,8 @@ private:
     const float moveDelay; // how long should the bot wait to move (0 for instant play)
     float timeDelayed; // time passed since beginning of the move making
     
+    Move _GetMove(const Board &board);
+    
 };
 
 #endif //RANDOM_AGENT_H
