@@ -16,7 +16,6 @@ public:
     // Deep clone
     Board(const Board& other);
     Board& operator=(const Board& other);
-    bool operator==(const Board& other);
 
     void Clear(); // wipe all pieces out of the board
     void Init(); // make the board the default configuration (2 kings, 2 queens, 16 pawns,... that kind of meaning)

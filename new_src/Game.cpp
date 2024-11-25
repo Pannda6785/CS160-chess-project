@@ -6,6 +6,7 @@
 #include "agents/SearchTreeAgent.h"
 #include "agents/AlphaBetaAgent.h"
 #include "agents/BitboardAgent.h"
+#include "agents/ChessbotUtilities.h"
 
 #include "Renderer.h"
 #include "Properties.h"
@@ -546,11 +547,16 @@ void Game::UpdateGameStatus() {
         else ++countBlack[piece->GetType()];
         ++countPieces;
     }
-    for(Board board1 : undoHistory) { // For ThreeFold Repetition
+    for(int i = 0; i < undoHistory.size(); ++i) { // For ThreeFold Repetition
         int countBoard = 0;
-        if(board1 == board) ++countBoard;
-        for(const Board board2 : undoHistory) {
-            if(board1 == board2) ++countBoard;
+        Board board1 = undoHistory[i];
+
+        if(ChessbotUtilities::GetFEN(board1, (i%2 == 0 ? CHESS_WHITE : CHESS_BLACK))
+            == ChessbotUtilities::GetFEN(board, (turn%2 == 0 ? CHESS_WHITE : CHESS_BLACK))) ++countBoard;
+        for(int j = 0; j < undoHistory.size(); ++j) {
+            Board board2 = undoHistory[j];
+            if(ChessbotUtilities::GetFEN(board1, (i%2 == 0 ? CHESS_WHITE : CHESS_BLACK))
+                == ChessbotUtilities::GetFEN(board2, (j%2 == 0 ? CHESS_WHITE : CHESS_BLACK))) ++countBoard;
         }
         if(countBoard == 3) {
             isThreefoldRepetition = true;
