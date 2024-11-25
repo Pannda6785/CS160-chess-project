@@ -65,7 +65,8 @@ namespace Properties { // game properties
             SetWindowPosition(0, 0);
             int monitor = GetCurrentMonitor();
             SetWindowSize(GetMonitorWidth(monitor), GetMonitorHeight(monitor));
-        } else { // Toggle to fixed resolution
+        }
+        if(screen != 3) { // Toggle to fixed resolution
             isFullscreen = false;
             ClearWindowState(FLAG_WINDOW_UNDECORATED);
             int monitor = GetCurrentMonitor();
