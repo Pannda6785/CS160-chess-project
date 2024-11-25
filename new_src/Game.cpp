@@ -99,6 +99,8 @@ void Game::LoadGame(int slot) {
 
     savefile >> verdict;
 
+    UpdateNotations();
+
     savefile.close();
 }
 void Game::SaveGame(int slot) const {
