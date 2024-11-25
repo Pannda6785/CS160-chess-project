@@ -4,9 +4,7 @@
 **Build command:**
 
 ```
-cd build
-
-mingw32-make
+click build.bat and wait for the magic 
 ```
 
 **To-do lists 🎉**
