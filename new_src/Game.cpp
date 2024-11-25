@@ -4,6 +4,7 @@
 #include "agents/ManualAgent.h"
 #include "agents/SearchTreeAgent.h"
 #include "agents/AlphaBetaAgent.h"
+#include "agents/BitboardAgent.h"
 
 #include "Renderer.h"
 #include "Properties.h"
@@ -17,7 +18,7 @@ void Game::SetAgent(CHESS_COLOR agentColor, std::string agentTag) {
     if (agentTag == "Human") SetAgent(std::make_unique<ManualAgent>(agentColor));
     if (agentTag == "Bot1") SetAgent(std::make_unique<RandomAgent>(agentColor));
     if (agentTag == "Bot2") SetAgent(std::make_unique<SearchTreeAgent>(agentColor));
-    if (agentTag == "Bot3") SetAgent(std::make_unique<AlphaBetaAgent>(agentColor));
+    if (agentTag == "Bot3") SetAgent(std::make_unique<BitboardAgent>(agentColor));
 }
 void Game::SetAgent(std::unique_ptr<Agent> agent) {
     if (agent->GetColor() == CHESS_WHITE) {
