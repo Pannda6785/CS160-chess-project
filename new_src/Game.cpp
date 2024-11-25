@@ -235,7 +235,7 @@ void Game::Render() {
     }
 
     // Render hovering pieceName
-    if(board.GetPieceByPosition(InputUtilities::GetMouseChessPosition()) != nullptr) {
+    if(GetCurrentAgent()->GetTag() == "Human" && board.GetPieceByPosition(InputUtilities::GetMouseChessPosition()) != nullptr) {
         renderer.RenderHoveringPieceName(board.GetPieceByPosition(InputUtilities::GetMouseChessPosition()));
     }
 }
