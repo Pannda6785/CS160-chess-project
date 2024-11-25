@@ -30,7 +30,27 @@ Board& Board::operator=(const Board& other) {
 bool Board::operator==(const Board& other) {
     // TODO : when 2 boards are exactlly the same as each other
     // included: all piece position and all available moves.
-    return false;
+
+    // testing code
+    std::vector<const Piece*> pieces = GetPieces();
+    std::vector<const Piece*> otherPieces = other.GetPieces();
+    
+    // skiping available move since its due to other conditions
+    for(const Piece* piece : pieces) {
+        bool has = true; // if exists this piece
+        for(const Piece* otherPiece : otherPieces) {
+            if(piece->GetPosition().i == otherPiece->GetPosition().i 
+            && piece->GetPosition().j == otherPiece->GetPosition().j) {
+                if(piece->GetColor() != otherPiece->GetColor()) return false;
+                if(piece->GetTag() != otherPiece->GetTag()) return false;
+                if(piece->GetType() != otherPiece->GetType()) return false;
+                if(piece->HasMoved() != otherPiece->HasMoved()) return false;
+                has = false;
+            }
+        }
+        if(has) return false;
+    }
+    return true;
 }
 
 void Board::Clear() {
