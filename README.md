@@ -12,7 +12,6 @@ mingw32-make
 **To-do lists 🎉**
 
 - [x] Setup Gameloop
-- [ ] Setup Cmake
 - [x] Creating the Board
 - [x] Creating the Pieces
 - [x] Creating Moves
@@ -20,11 +19,11 @@ mingw32-make
 - [x] Checking for turns
 - [x] Checking for mating
 - [x] Game win conditions
-- [ ] Create user interface
-- [x] Add timer
+- [x] Create user interface
 - [x] Show available moves
 - [x] Add sounds
-- [ ] Add bot
-- [ ] Add levels
-- [ ] Add saves
-- [ ] Record turns?
+- [x] Add bot
+- [x] Add levels
+- [x] Add saves
+- [x] Record turns?
+- [x] Quality of life?
