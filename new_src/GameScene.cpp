@@ -6,15 +6,12 @@
 #include "Scene.h"
 #include "SaveLoadUtilities.h"
 
-// for notations debuging and working
-#include <vector>
-#include <string>
-
 GameScene gameScene;
 
 // INIT
 void GameScene::Init() {
     state = MAIN;
+    Properties::isMusicPaused = false;
     Properties::ChangeMusic("gameMusic");
 }
 void GameScene::InitButtons() {
@@ -200,6 +197,7 @@ void GameScene::BaseGame() {
     scrollOffSet -= GetMouseWheelMove() * 4;
 
     Color box = {200, 200, 200, 200}, bar = {80, 80, 80, 200};
+    Color highlight = {255, 255, 255, 200};
     Font font = Properties::fonts["Rubik-Regular_25"];
     int fontSize = 25;
     int lineHeight = 30;
@@ -237,8 +235,18 @@ void GameScene::BaseGame() {
     BeginScissorMode(textBox.x, textBox.y, textBox.width, textBox.height);
     for (int i = 0; i <= linesInView * 2 && firstLine * 2 + i < notations.size(); i += 2) {
         float yPos = textBox.y + (i / 2) * lineHeight - (scrollOffSet % lineHeight);
+        if(firstLine * 2 + i == game.GetTurn() - 1) {
+            DrawRectangle(textBox.x, yPos, textBox.width / 2 - 5, lineHeight, highlight);
+            DrawRectangleLinesEx(Rectangle{textBox.x, yPos, textBox.width / 2 - 5,(float) lineHeight}, 1, bar);
+        }
         DrawTextEx(font, notations[firstLine * 2 + i].c_str(), {textBox.x + 5, yPos}, fontSize, 2, BLACK);
-        if(firstLine * 2 + i + 1 < notations.size()) DrawTextEx(font, notations[firstLine * 2 + i + 1].c_str(), {textBox.x + 5 + textBox.width / 2, yPos}, fontSize, 2, BLACK);
+        if(firstLine * 2 + i + 1 < notations.size()) {
+            if(firstLine * 2 + i + 1 == game.GetTurn() - 1) {
+                DrawRectangle(textBox.x + textBox.width / 2 - 5, yPos, textBox.width / 2 - 10, lineHeight, highlight);
+                DrawRectangleLinesEx(Rectangle{textBox.x + textBox.width / 2 - 5, yPos, textBox.width / 2 - 5,(float) lineHeight}, 1, bar);
+            }
+            DrawTextEx(font, notations[firstLine * 2 + i + 1].c_str(), {textBox.x + 5 + textBox.width / 2, yPos}, fontSize, 2, BLACK);
+        }
     }
     EndScissorMode();
 
@@ -259,7 +267,6 @@ void GameScene::MainGame() {
     game.Run();
 
     if(game.IsGameEnded()) {
-        PlaySound(Properties::sounds["notify"]);
         state = ENDED;
     }
     if(newGameButton.Check()) {
@@ -273,7 +280,7 @@ void GameScene::MainGame() {
     }
     if(settingsButton.Check() || IsKeyPressed(KEY_ESCAPE)) {
         SetMouseCursor(0);
-        Properties::ChangeMusic("pauseMusic");
+        Properties::ChangeMusicBegin("pauseMusic");
         state = PAUSE;
     }
 }
@@ -308,7 +315,7 @@ void GameScene::PauseGame() {
 
     // Button detectings
     if (continueButton.Check()) {
-        Properties::ChangeMusic("gameMusic");
+        Properties::ChangeMusicEnd("gameMusic");
         state = MAIN;
     }
     if (saveButton.Check()) {
@@ -544,7 +551,10 @@ void GameScene::OptionsGame() {
                         BLANK, {255, 255, 255, 100});
     rightButton.SetTexture("right", "hoveringRight");
 
-    // skin's skin
+    // updating state
+    musicsVolume.SetProgressRatio(Properties::musicsVolume);
+    soundsVolume.SetProgressRatio(Properties::soundsVolume);
+
     if(leftButton.Check()) {
         Properties::skin = (Properties::skin - 1 + 3) % 3;
         Properties::changeSkin(Properties::skin);
@@ -667,7 +677,7 @@ void GameScene::EndGame() {
     }
     if(settingsButton.Check() || IsKeyPressed(KEY_ESCAPE)) {
         SetMouseCursor(0);
-        Properties::ChangeMusic("pauseMusic");
+        Properties::ChangeMusicBegin("pauseMusic");
         state = PAUSE;
     }
 }
