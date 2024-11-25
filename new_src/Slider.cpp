@@ -34,10 +34,6 @@ void Slider::SetSound(Sound sound) {
     this->sound = sound;
 }
 
-void Slider::SetProgressRatio(float progress) {
-    this->progress = progress;
-}
-
 void Slider::Render() {
     Rectangle rec = !useRatio ? this->rec : Rectangle{GetScreenWidth() * rx + dx, GetScreenHeight() * ry + dy, GetScreenWidth() * rw + dw, GetScreenHeight() * rh + dh};
     Rectangle progressRec = !useRatio ? Rectangle{this->rec.x, this->rec.y, this->rec.width * this->progress, this->rec.height} : Rectangle{GetScreenWidth() * rx + dx, GetScreenHeight() * ry + dy, (GetScreenWidth() * rw + dw) * this->progress, GetScreenHeight() * rh + dh};

@@ -1,7 +1,5 @@
 #include "Button.h"
 #include "Slider.h"
-#include <vector>
-#include <string>
 
 class GameScene {
 public:

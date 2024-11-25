@@ -73,28 +73,6 @@ void Renderer::RenderDraggingPiece(const Piece* piece) {
         Rectangle{(float) x, (float) y, (float) Properties::GetCellSize(), (float) Properties::GetCellSize() * Properties::skins[pieceName].height / Properties::skins[pieceName].width}, Vector2{0, 0}, 0, WHITE);              
 }
 
-void Renderer::RenderHoveringPieceName(const Piece* piece) {
-    // Customable variables
-    Font font = Properties::fonts["Rubik-Regular_25"];
-    int fontSize = 25;
-    Color textColor = PINK;
-    std::string hoveringText;
-
-    switch(piece->GetType()) {
-        case KING: hoveringText = "King"; break;
-        case QUEEN: hoveringText = "Queen"; break;
-        case BISHOP: hoveringText = "Bishop"; break;
-        case KNIGHT: hoveringText = "Knight"; break;
-        case ROOK: hoveringText = "Rook"; break;
-        case PAWN: hoveringText = "Pawn"; break;
-    }
-
-    if(font.texture.id == 0) {
-        DrawTextCursor(hoveringText.c_str(), fontSize, textColor);
-    }
-    else DrawTextCursorEx(font, hoveringText.c_str(), fontSize, 2, textColor);
-}
-
 void Renderer::RenderSelectedPosition(Position position, Color color) {
     int x = Properties::GetBorderSize() + position.j * Properties::GetCellSize();
     int y = Properties::GetBorderSize() + position.i * Properties::GetCellSize();
