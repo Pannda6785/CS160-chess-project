@@ -6,7 +6,6 @@
 #include <map>
 #include <string>
 #include "raylib.h"
-#include <iostream>
 
 namespace Properties { // game properties
     // Window variables
@@ -17,9 +16,6 @@ namespace Properties { // game properties
     // Assets holders.
     inline std::map<std::string, Sound> sounds;
     inline std::map<std::string, Music> musics;
-    inline std::map<std::string, Music> music1;
-    inline std::map<std::string, Music> music2;
-    inline std::map<std::string, Music> music3;
     inline std::map<std::string, Texture> skins;
     inline std::map<std::string, Texture> skin1;
     inline std::map<std::string, Texture> skin2;
@@ -28,7 +24,7 @@ namespace Properties { // game properties
     inline std::map<std::string, Texture> elements;
     inline std::map<std::string, Font> fonts;
     inline int skin;
-    inline bool isMusicPaused;
+    inline int music;
     inline std::string musicName;
     inline bool isMusicsMute, isSoundsMute;
     inline float musicsVolume, soundsVolume;
@@ -37,9 +33,7 @@ namespace Properties { // game properties
     // Assets paths
     const std::string ASSETS_PATH = "../assets";
     const std::string SOUNDS_PATH = ASSETS_PATH + "/sounds"; // Sounds effects
-    const std::string MUSIC1_PATH = ASSETS_PATH + "/musics/music1"; // Background musics
-    const std::string MUSIC2_PATH = ASSETS_PATH + "/musics/music2"; // Background musics
-    const std::string MUSIC3_PATH = ASSETS_PATH + "/musics/music3"; // Background musics
+    const std::string MUSICS_PATH = ASSETS_PATH + "/musics"; // Background musics
     const std::string SKIN1_PATH = ASSETS_PATH + "/textures/skin1"; // On-board elements (need to modified one)
     const std::string SKIN2_PATH = ASSETS_PATH + "/textures/skin2"; // On-board elements (need to modified one)
     const std::string SKIN3_PATH = ASSETS_PATH + "/textures/skin3"; // On-board elements (need to modified one)
@@ -65,8 +59,7 @@ namespace Properties { // game properties
             SetWindowPosition(0, 0);
             int monitor = GetCurrentMonitor();
             SetWindowSize(GetMonitorWidth(monitor), GetMonitorHeight(monitor));
-        }
-        if(screen != 3) { // Toggle to fixed resolution
+        } else { // Toggle to fixed resolution
             isFullscreen = false;
             ClearWindowState(FLAG_WINDOW_UNDECORATED);
             int monitor = GetCurrentMonitor();
@@ -99,7 +92,7 @@ namespace Properties { // game properties
         soundsVolume = 1.0f;
     }
     inline void LoadMusics() {
-        for (const auto & entry : std::filesystem::directory_iterator(MUSIC1_PATH)) {
+        for (const auto & entry : std::filesystem::directory_iterator(MUSICS_PATH)) {
             // Load sound.
             Music music = LoadMusicStream(entry.path().string().c_str());
 
@@ -108,35 +101,7 @@ namespace Properties { // game properties
             size_t dotIndex = fileName.find('.');
 
             std::string fileNameWithoutExtension = entry.path().filename().string().substr(0, dotIndex);
-            music1[fileNameWithoutExtension] = music;
-
-            // Free sound data.
-            // UnloadSound(sound);
-        }
-        for (const auto & entry : std::filesystem::directory_iterator(MUSIC2_PATH)) {
-            // Load sound.
-            Music music = LoadMusicStream(entry.path().string().c_str());
-
-            // Add sound to map of sounds.
-            std::string fileName = entry.path().filename().string();
-            size_t dotIndex = fileName.find('.');
-
-            std::string fileNameWithoutExtension = entry.path().filename().string().substr(0, dotIndex);
-            music2[fileNameWithoutExtension] = music;
-
-            // Free sound data.
-            // UnloadSound(sound);
-        }
-        for (const auto & entry : std::filesystem::directory_iterator(MUSIC3_PATH)) {
-            // Load sound.
-            Music music = LoadMusicStream(entry.path().string().c_str());
-
-            // Add sound to map of sounds.
-            std::string fileName = entry.path().filename().string();
-            size_t dotIndex = fileName.find('.');
-
-            std::string fileNameWithoutExtension = entry.path().filename().string().substr(0, dotIndex);
-            music3[fileNameWithoutExtension] = music;
+            musics[fileNameWithoutExtension] = music;
 
             // Free sound data.
             // UnloadSound(sound);
@@ -146,8 +111,6 @@ namespace Properties { // game properties
         isMusicsMute = false;
         musicsVolume = 1.0f;
         musicName = "titleMusic";
-        musics = music1;
-        isMusicPaused = false;
     }
 
     inline void LoadTextures() {
@@ -309,47 +272,20 @@ namespace Properties { // game properties
         PlayMusicStream(musics[musicName]);
     }
 
-    inline void ChangeMusicBegin(std::string name) {
-        PauseMusicStream(musics[musicName]);
-        isMusicPaused = true;
-        musicName = name;
-        PlayMusicStream(musics[musicName]);
-    }
-
-    inline void ChangeMusicEnd(std::string name) {
-        StopMusicStream(musics[musicName]);
-        musicName = name;
-        
-        if(!isMusicPaused) StopMusicStream(musics[musicName]);
-        PlayMusicStream(musics[musicName]);
-    }
-
     // Chess' custom
     inline void changeSkin(int newSkin) {
         switch (newSkin) {
             case 0: {
                 skins = skin1;
                 skin = 0;
-                musics = music1;
-                isMusicPaused = false;
-                SetMusicsVolume(musicsVolume);
-                ChangeMusic(musicName);
             } break;
             case 1: {
                 skins = skin2;
                 skin = 1;
-                musics = music2;
-                isMusicPaused = false;
-                SetMusicsVolume(musicsVolume);
-                ChangeMusic(musicName);
             } break;
             case 2: {
                 skins = skin3;
                 skin = 2;
-                musics = music3;
-                isMusicPaused = false;
-                SetMusicsVolume(musicsVolume);
-                ChangeMusic(musicName);
             }
         }
     }

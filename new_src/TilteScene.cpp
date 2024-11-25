@@ -409,10 +409,7 @@ void TitleScene::OptionsTitle() {
                         BLANK, {255, 255, 255, 100});
     rightButton.SetTexture("right", "hoveringRight");
 
-    // updating state
-    musicsVolume.SetProgressRatio(Properties::musicsVolume);
-    soundsVolume.SetProgressRatio(Properties::soundsVolume);
-
+    // skin's skin
     if(leftButton.Check()) {
         Properties::skin = (Properties::skin - 1 + 3) % 3;
         Properties::changeSkin(Properties::skin);

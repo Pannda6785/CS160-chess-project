@@ -32,7 +32,6 @@ public:
     bool IsGameEnded() const;
     CHESS_VERDICT GetVerdict() const;
     std::vector<std::string> GetNotations();
-    void UpdateNotations();
 
 private:
     std::unique_ptr<Agent> whiteAgent;

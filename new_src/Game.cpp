@@ -1,6 +1,5 @@
 #include "Game.h"
 
-#include "agents/InputUtilities.h"
 #include "agents/RandomAgent.h"
 #include "agents/ManualAgent.h"
 #include "agents/SearchTreeAgent.h"
@@ -36,7 +35,6 @@ void Game::Init() {
     board.Init();
     std::vector<Board>().swap(undoHistory);
     std::vector<Board>().swap(redoHistory);
-    notations.clear();
     verdict = CHESS_RUNNING;
 }
 void Game::LoadGame(int slot) {
@@ -229,11 +227,6 @@ void Game::Render() {
             renderer.RenderPieces(std::vector<const Piece*>{board.GetPieceByPosition(selectedPosition.value())});
         }
     }
-
-    // Render hovering pieceName
-    if(board.GetPieceByPosition(InputUtilities::GetMouseChessPosition()) != nullptr) {
-        renderer.RenderHoveringPieceName(board.GetPieceByPosition(InputUtilities::GetMouseChessPosition()));
-    }
 }
 void Game::Run() {
     switch(verdict) {
@@ -295,8 +288,7 @@ bool Game::IsGameEnded() const {
 CHESS_VERDICT Game::GetVerdict() const {
     return verdict;
 }
-
-void Game::UpdateNotations() {
+std::vector<std::string> Game::GetNotations() {
     std::vector<std::string> ret;
 
     Board currentBoard = this->board;
@@ -471,6 +463,7 @@ void Game::UpdateNotations() {
         else --idx;
         currentBoard = undoHistory[idx];
     }
+    
 
     std::reverse(ret.begin(), ret.end());
     for(int i=0;i<ret.size();++i) {
@@ -478,10 +471,7 @@ void Game::UpdateNotations() {
             ret[i] = std::to_string(i/2 + 1) + ". " + ret[i];
         }
     }
-    notations = ret;
-}
-std::vector<std::string> Game::GetNotations() {
-    return notations;
+    return ret;
 }
 
 void Game::Running() {
@@ -510,15 +500,9 @@ void Game::ExecuteMove(const Move move) {
     std::vector<Board>().swap(redoHistory); // clear the redo history
     turn++;
 
-    UpdateGameStatus();
-    UpdateNotations();
-    if(IsGameEnded() || board.IsInCheck(CHESS_WHITE) || board.IsInCheck(CHESS_BLACK)) {
-        PlaySound(Properties::sounds["notify"]);
-    }
-    else if(move.type == ATTACK || move.type == ATTACK_AND_PROMOTION || move.type == EN_PASSANT) {
-        PlaySound(Properties::sounds["capture"]);
-    }
+    if(move.type == ATTACK || move.type == ATTACK_AND_PROMOTION) PlaySound(Properties::sounds["capture"]);
     else PlaySound(Properties::sounds["move"]);
+    UpdateGameStatus();
 }
 void Game::UpdateGameStatus() {
     // Checking preparation
@@ -544,24 +528,20 @@ void Game::UpdateGameStatus() {
     }
     for(Board board1 : undoHistory) { // For ThreeFold Repetition
         int countBoard = 0;
-        if(board1 == board) ++countBoard;
         for(const Board board2 : undoHistory) {
             if(board1 == board2) ++countBoard;
         }
-        if(countBoard == 3) {
-            isThreefoldRepetition = true;
-            break;
-        }
+        if(countBoard == 3) isThreefoldRepetition = true;
     }
     /*
     */
     // For 50 moves
-    if(undoHistory.size() < 99) {
+    if(undoHistory.size() < 98) {
         is50Moves = false;
     }
     else if(board.GetLastMove()->type == ATTACK || board.GetPieceByPosition(board.GetLastMove()->toPosition)->GetType() == PAWN) is50Moves = false;
     else for(int i = undoHistory.size() - 1; i > (board.GetPieceByPosition(board.GetLastMove()->toPosition)->GetColor() == CHESS_WHITE ? undoHistory.size() - 99 : undoHistory.size() - 100); --i) {
-        if(undoHistory[i].GetLastMove()->type == ATTACK || undoHistory[i].GetPieceByPosition(undoHistory[i].GetLastMove()->toPosition)->GetType() == PAWN) is50Moves = false;
+        if(board.GetLastMove()->type == ATTACK || board.GetPieceByPosition(board.GetLastMove()->toPosition)->GetType() == PAWN) is50Moves = false;
     }
 
     // Insufficent Rule
