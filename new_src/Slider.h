@@ -13,6 +13,7 @@ public:
     void SetRec(Rectangle rec, Color recColor, Color progressColor, Color hoveringColor);
     void SetRatio(float rx, float dx, float ry, float dy, float rw, float dw, float rh, float dh, Color recColor, Color progressColor, Color hoveringColor);
     void SetSound(Sound sound);
+    void SetProgressRatio(float progress);
     float Get();
 
     void Render();

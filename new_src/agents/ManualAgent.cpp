@@ -48,6 +48,7 @@ void ManualAgent::RenderCursor(const Board &board) {
     // Not interacting with game, so no need to update
     if (!InputUtilities::IsMouseInsideBoard()) return;
 
+
     if (isDragging) { // Dragging uses the pointed hand cursor
         SetMouseCursor(4);
         return;
@@ -102,6 +103,7 @@ void ManualAgent::RegisterPressing(const Board &board) {
     const Piece* clickedPiece = board.GetPieceByPosition(clickedPosition);
     if (clickedPiece != nullptr && clickedPiece->GetColor() == agentColor) { // valid allied piece selected
         // TO DO: chessAudio.PlayPieceSelectSound();
+        PlaySound(Properties::sounds["move"]);
         selectedPosition = clickedPosition;
         isDragging = true;
         return;
