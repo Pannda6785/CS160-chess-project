@@ -154,7 +154,7 @@ void TitleScene::MainTitle() {
     // Render assets
     DrawTexturePro(Properties::elements["mainTitle"], (Rectangle) {0.0, 0.0, (float)Properties::elements["mainTitle"].width, (float)Properties::elements["mainTitle"].height}, 
                     Rectangle{0.0, 0.0, (float)GetScreenWidth(), (float)GetScreenHeight()}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
-    DrawTextCenEx(Properties::fonts["Mondwild_80"], "GAY CHESS", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
+    DrawTextCenEx(Properties::fonts["Mondwild_80"], "NEET CHESS", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
 
     // Render the buttons
     newGameButton.Render();
