@@ -36,6 +36,7 @@ void Game::Init() {
 
     turn = 0;
     board.Init();
+    isThreadRunning = false;
     std::vector<Board>().swap(undoHistory);
     std::vector<Board>().swap(redoHistory);
     notations.clear();
@@ -488,15 +489,42 @@ std::vector<std::string> Game::GetNotations() {
     return notations;
 }
 
+void Game::GetBotMove() {
+    if (WhoseTurn() == CHESS_WHITE) {
+        nextMove = whiteAgent->GetMove(board);
+    }
+    else nextMove = blackAgent->GetMove(board);
+    isThreadRunning = false;
+    return;
+}
+
 void Game::Running() {
     if (!redoHistory.empty() && GetCurrentAgent()->GetTag() != "Human") { // if reviewing history (through undos), then AI agents are to be frozen
         return;
     }
     std::optional<Move> move;
     if (WhoseTurn() == CHESS_WHITE) {
-        move = whiteAgent->GetMove(board);
+        if(whiteAgent->GetTag() != "Human") {
+            if(!isThreadRunning) {
+                isThreadRunning = true;
+                t = std::thread(GetBotMove, this);
+                t.detach();
+                move = nextMove;
+                nextMove = std::nullopt;
+            }
+        }
+        else move = whiteAgent->GetMove(board);
     } else {
-        move = blackAgent->GetMove(board);
+        if(blackAgent->GetTag() != "Human") {
+            if(!isThreadRunning) {
+                isThreadRunning = true;
+                t = std::thread(GetBotMove, this);
+                t.detach();
+                move = nextMove;
+                nextMove = std::nullopt;
+            }
+        }
+        else move = blackAgent->GetMove(board);
     }
     if (move != std::nullopt) {
         ExecuteMove(move.value());

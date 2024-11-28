@@ -99,7 +99,9 @@ namespace Properties { // game properties
         soundsVolume = 1.0f;
     }
     inline void LoadMusics() {
-        SetAudioStreamBufferSizeDefault(131072);
+        // default value is 4096
+        // testing value is 131072
+        SetAudioStreamBufferSizeDefault(4096); 
 
         for (const auto & entry : std::filesystem::directory_iterator(MUSIC1_PATH)) {
             // Load sound.

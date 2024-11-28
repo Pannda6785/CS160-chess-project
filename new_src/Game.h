@@ -10,6 +10,8 @@
 #include "Board.h"
 #include "agents/Agent.h"
 
+#include <thread>
+
 class Game {
 public:
     // Sets the agent that plays the game (Human or Chessbot and of which difficultoes)
@@ -34,11 +36,17 @@ public:
     std::vector<std::string> GetNotations();
     void UpdateNotations();
 
+    // thread-running bot get move
+    void GetBotMove();
+
 private:
     std::unique_ptr<Agent> whiteAgent;
     std::unique_ptr<Agent> blackAgent;
 
     int turn;
+    std::optional<Move> nextMove;
+    std::thread t;
+    bool isThreadRunning;
     Board board;
     std::vector<Board> undoHistory;
     std::vector<Board> redoHistory;
