@@ -235,7 +235,7 @@ void Game::Render() {
         }
     }
 
-    // Render hovering pieceName
+    // Render hovering pieceName when its human turn
     if(GetCurrentAgent()->GetTag() == "Human" && board.GetPieceByPosition(InputUtilities::GetMouseChessPosition()) != nullptr) {
         renderer.RenderHoveringPieceName(board.GetPieceByPosition(InputUtilities::GetMouseChessPosition()));
     }
@@ -246,7 +246,7 @@ void Game::Run() {
             Running();
         }; break;
         default: {
-            
+            Ended();
         }; break;
     }
 }   
@@ -531,7 +531,7 @@ void Game::Running() {
     }
 }
 void Game::Ended() {
-
+    
 }
 void Game::ExecuteMove(const Move move) {
     undoHistory.push_back(board);
