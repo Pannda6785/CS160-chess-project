@@ -28,6 +28,7 @@ int main() {
     // Main game loop
     while (!WindowShouldClose() && Scene::scene != Scene::EXIT) {
         Properties::UpdateMusics();
+        Properties::ResetCursor();
         BeginDrawing(); {
             switch(Scene::scene) {
                 case Scene::TITLE_SCENE: {
@@ -40,6 +41,7 @@ int main() {
                 }; break;
                 default: break;
             }
+            Properties::RenderCursor();
         } EndDrawing();
     }
 

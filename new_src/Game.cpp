@@ -37,6 +37,7 @@ void Game::Init() {
     turn = 0;
     board.Init();
     isThreadRunning = false;
+    isPause = false;
     std::vector<Board>().swap(undoHistory);
     std::vector<Board>().swap(redoHistory);
     notations.clear();
@@ -236,9 +237,12 @@ void Game::Render() {
     }
 
     // Render hovering pieceName when its human turn
-    if(GetCurrentAgent()->GetTag() == "Human" && board.GetPieceByPosition(InputUtilities::GetMouseChessPosition()) != nullptr) {
+    if(!isPause && GetCurrentAgent()->GetTag() == "Human" && board.GetPieceByPosition(InputUtilities::GetMouseChessPosition()) != nullptr) {
         renderer.RenderHoveringPieceName(board.GetPieceByPosition(InputUtilities::GetMouseChessPosition()));
     }
+}
+void Game::Pause() {
+    isPause = !isPause;
 }
 void Game::Run() {
     switch(verdict) {
@@ -259,6 +263,7 @@ bool Game::Undo() {
     if (isPromoting) return false; // if undo during promotion choosing, then cancel the promotion only
 
     turn--;
+    isPause = false;
     redoHistory.push_back(board);
     board = undoHistory.back();
     undoHistory.pop_back();

@@ -10,7 +10,7 @@ Instead of using the native board implementation, this uses bitboard instead.
 
 class BitboardAgent : public Agent {
 public:
-    BitboardAgent(CHESS_COLOR agentColor, float moveDelay = 0.12);
+    BitboardAgent(CHESS_COLOR agentColor, float moveDelay = 0.01);
     void Init() override;
     std::optional<Move> GetMove(const Board &board) override;
     

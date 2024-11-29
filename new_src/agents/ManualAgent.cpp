@@ -1,4 +1,5 @@
 #include "ManualAgent.h"
+#include "../Properties.h"
 
 #include "InputUtilities.h"
 
@@ -37,7 +38,6 @@ std::optional<Move> ManualAgent::GetMove(const Board &board) {
     }
     if (isMoveFinalized) {
         Init();
-        SetMouseCursor(0);
         return finalMove;
     } else {
         return std::nullopt;
@@ -45,11 +45,8 @@ std::optional<Move> ManualAgent::GetMove(const Board &board) {
 }
 
 void ManualAgent::RenderCursor(const Board &board) {
-    // Not interacting with game, so no need to update
-    if (!InputUtilities::IsMouseInsideBoard()) return;
-
     if (isDragging) { // Dragging uses the pointed hand cursor
-        SetMouseCursor(4);
+        Properties::SetCursor(4);
         return;
     }
 
@@ -58,7 +55,7 @@ void ManualAgent::RenderCursor(const Board &board) {
     // Check hovering over an allied piece (trying to select a piece)
     const Piece* hoveringPiece = board.GetPieceByPosition(hoveringPosition);
     if (hoveringPiece != nullptr && hoveringPiece->GetColor() == agentColor) {
-        SetMouseCursor(4);
+        Properties::SetCursor(4);
         return;
     }
 
@@ -67,7 +64,7 @@ void ManualAgent::RenderCursor(const Board &board) {
         const Piece* selectedPiece = board.GetPieceByPosition(selectedPosition.value());
         for (Move move : board.GetPossibleMoves(selectedPiece)) {
             if (hoveringPosition == move.toPosition) {
-                SetMouseCursor(4);
+                Properties::SetCursor(4);
                 return;
             }
         }
@@ -75,11 +72,9 @@ void ManualAgent::RenderCursor(const Board &board) {
 
     // Check promoting and hovering over the promotion zone
     if (isPromoting && InputUtilities::IsMouseInsidePromotionSelectingZone(agentColor, promotingFile)) {
-        SetMouseCursor(4);
+        Properties::SetCursor(4);
         return;
     }
-
-    SetMouseCursor(0);
 }
 
 void ManualAgent::RegisterPressing(const Board &board) {

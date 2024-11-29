@@ -83,6 +83,10 @@ void Button::Render() {
 
 bool Button::Check() {
     UpdateState();
+    
+    // Render the cursor icon
+    if(state != NONE) Properties::SetCursor(4);
+
     if (state == CLICKED) ClickedSound();
     return state == CLICKED;
 }

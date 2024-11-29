@@ -1,5 +1,6 @@
 #include "Slider.h"
 #include "RenderUtilities.h"
+#include "Properties.h"
 #include <algorithm>
 
 Slider::Slider() {}
@@ -50,6 +51,9 @@ void Slider::Render() {
 
 bool Slider::Check() {
     UpdateState();
+    
+    // Render the cursor icon
+    if(state != NONE) Properties::SetCursor(4);
 
     Rectangle rec = !useRatio ? this->rec : Rectangle{GetScreenWidth() * rx + dx, GetScreenHeight() * ry + dy, GetScreenWidth() * rw + dw, GetScreenHeight() * rh + dh};
     if(state == HOLDING) {

@@ -23,6 +23,7 @@ public:
     void SaveGame(int slot) const; // Save to gamesave
 
     void Render(); // Is called per frame when game is running. Renders the game.
+    void Pause(); // Is called per frame when paused. Renders less information than Render()
     void Run(); // Is called per frame. Handles input, game flow control and everything about the gameplay
 
     bool Undo();
@@ -44,6 +45,7 @@ private:
     std::unique_ptr<Agent> blackAgent;
 
     int turn;
+    bool isPause;
     std::optional<Move> nextMove;
     std::thread t;
     bool isThreadRunning;
