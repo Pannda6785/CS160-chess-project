@@ -17,7 +17,7 @@ void TitleScene::Init() {
 void TitleScene::InitButtons() {
     // Duplicated buttons
     backLoadSaveButton.SetRatio(0.5, -90, 1, -70, 0, 180, 0, 60, BLANK,  {255, 255, 255, 100}); 
-    backLoadSaveButton.SetText("Back", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    backLoadSaveButton.SetText("Back", 45, PINK, Properties::fonts["Rubik-Regular_45"]);
     backLoadSaveButton.SetSound(Properties::sounds["buttonClick"]);
     
     backModeButton.SetRatio(0.5, -130, 0.75, -35, 0, 260, 0, 70, BLANK,  {255, 255, 255, 100});
@@ -77,16 +77,13 @@ void TitleScene::InitButtons() {
     backDiffButton.SetSound(Properties::sounds["buttonClick"]);
 
     // loadTitle
-    load1Button.SetRatio(3.0 / 16.0, -130, 9.0 / 12.0, 0, 0, 260, 0, 70, BLANK,  {255, 255, 255, 100}); 
-    load1Button.SetText("Load", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    load1Button.SetRatio(1.0 / 16.0, 0, 5.0 / 12.0, 0, 1.0 / 4.0, 0, 1.0 / 3.0, 0, {0, 0, 0, 150},  {255, 255, 255, 150}); 
     load1Button.SetSound(Properties::sounds["buttonClick"]);
 
-    load2Button.SetRatio(8.0 / 16.0, -130, 5.0 / 6.0, 0, 0, 260, 0, 70, BLANK,  {255, 255, 255, 100}); 
-    load2Button.SetText("Load", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    load2Button.SetRatio(6.0 / 16.0, 0, 1.0 / 2.0, 0, 1.0 / 4.0, 0, 1.0 / 3.0, 0, {0, 0, 0, 150},  {255, 255, 255, 150}); 
     load2Button.SetSound(Properties::sounds["buttonClick"]);
 
-    load3Button.SetRatio(13.0 / 16.0, -130, 9.0 / 12.0, 0, 0, 260, 0, 70, BLANK,  {255, 255, 255, 100}); 
-    load3Button.SetText("Load", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    load3Button.SetRatio(11.0 / 16.0, 0, 5.0 / 12.0, 0, 1.0 / 4.0, 0, 1.0 / 3.0, 0, {0, 0, 0, 150},  {255, 255, 255, 150}); 
     load3Button.SetSound(Properties::sounds["buttonClick"]);
 
     // optionTitle
@@ -120,7 +117,7 @@ void TitleScene::InitButtons() {
     rightButton.SetSound(Properties::sounds["buttonClick"]);
 
     backOptionsButton.SetRatio(0.5, -90, 19.0 / 20.0, -30, 0, 180, 0, 60, BLANK,  {255, 255, 255, 100}); 
-    backOptionsButton.SetText("Back", 45, LIME, Properties::fonts["Rubik-Regular_45"]);
+    backOptionsButton.SetText("Back", 45, PINK, Properties::fonts["Rubik-Regular_45"]);
     backOptionsButton.SetSound(Properties::sounds["buttonClick"]);
 }
 
@@ -175,6 +172,8 @@ void TitleScene::MainTitle() {
     if (exitButton.Check()) {
         Scene::ChangeScene(Scene::EXIT);
     }
+
+    
 }
 
 void TitleScene::ModeTitle() {
@@ -271,64 +270,49 @@ void TitleScene::LoadTitle() {
                     (Rectangle) {0.0, 0.0, (float) GetScreenWidth(), (float) GetScreenHeight()}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
     DrawTextCenEx(Properties::fonts["Mondwild_80"], "Load", int(GetScreenWidth() / 2), int(GetScreenHeight() / 3), 80, 2, PINK);    
     
-    // Save 1
-    /*
-    DrawTexturePro(Properties::elements["box"], (Rectangle) {0.0, 0.0, (float) Properties::elements["box"].width, (float) Properties::elements["box"].height}, 
-                    (Rectangle) {(float) GetScreenWidth() * 1 / 16, (float) GetScreenHeight() / 2, (float) GetScreenWidth() / 4, (float) GetScreenHeight() / 3}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
-    */
-    DrawRectangleRec((Rectangle) {(float) GetScreenWidth() * 1 / 16, (float) GetScreenHeight() * 5 / 12, (float) GetScreenWidth() / 4, (float) GetScreenHeight() / 3}, {0, 0, 0, 100});
+    // Load 1
+    load1Button.Render();
     if(!SaveLoadUtilities::IsSlotEmpty(1)) {
-        std::string mode = "Mode: " + SaveLoadUtilities::GetMode(1);
+        std::string mode = SaveLoadUtilities::GetMode(1);
         std::string played = "Played: " + SaveLoadUtilities::GetTurn(1) + " moves";
         std::string currentTurn = SaveLoadUtilities::GetWhoseTurn(1) + "'s turn";
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], mode.c_str(), 
-            int(GetScreenWidth() * 1 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 1 / 4), 45, 2, PINK);
+            int(GetScreenWidth() * 1 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 1 / 4), 45, 2, LIME);
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], played.c_str(), 
-            int(GetScreenWidth() * 1 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 2 / 4), 45, 2, PINK);
+            int(GetScreenWidth() * 1 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 2 / 4), 45, 2, LIME);
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], currentTurn.c_str(), 
-            int(GetScreenWidth() * 1 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 3 / 4), 45, 2, PINK);
+            int(GetScreenWidth() * 1 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 3 / 4), 45, 2, LIME);
     }
     
-    // Save 2
-    /*
-    DrawTexturePro(Properties::elements["box"], (Rectangle) {0.0, 0.0, (float) Properties::elements["box"].width, (float) Properties::elements["box"].height}, 
-                    (Rectangle) {(float) GetScreenWidth() * 6 / 16, (float) GetScreenHeight() / 2, (float) GetScreenWidth() / 4, (float) GetScreenHeight() / 3}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
-    */
-    DrawRectangleRec((Rectangle) {(float) GetScreenWidth() * 6 / 16, (float) GetScreenHeight() / 2, (float) GetScreenWidth() / 4, (float) GetScreenHeight() / 3}, {0, 0, 0, 100});
+    // Load 2
+    load2Button.Render();
     if(!SaveLoadUtilities::IsSlotEmpty(2)) {
-        std::string mode = "Mode: " + SaveLoadUtilities::GetMode(2);
+        std::string mode = SaveLoadUtilities::GetMode(2);
         std::string played = "Played: " + SaveLoadUtilities::GetTurn(2) + " moves";
         std::string currentTurn = SaveLoadUtilities::GetWhoseTurn(2) + "'s turn";
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], mode.c_str(), 
-            int(GetScreenWidth() * 6 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() / 2 + GetScreenHeight() / 3 * 1 / 4), 45, 2, PINK);
+            int(GetScreenWidth() * 6 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() / 2 + GetScreenHeight() / 3 * 1 / 4), 45, 2, LIME);
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], played.c_str(), 
-            int(GetScreenWidth() * 6 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() / 2 + GetScreenHeight() / 3 * 2 / 4), 45, 2, PINK);
+            int(GetScreenWidth() * 6 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() / 2 + GetScreenHeight() / 3 * 2 / 4), 45, 2, LIME);
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], currentTurn.c_str(), 
-            int(GetScreenWidth() * 6 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() / 2 + GetScreenHeight() / 3 * 3 / 4), 45, 2, PINK);
+            int(GetScreenWidth() * 6 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() / 2 + GetScreenHeight() / 3 * 3 / 4), 45, 2, LIME);
     }
 
-    // Save 3
-    /*
-    DrawTexturePro(Properties::elements["box"], (Rectangle) {0.0, 0.0, (float) Properties::elements["box"].width, (float) Properties::elements["box"].height}, 
-                    (Rectangle) {(float) GetScreenWidth() * 11 / 16, (float) GetScreenHeight() / 2, (float) GetScreenWidth() / 4, (float) GetScreenHeight() / 3}, (Vector2) {0.0, 0.0}, 0.0, WHITE);
-    */
-    DrawRectangleRec((Rectangle) {(float) GetScreenWidth() * 11 / 16, (float) GetScreenHeight() * 5 / 12, (float) GetScreenWidth() / 4, (float) GetScreenHeight() / 3}, {0, 0, 0, 100});
+    // Load 3
+    load3Button.Render();
     if(!SaveLoadUtilities::IsSlotEmpty(3)) {
-        std::string mode = "Mode: " + SaveLoadUtilities::GetMode(3);
+        std::string mode = SaveLoadUtilities::GetMode(3);
         std::string played = "Played: " + SaveLoadUtilities::GetTurn(3) + " moves";
         std::string currentTurn = SaveLoadUtilities::GetWhoseTurn(3) + "'s turn";
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], mode.c_str(), 
-            int(GetScreenWidth() * 11 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 1 / 4), 45, 2, PINK);
+            int(GetScreenWidth() * 11 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 1 / 4), 45, 2, LIME);
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], played.c_str(), 
-            int(GetScreenWidth() * 11 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 2 / 4), 45, 2, PINK);
+            int(GetScreenWidth() * 11 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 2 / 4), 45, 2, LIME);
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], currentTurn.c_str(), 
-            int(GetScreenWidth() * 11 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 3 / 4), 45, 2, PINK);
+            int(GetScreenWidth() * 11 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 3 / 4), 45, 2, LIME);
     }
 
     // Render buttons
-    load1Button.Render();
-    load2Button.Render();
-    load3Button.Render();
     backLoadSaveButton.Render();
     
     // Button detectings
@@ -369,7 +353,6 @@ void TitleScene::OptionsTitle() {
     DrawTextCenEx(Properties::fonts["Mondwild_45"], "Chess themes", int(GetScreenWidth() * 3 / 4 - Properties::GetBorderSize() / 2), int(GetScreenHeight() / 6 + 2 * Properties::GetBorderSize()), 45, 2, PINK);    
 
     // Resize slider and button
-    // TODO: convert to screen ratio
     resolution1Button.SetRec(Rectangle{(float) Properties::GetBorderSize() * 5 / 4 + GetScreenWidth() / 8 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 200, 70},
                         BLANK, {255, 255, 255, 100});
     resolution2Button.SetRec(Rectangle{(float) GetScreenWidth() * 3 / 8 - Properties::GetBorderSize() / 4 - 100, (float) GetScreenHeight() / 6 + 3 * Properties::GetBorderSize(),(float) 200, 70},
@@ -386,7 +369,7 @@ void TitleScene::OptionsTitle() {
                         Color{0, 158, 47, 100}, Color{255, 109, 194, 255},  {255, 255, 255, 100});
     muteSoundsButton.SetRec(Rectangle{(float) Properties::GetBorderSize() * 4 - 35, (float) GetScreenHeight() * 6 / 8, 70, 70},
                         BLANK, {255, 255, 255, 100});
-    if(Properties::isSoundsMute || Properties::soundsVolume == 0) muteSoundsButton.SetTexture("muteSounds", "hoveringMuteSounds");
+    if(Properties::isSoundsMute) muteSoundsButton.SetTexture("muteSounds", "hoveringMuteSounds");
     else if(Properties::soundsVolume < 0.4f) {
         muteSoundsButton.SetTexture("sounds1", "hoveringSounds1");
     }

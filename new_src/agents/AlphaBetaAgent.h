@@ -9,7 +9,7 @@ Alphabeta-pruning minimax search tree, with move ordering for first few depths.
 
 class AlphaBetaAgent : public Agent {
 public:
-    AlphaBetaAgent(CHESS_COLOR agentColor, float moveDelay = 0.12);
+    AlphaBetaAgent(CHESS_COLOR agentColor, float moveDelay = 0.01);
     void Init() override;
     std::optional<Move> GetMove(const Board &board) override;
     

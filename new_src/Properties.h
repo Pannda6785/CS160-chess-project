@@ -32,6 +32,7 @@ namespace Properties { // game properties
     inline std::string musicName;
     inline bool isMusicsMute, isSoundsMute;
     inline float musicsVolume, soundsVolume;
+    inline int mouseMode = 0;
     inline int fontSizes[] = {20, 25, 45, 80};
     
     // Assets paths
@@ -356,6 +357,16 @@ namespace Properties { // game properties
                 ChangeMusic(musicName);
             }
         }
+    }
+
+    inline void ResetCursor() {
+        mouseMode = 0;
+    }
+    inline void SetCursor(int mode) {
+        if(mode != 0) mouseMode = mode;
+    }
+    inline void RenderCursor() {
+        SetMouseCursor(mouseMode);
     }
 };
 

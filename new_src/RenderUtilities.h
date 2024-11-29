@@ -50,7 +50,7 @@ inline void DrawTextCursor(const char *text, int fontSize, Color color) {
 // Draws the text at up right the cursor without custom fonts
 inline void DrawTextCursorEx(Font font, const char *text, int fontSize, int spacing, Color color) {
     Vector2 pos = MeasureTextEx(font, text, fontSize, spacing);
-    DrawRectangle(GetMousePosition().x, GetMousePosition().y - pos.y - 10, pos.x + 10, pos.y + 10, {0, 0, 0, 100});
+    DrawRectangle(GetMousePosition().x, GetMousePosition().y - pos.y - 10, pos.x + 10, pos.y + 10, {0, 0, 0, 150});
     pos.x = GetMousePosition().x + 5;
     pos.y = GetMousePosition().y - pos.y - 5;  // The font size represents the height of the text
     DrawTextEx(font, text, pos, fontSize, spacing, color);

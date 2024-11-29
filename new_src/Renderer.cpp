@@ -92,15 +92,15 @@ void Renderer::RenderHoveringPieceName(const Piece* piece) {
     Font font = Properties::fonts["Rubik-Regular_25"];
     int fontSize = 25;
     Color textColor = PINK;
-    std::string hoveringText;
+    std::string hoveringText = (piece->GetColor() == CHESS_WHITE ? "white " : "black ");
 
     switch(piece->GetType()) {
-        case KING: hoveringText = "King"; break;
-        case QUEEN: hoveringText = "Queen"; break;
-        case BISHOP: hoveringText = "Bishop"; break;
-        case KNIGHT: hoveringText = "Knight"; break;
-        case ROOK: hoveringText = "Rook"; break;
-        case PAWN: hoveringText = "Pawn"; break;
+        case KING: hoveringText += "King"; break;
+        case QUEEN: hoveringText += "Queen"; break;
+        case BISHOP: hoveringText += "Bishop"; break;
+        case KNIGHT: hoveringText += "Knight"; break;
+        case ROOK: hoveringText += "Rook"; break;
+        case PAWN: hoveringText += "Pawn"; break;
     }
 
     if(font.texture.id == 0) {
