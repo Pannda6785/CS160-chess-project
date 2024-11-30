@@ -321,39 +321,40 @@ void Game::UpdateNotations() {
                     s += char('a' + currentBoard.GetLastMove()->toPosition.j);
                     s += char('8' - currentBoard.GetLastMove()->toPosition.i);
                 }
-                else if(currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == QUEEN
-                || currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == KING) {
+                else if(currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == KING) {
                     s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
                     s += char('a' + currentBoard.GetLastMove()->toPosition.j);
                     s += char('8' - currentBoard.GetLastMove()->toPosition.i);
                 }
                 else {
-                    CHESS_COLOR color = GetCurrentAgent()->GetColor();
+                    CHESS_COLOR color = currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetColor();
                     bool yes = true;
 
-                    for (const Piece* piece : board.GetPieces()) {
-                        if(piece->GetType() == currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType()
-                        && piece->GetColor() == color && piece->GetPosition() != currentBoard.GetLastMove()->toPosition) {
-                            Position position = piece->GetPosition();
-                            
-                            for (Move move : piece->GetPossibleMoves(board)) {
-                                // just to clarify, by now move.type can only be either WALK or ATTACK
-                                if(move.toPosition != position) continue;
-                                if(move.fromPosition.j != currentBoard.GetLastMove()->fromPosition.j) {
-                                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
-                                    s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
-                                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
-                                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                    if(idx > 0) {
+                        for (const Piece* piece : currentBoard.GetPieces()) {
+                            if(piece->GetType() == currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType()
+                            && piece->GetColor() == color && piece->GetPosition() != currentBoard.GetLastMove()->toPosition) {
+                                Position position = currentBoard.GetLastMove()->toPosition;
+                                
+                                for (Move move : piece->GetPossibleMoves(undoHistory[idx - 1])) {
+                                    // just to clarify, by now move.type can only be either WALK or ATTACK
+                                    if(move.toPosition != position) continue;
+                                    if(move.fromPosition.j != currentBoard.GetLastMove()->fromPosition.j) {
+                                        s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                                        s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
+                                        s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                                        s += char('8' - currentBoard.GetLastMove()->toPosition.i);
 
-                                    yes = false;
-                                }
-                                else {
-                                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
-                                    s += char('8' - currentBoard.GetLastMove()->fromPosition.i);
-                                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
-                                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                                        yes = false;
+                                    }
+                                    else {
+                                        s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                                        s += char('8' - currentBoard.GetLastMove()->fromPosition.i);
+                                        s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                                        s += char('8' - currentBoard.GetLastMove()->toPosition.i);
 
-                                    yes = false;
+                                        yes = false;
+                                    }
                                 }
                             }
                         }
@@ -379,47 +380,51 @@ void Game::UpdateNotations() {
                     s += char('a' + currentBoard.GetLastMove()->toPosition.j);
                     s += char('8' - currentBoard.GetLastMove()->toPosition.i);
                 }
-                else if(currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == QUEEN
-                || currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == KING) {
+                else if(currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType() == KING) {
                     s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
                     s += 'x';
                     s += char('a' + currentBoard.GetLastMove()->toPosition.j);
                     s += char('8' - currentBoard.GetLastMove()->toPosition.i);
                 }
                 else {
-                    CHESS_COLOR color = GetCurrentAgent()->GetColor();
+                    CHESS_COLOR color = currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetColor();
                     bool yes = true;
 
-                    for (const Piece* piece : board.GetPieces()) {
-                        if(piece->GetType() == currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType()
-                        && piece->GetColor() == color && piece->GetPosition() != currentBoard.GetLastMove()->toPosition) {
-                            Position position = piece->GetPosition();
-                            
-                            for (Move move : piece->GetPossibleMoves(board)) {
-                                // just to clarify, by now move.type can only be either WALK or ATTACK
-                                if(move.toPosition != position) continue;
-                                if(move.fromPosition.j != currentBoard.GetLastMove()->fromPosition.j) {
-                                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
-                                    s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
-                                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
-                                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                    if(idx > 0) {
+                        for (const Piece* piece : currentBoard.GetPieces()) {
+                            if(piece->GetType() == currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetType()
+                            && piece->GetColor() == color && piece->GetPosition() != currentBoard.GetLastMove()->toPosition) {
+                                Position position = currentBoard.GetLastMove()->toPosition;
+                                
+                                for (Move move : piece->GetPossibleMoves(undoHistory[idx - 1])) {
+                                    // just to clarify, by now move.type can only be either WALK or ATTACK
+                                    if(move.toPosition != position) continue;
+                                    if(move.fromPosition.j != currentBoard.GetLastMove()->fromPosition.j) {
+                                        s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                                        s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
+                                        s += 'x';
+                                        s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                                        s += char('8' - currentBoard.GetLastMove()->toPosition.i);
 
-                                    yes = false;
-                                }
-                                else {
-                                    s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
-                                    s += char('8' - currentBoard.GetLastMove()->fromPosition.i);
-                                    s += char('a' + currentBoard.GetLastMove()->toPosition.j);
-                                    s += char('8' - currentBoard.GetLastMove()->toPosition.i);
+                                        yes = false;
+                                    }
+                                    else {
+                                        s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                                        s += char('8' - currentBoard.GetLastMove()->fromPosition.i);
+                                        s += 'x';
+                                        s += char('a' + currentBoard.GetLastMove()->toPosition.j);
+                                        s += char('8' - currentBoard.GetLastMove()->toPosition.i);
 
-                                    yes = false;
+                                        yes = false;
+                                    }
                                 }
                             }
-                        }
+                        }   
                     }
 
                     if(yes) {
                         s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                        s += 'x';
                         s += char('a' + currentBoard.GetLastMove()->toPosition.j);
                         s += char('8' - currentBoard.GetLastMove()->toPosition.i);
 
@@ -428,10 +433,10 @@ void Game::UpdateNotations() {
                 }
             } break;
             case SHORT_CASTLING: {
-                s = "O-O";
+                s = "o-o";
             } break;
             case LONG_CASTLING: {
-                s = "O-O-O";
+                s = "o-o-o";
             } break;
             case EN_PASSANT: {
                 s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
