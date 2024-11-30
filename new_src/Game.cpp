@@ -428,10 +428,10 @@ void Game::UpdateNotations() {
                 }
             } break;
             case SHORT_CASTLING: {
-                s = "O-O";
+                s = "o-o";
             } break;
             case LONG_CASTLING: {
-                s = "O-O-O";
+                s = "o-o-o";
             } break;
             case EN_PASSANT: {
                 s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
