@@ -4,27 +4,38 @@
 **Build command:**
 
 ```
-cd build
-
-mingw32-make
+Just tested for windows. Not sure for other OS
+click build.bat and wait for the magic 
+File .exe nằm trong folder build
 ```
 
-**To-do lists 🎉**
+# NeetChessCS160
 
-- [x] Setup Gameloop
-- [ ] Setup Cmake
-- [x] Creating the Board
-- [x] Creating the Pieces
-- [x] Creating Moves
-- [x] Checking for collisions
-- [x] Checking for turns
-- [x] Checking for mating
-- [x] Game win conditions
-- [ ] Create user interface
-- [x] Add timer
-- [x] Show available moves
-- [x] Add sounds
-- [ ] Add bot
-- [ ] Add levels
-- [ ] Add saves
-- [ ] Record turns?
+Giải thích nhanh code:
+
+```
+sử dụng 2 thư viện ngoài là raylib.h và virgo.h
+```
+
+Các Scene: Title Scene, Game Scene
+- Title Scene
+  - Mode Title: chọn mode game và độ khó
+  - Load Title: load từ game đã lưu từ trước
+  - Options Title: bật settings
+- Game Scene
+  - Base Game: vẽ background cho các gameScene khác
+  - Main Game: dùng để chơi, tương tác chính
+  - Pause Game: dẫn ra màn hình phụ có các nút chọn Save, Load, Options
+  - End Game: render màn hình khi cờ vua kết thúc 
+
+Các file chính hoạt động:
+- Main: bật window và audio device.
+- Properties: chứa, screenSize, assets, sounds, cursorMode, save files và settings liên quan đến chúng
+- Game: dùng để tải thông tin ván game hiện tại, bao gồm tiến trình, saveload, và kết thúc
+  - Renderer: dùng để hiển thị ván cờ
+  - agents/: chứa AI
+    - Random (easy): hell elo
+    - AlphaBeta (): depth 4, sortDepth 2
+    - SearchTree (medium): depth 3
+    - Bitboard (hard): depth 6
+  - Board: tải tiến trình game hiện tại, bao gồm thông tin mỗi con cờ và nước đi mới nhất
