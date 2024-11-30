@@ -401,6 +401,7 @@ void Game::UpdateNotations() {
                                 if(move.fromPosition.j != currentBoard.GetLastMove()->fromPosition.j) {
                                     s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
                                     s += char('a' + currentBoard.GetLastMove()->fromPosition.j);
+                                    s += 'x';
                                     s += char('a' + currentBoard.GetLastMove()->toPosition.j);
                                     s += char('8' - currentBoard.GetLastMove()->toPosition.i);
 
@@ -409,6 +410,7 @@ void Game::UpdateNotations() {
                                 else {
                                     s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
                                     s += char('8' - currentBoard.GetLastMove()->fromPosition.i);
+                                    s += 'x';
                                     s += char('a' + currentBoard.GetLastMove()->toPosition.j);
                                     s += char('8' - currentBoard.GetLastMove()->toPosition.i);
 
@@ -420,6 +422,7 @@ void Game::UpdateNotations() {
 
                     if(yes) {
                         s += currentBoard.GetPieceByPosition(currentBoard.GetLastMove()->toPosition)->GetTag();
+                        s += 'x';
                         s += char('a' + currentBoard.GetLastMove()->toPosition.j);
                         s += char('8' - currentBoard.GetLastMove()->toPosition.i);
 
