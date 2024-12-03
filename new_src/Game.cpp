@@ -567,9 +567,10 @@ void Game::UpdateGameStatus() {
     // Checking preparation
     bool isAnyMovePossible = false;
     bool is50Moves = true;
+    bool isThreefoldRepetition = false;
     int countPieces = 0;
     std::map<PIECE_TYPE, int> countWhite, countBlack;
-    bool isThreefoldRepetition = false;
+    std::map<std::string, int> fenBoardCount;
 
     // Counting
     for (const Piece* piece : board.GetPiecesByColor(WhoseTurn())) { // For no possible move
@@ -585,20 +586,16 @@ void Game::UpdateGameStatus() {
         else ++countBlack[piece->GetType()];
         ++countPieces;
     }
-    for(int i = 0; i < undoHistory.size(); ++i) { // For ThreeFold Repetition
-        int countBoard = 0;
-        Board board1 = undoHistory[i];
-
-        if(ChessbotUtilities::GetFEN(board1, (i%2 == 0 ? CHESS_WHITE : CHESS_BLACK))
-            == ChessbotUtilities::GetFEN(board, (turn%2 == 0 ? CHESS_WHITE : CHESS_BLACK))) ++countBoard;
-        for(int j = 0; j < undoHistory.size(); ++j) {
-            Board board2 = undoHistory[j];
-            if(ChessbotUtilities::GetFEN(board1, (i%2 == 0 ? CHESS_WHITE : CHESS_BLACK))
-                == ChessbotUtilities::GetFEN(board2, (j%2 == 0 ? CHESS_WHITE : CHESS_BLACK))) ++countBoard;
-        }
-        if(countBoard == 3) {
-            isThreefoldRepetition = true;
-            break;
+    { // For ThreeFold Repetition
+        ++fenBoardCount[ChessbotUtilities::GetFEN(board, (turn%2 == 0 ? CHESS_WHITE : CHESS_BLACK))];
+        for(int i = 0; i < undoHistory.size(); ++i) {
+            Board board1 = undoHistory[i];
+            std::string fenBoard = ChessbotUtilities::GetFEN(board1, (i%2 == 0 ? CHESS_WHITE : CHESS_BLACK));
+            ++fenBoardCount[fenBoard];
+            if(fenBoardCount[fenBoard] == 3) {
+                isThreefoldRepetition = true;
+                break;
+            }
         }
     }
     /*

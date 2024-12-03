@@ -188,17 +188,19 @@ void GameScene::BaseGame() {
     notations = game.GetNotations();
     int notationsSize = (notations.size() + 1) / 2;
     
-    // Scrolling speed
-    scrollOffSet -= GetMouseWheelMove() * 4;
-
     Color box = {200, 200, 200, 200}, bar = {80, 80, 80, 200};
     Color highlight = {255, 255, 255, 200};
     Font font = Properties::fonts["Rubik-Regular_25"];
     int fontSize = 25;
     int lineHeight = 30;
+
+    // Scrolling speed
+    scrollOffSet -= GetMouseWheelMove() * 5 / 100 * notationsSize * lineHeight;
     // ***********************************
 
     // limit for better visual
+    if(IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), {textBox.x + textBox.width - 10, textBox.y, 10, textBox.height}))
+        scrollOffSet = (GetMousePosition().y - textBox.y) / textBox.height * ((int)notationsSize * lineHeight - (int)textBox.height);
     if(scrollOffSet > (int)notationsSize * lineHeight - (int)textBox.height) 
         scrollOffSet = (int)notationsSize * lineHeight - (int)textBox.height; // plus extra lineHeight to show the last line
     if(scrollOffSet < 0) scrollOffSet = 0;
