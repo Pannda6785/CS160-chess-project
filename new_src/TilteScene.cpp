@@ -274,7 +274,7 @@ void TitleScene::LoadTitle() {
     load1Button.Render();
     if(!SaveLoadUtilities::IsSlotEmpty(1)) {
         std::string mode = SaveLoadUtilities::GetMode(1);
-        std::string played = "Played: " + SaveLoadUtilities::GetTurn(1) + " moves";
+        std::string played = SaveLoadUtilities::GetTurn(1) + " moves";
         std::string currentTurn = SaveLoadUtilities::GetWhoseTurn(1) + "'s turn";
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], mode.c_str(), 
             int(GetScreenWidth() * 1 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 1 / 4), 45, 2, LIME);
@@ -288,7 +288,7 @@ void TitleScene::LoadTitle() {
     load2Button.Render();
     if(!SaveLoadUtilities::IsSlotEmpty(2)) {
         std::string mode = SaveLoadUtilities::GetMode(2);
-        std::string played = "Played: " + SaveLoadUtilities::GetTurn(2) + " moves";
+        std::string played = SaveLoadUtilities::GetTurn(2) + " moves";
         std::string currentTurn = SaveLoadUtilities::GetWhoseTurn(2) + "'s turn";
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], mode.c_str(), 
             int(GetScreenWidth() * 6 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() / 2 + GetScreenHeight() / 3 * 1 / 4), 45, 2, LIME);
@@ -302,7 +302,7 @@ void TitleScene::LoadTitle() {
     load3Button.Render();
     if(!SaveLoadUtilities::IsSlotEmpty(3)) {
         std::string mode = SaveLoadUtilities::GetMode(3);
-        std::string played = "Played: " + SaveLoadUtilities::GetTurn(3) + " moves";
+        std::string played = SaveLoadUtilities::GetTurn(3) + " moves";
         std::string currentTurn = SaveLoadUtilities::GetWhoseTurn(3) + "'s turn";
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], mode.c_str(), 
             int(GetScreenWidth() * 11 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 1 / 4), 45, 2, LIME);
