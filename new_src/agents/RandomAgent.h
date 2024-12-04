@@ -9,7 +9,7 @@ This agent chooses move randomly: for any move X, it is chosen with the probabil
 
 class RandomAgent : public Agent {
 public:
-    RandomAgent(CHESS_COLOR agentColor, float moveDelay = 0.01);
+    RandomAgent(CHESS_COLOR agentColor, float moveDelay = 0.05);
     void Init() override;
     std::optional<Move> GetMove(const Board &board) override;
     
