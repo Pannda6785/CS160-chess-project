@@ -166,7 +166,7 @@ void GameScene::BaseGame() {
 
     // Text box
     if(game.GetVerdict() == CHESS_RUNNING) {
-        std::string turnCount = "Turn: " + std::to_string(game.GetTurn());
+        std::string turnCount = "Turn: " + std::to_string(game.GetTurn() + 1);
         DrawTextRecEx(Properties::fonts["Rubik-Regular_45"], turnCount.c_str(), 
             Rectangle{(float) GetScreenHeight() + Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 5 / 2,(float) GetScreenWidth() - GetScreenHeight() - 3 * Properties::GetBorderSize(),(float) Properties::GetBorderSize() * 1}, 45, 2, PINK);
         std::string currentTurn = "Current turn: ";
@@ -341,7 +341,7 @@ void GameScene::SaveGame() {
     save1Button.Render();
     if(!SaveLoadUtilities::IsSlotEmpty(1)) {
         std::string mode = SaveLoadUtilities::GetMode(1);
-        std::string played = "Played: " + SaveLoadUtilities::GetTurn(1) + " moves";
+        std::string played = SaveLoadUtilities::GetTurn(1) + " moves";
         std::string currentTurn = SaveLoadUtilities::GetWhoseTurn(1) + "'s turn";
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], mode.c_str(), 
             int(GetScreenWidth() * 1 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 1 / 4), 45, 2, LIME);
@@ -355,7 +355,7 @@ void GameScene::SaveGame() {
     save2Button.Render();
     if(!SaveLoadUtilities::IsSlotEmpty(2)) {
         std::string mode = SaveLoadUtilities::GetMode(2);
-        std::string played = "Played: " + SaveLoadUtilities::GetTurn(2) + " moves";
+        std::string played = SaveLoadUtilities::GetTurn(2) + " moves";
         std::string currentTurn = SaveLoadUtilities::GetWhoseTurn(2) + "'s turn";
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], mode.c_str(), 
             int(GetScreenWidth() * 6 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() / 2 + GetScreenHeight() / 3 * 1 / 4), 45, 2, LIME);
@@ -369,7 +369,7 @@ void GameScene::SaveGame() {
     save3Button.Render();
     if(!SaveLoadUtilities::IsSlotEmpty(3)) {
         std::string mode = SaveLoadUtilities::GetMode(3);
-        std::string played = "Played: " + SaveLoadUtilities::GetTurn(3) + " moves";
+        std::string played = SaveLoadUtilities::GetTurn(3) + " moves";
         std::string currentTurn = SaveLoadUtilities::GetWhoseTurn(3) + "'s turn";
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], mode.c_str(), 
             int(GetScreenWidth() * 11 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 1 / 4), 45, 2, LIME);
@@ -412,7 +412,7 @@ void GameScene::LoadGame() {
     load1Button.Render();
     if(!SaveLoadUtilities::IsSlotEmpty(1)) {
         std::string mode = SaveLoadUtilities::GetMode(1);
-        std::string played = "Played: " + SaveLoadUtilities::GetTurn(1) + " moves";
+        std::string played = SaveLoadUtilities::GetTurn(1) + " moves";
         std::string currentTurn = SaveLoadUtilities::GetWhoseTurn(1) + "'s turn";
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], mode.c_str(), 
             int(GetScreenWidth() * 1 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 1 / 4), 45, 2, LIME);
@@ -426,7 +426,7 @@ void GameScene::LoadGame() {
     load2Button.Render();
     if(!SaveLoadUtilities::IsSlotEmpty(2)) {
         std::string mode = SaveLoadUtilities::GetMode(2);
-        std::string played = "Played: " + SaveLoadUtilities::GetTurn(2) + " moves";
+        std::string played = SaveLoadUtilities::GetTurn(2) + " moves";
         std::string currentTurn = SaveLoadUtilities::GetWhoseTurn(2) + "'s turn";
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], mode.c_str(), 
             int(GetScreenWidth() * 6 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() / 2 + GetScreenHeight() / 3 * 1 / 4), 45, 2, LIME);
@@ -440,7 +440,7 @@ void GameScene::LoadGame() {
     load3Button.Render();
     if(!SaveLoadUtilities::IsSlotEmpty(3)) {
         std::string mode = SaveLoadUtilities::GetMode(3);
-        std::string played = "Played: " + SaveLoadUtilities::GetTurn(3) + " moves";
+        std::string played = SaveLoadUtilities::GetTurn(3) + " moves";
         std::string currentTurn = SaveLoadUtilities::GetWhoseTurn(3) + "'s turn";
         DrawTextCenEx(Properties::fonts["Rubik-Regular_45"], mode.c_str(), 
             int(GetScreenWidth() * 11 / 16 + GetScreenWidth() / 4 / 2), int(GetScreenHeight() * 5 / 12 + GetScreenHeight() / 3 * 1 / 4), 45, 2, LIME);
