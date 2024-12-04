@@ -9,7 +9,7 @@ Standard minimax search tree.
 
 class SearchTreeAgent : public Agent {
 public:
-    SearchTreeAgent(CHESS_COLOR agentColor, float moveDelay = 0.01);
+    SearchTreeAgent(CHESS_COLOR agentColor, float moveDelay = 0.05);
     void Init() override;
     std::optional<Move> GetMove(const Board &board) override;
     
