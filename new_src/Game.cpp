@@ -570,7 +570,7 @@ void Game::UpdateGameStatus() {
     bool isThreefoldRepetition = false;
     int countPieces = 0;
     std::map<PIECE_TYPE, int> countWhite, countBlack;
-    std::map<std::string, int> fenBoardCount;
+    std::map<long long, int> boardCount;
 
     // Counting
     for (const Piece* piece : board.GetPiecesByColor(WhoseTurn())) { // For no possible move
@@ -587,12 +587,12 @@ void Game::UpdateGameStatus() {
         ++countPieces;
     }
     { // For ThreeFold Repetition
-        ++fenBoardCount[ChessbotUtilities::GetFEN(board, (turn%2 == 0 ? CHESS_WHITE : CHESS_BLACK))];
+        ++boardCount[ChessbotUtilities::HashBoard(board, (turn%2 == 0 ? CHESS_WHITE : CHESS_BLACK))];
         for(int i = 0; i < undoHistory.size(); ++i) {
             Board board1 = undoHistory[i];
-            std::string fenBoard = ChessbotUtilities::GetFEN(board1, (i%2 == 0 ? CHESS_WHITE : CHESS_BLACK));
-            ++fenBoardCount[fenBoard];
-            if(fenBoardCount[fenBoard] == 3) {
+            long long fenBoard = ChessbotUtilities::HashBoard(board1, (i%2 == 0 ? CHESS_WHITE : CHESS_BLACK));
+            ++boardCount[fenBoard];
+            if(boardCount[fenBoard] == 3) {
                 isThreefoldRepetition = true;
                 break;
             }
