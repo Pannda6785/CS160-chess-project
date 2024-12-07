@@ -6,7 +6,7 @@
 
 int main() {
     // Init game window
-    InitWindow(Properties::screenWidth[1], Properties::screenHeight[1], "CS160-chess-project");
+    InitWindow(Properties::screenWidth[1], Properties::screenHeight[1], "NEET Chess");
     InitAudioDevice();
     SetTargetFPS(60);
     SetExitKey(0);
