@@ -13,11 +13,11 @@ programming skills and demonstrate effective teamwork in building a complex appl
 • Operating system: Only tested on Windows. It may possibily be incompatible for other OS.
 • This program requires at least C++17 and GCC 9.x to compile. You can get them from
 winlibs.
-• The executable can be created using the provided /build/build.bat file. Alternatively, the
-command to create the executable is:
-g++ new_src / ∗ . cpp new_src / a g e n t s / ∗ . cpp new_src / p i e c e s / ∗ . cpp −o
-Game . exe −O −I i n c l u d e / −L l i b / − l r a y l i b −l g d i 3 2 −lwinmm
-This creates a Game.exe in the current directory.
+• The executable can be created using the provided /build/build.bat file. Equivalently, you
+can use the following command in the build/ folder:
+g++ ../new_src/*.cpp ../new_src/agents/*.cpp ../new_src/pieces/*.cpp -o Game.exe -O -I
+../include/ -L ../lib/ -lraylib -lgdi32 -lwinmm -mwindows
+This creates a Game.exe (it must be in the build/ forder).
 ```
 
 **Preview**
